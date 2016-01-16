@@ -16,6 +16,23 @@ module.exports = function(grunt) {
                 }
             }
         },
+        
+        modernizr: {
+            dist: {
+                "dest" : "dist/js/modernizr.js",
+                "parseFiles": true,
+                "customTests": [],
+                "devFile": "src/js/modernizr.js",
+                "outputFile": "dist/js/modernizr.js",
+                "tests": [
+                    "boxsizing"
+                ],
+                "options": [
+                    "setClasses"
+                ],
+                "uglify": true
+            }
+        },
 
         compass : {
             default : {
@@ -72,6 +89,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-postcss');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks("grunt-modernizr");
     
     grunt.registerTask('default', ['js', 'css']);
     grunt.registerTask('js', ['requirejs:default']);
