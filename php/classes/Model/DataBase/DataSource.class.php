@@ -1,6 +1,8 @@
 <?php
-class DataSource
-{
+
+namespace AttOn\Model\DataBase;
+
+class DataSource {
 	// Static Singleton Instance
 	private static $singleton_instance = NULL;
 
@@ -40,9 +42,9 @@ class DataSource
 
 	// constructor private -> used to establish database connection (using PDO class)
 	private function __construct($dbHost, $dbName, $dbuser, $dbpasswd) {
-		$this->dbh = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName . ';charset=utf8', $dbuser, $dbpasswd);
+		$this->dbh = new \PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName . ';charset=utf8', $dbuser, $dbpasswd);
 		//$this->dbh->exec("set names utf8");
-		$this->logger = Logger::getLogger('DataSource');
+		$this->logger = \Logger::getLogger('DataSource');
 	}
 
 	/**
@@ -165,5 +167,3 @@ class DataSource
 		return true;
 	}
 }
-
-?>
