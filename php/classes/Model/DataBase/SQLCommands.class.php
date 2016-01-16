@@ -1,5 +1,7 @@
 <?php
 
+namespace Atton\Model\DataBase;
+
 class SQLCommands {
 	
 	// DataSource link
@@ -437,4 +439,3 @@ class SQLCommands {
 	}
 	
 }
-?>

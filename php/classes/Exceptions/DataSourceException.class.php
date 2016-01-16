@@ -1,3 +1,7 @@
 <?php 
-class DataSourceException extends Exception {}
+
+namespace AttOn\Exceptions;
+
+class DataSourceException extends \Exception {}
+
 ?>
