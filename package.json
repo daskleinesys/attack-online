@@ -1,0 +1,16 @@
+{
+    "name": "Attack Online",
+    "version": "0.1.0",
+    "description": "Boardgame Attack played online",
+    "main": "Gruntfile.js",
+    "author": "daskleinesys <thomas.schagerl@gmx.net>",
+    "license": "MIT",
+    "devDependencies": {
+        "autoprefixer-core": "~5.2.1",
+        "grunt": "~0.4.5",
+        "grunt-contrib-compass": "~1.0.1",
+        "grunt-contrib-requirejs": "~0.4.4",
+        "grunt-contrib-watch": "~0.6.1",
+        "grunt-postcss": "~0.5.4"
+    }
+}
