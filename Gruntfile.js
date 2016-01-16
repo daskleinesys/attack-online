@@ -24,9 +24,7 @@ module.exports = function(grunt) {
                 "customTests": [],
                 "devFile": "src/js/modernizr.js",
                 "outputFile": "dist/js/modernizr.js",
-                "tests": [
-                    "boxsizing"
-                ],
+                "tests": [],
                 "options": [
                     "setClasses"
                 ],
@@ -91,7 +89,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks("grunt-modernizr");
     
-    grunt.registerTask('default', ['js', 'css']);
+    grunt.registerTask('default', ['js', 'css', 'modernizr:dist']);
     grunt.registerTask('js', ['requirejs:default']);
     grunt.registerTask('css', ['compass:default', 'postcss:default']);
     
