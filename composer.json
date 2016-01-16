@@ -2,6 +2,7 @@
     "require": {
         "slim/slim": "2.*",
         "twig/twig": "~1.0",
-        "slim/views": "0.1.*"
+        "slim/views": "0.1.*",
+        "apache/log4php": "2.3.0"
     }
 }

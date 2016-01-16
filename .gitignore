@@ -8,3 +8,7 @@ dist/css/*
 
 # LOCAL CONFIGURATION
 php/defines/local_configuration.php
+
+# LOGGING
+logs/*
+logs
