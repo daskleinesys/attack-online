@@ -6,10 +6,10 @@ module.exports = function(grunt) {
             default : {
                 options : {
                     baseUrl : 'src/js',
-                    mainConfigFile : 'src/js/default/config.js',
-                    findNestedDependencies : true,
-                    name : 'src/js/main.js',
+                    mainConfigFile : 'src/js/config.js',
+                    name : 'main',
                     out : 'dist/js/main.js',
+                    findNestedDependencies : true,
                     generateSourceMaps : true,
                     preserveLicenseComments : false,
                     optimize : 'uglify2'
