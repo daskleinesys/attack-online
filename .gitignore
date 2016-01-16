@@ -5,3 +5,6 @@ dist/css
 dist/css/*
 .sass-cache/*
 .sass-cache
+
+# LOCAL CONFIGURATION
+php/defines/local_configuration.php
