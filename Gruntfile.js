@@ -39,13 +39,13 @@ module.exports = function(grunt) {
             default : {
                 options : {
                     map : {
-                        prev : 'dist/main.css.map'
+                        prev : 'dist/css/main.css.map'
                     },
                     processors : [require('autoprefixer-core')({
                         browsers : 'last 1 version'
                     })]
                 },
-                src : 'dist/main.css'
+                src : 'dist/css/main.css'
             }
         },
 

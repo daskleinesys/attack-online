@@ -3,3 +3,5 @@ dist/js/*
 dist/js
 dist/css
 dist/css/*
+.sass-cache/*
+.sass-cache
