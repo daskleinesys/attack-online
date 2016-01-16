@@ -1,26 +1,28 @@
 {
-    "name": "Attack Online",
-    "version": "0.1.0",
-    "authors": [
-        "daskleinesys <thomas.schagerl@gmx.net>"
-    ],
-    "description": "Boardgame Attack played online",
-    "main": "Gruntfile.js",
-    "moduleType": [
-        "amd"
-    ],
-    "license": "MIT",
-    "private": true,
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "vendor",
-        "test",
-        "tests"
-    ],
-    "devDependencies": {
-    },
-    "dependencies": {
-    }
+  "name": "Attack Online",
+  "version": "0.1.0",
+  "authors": [
+    "daskleinesys <thomas.schagerl@gmx.net>"
+  ],
+  "description": "Boardgame Attack played online",
+  "main": "Gruntfile.js",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~2.2.0"
+  },
+  "dependencies": {
+    "requirejs": "~2.1.22"
+  }
 }
