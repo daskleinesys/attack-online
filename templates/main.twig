@@ -9,8 +9,11 @@
         {% include 'partials/head.twig' %}
     </head>
     <body id="top" class="layout_1">
-        <h1>Attack Online</h1>
-        <p>Hello World</p>
+        {% include 'partials/header.twig' %}
+
+        <section id="global">
+            {% include 'partials/nav.twig' %}
+        </section>
         
         {% include 'partials/footer.twig' %}
     </body>

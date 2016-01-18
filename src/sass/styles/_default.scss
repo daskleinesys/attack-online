@@ -169,6 +169,11 @@ header {
 	background-color: black;
 	padding: 0px;
 }
+header h1 {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
 div.login table {
 	width: 128px;
 	height: 57px;
