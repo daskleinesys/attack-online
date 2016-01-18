@@ -5,5 +5,8 @@
 
 ## Setup
 
-> TODO : how to setup
- 
+1. get sources from github (https://github.com/daskleinesys/atton)
+2. create database + user
+3. create tables in database (use dump in **mysqldumps/create.sql**)
+4. create **php/defines/local_configuration.php** from **php/defines/local_configuration_sample.php**
+5. have fun :-)
