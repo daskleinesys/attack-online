@@ -1,0 +1,51 @@
+<!-- BEGIN: main -->
+	
+	<h1>Startfelder wählen</h1>
+	<!-- BEGIN: startcountries -->
+		<p>Hier können die Startfelder ausgwählt werden. Je nach Gruppe kann eine unterschiedliche Anzahl an Ländern gewählt werden.</p>
+		
+		<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}" class="moves">
+		
+			<ul>
+				<!-- BEGIN: option_type -->
+				<li>
+					<strong>je {opttype.countries} Land/Länder wählen // {opttype.units} Einheiten pro Typ und Land</strong>
+						<!-- BEGIN: select -->
+						<ul>
+							<!-- BEGIN: option -->
+							<li>
+								<label><input type="checkbox" value="{country.id_area}" id="area_{country.id_area}" name="countries_{option_number}[]" {checked} {disabled}>{country.nr} {country.name}</label>
+							</li>
+							<!-- END: option -->
+							<li>---</li>
+						</ul>
+						<!-- END: select -->
+				</li>
+				<!-- END: option_type -->
+				
+				<!-- BEGIN: warning -->
+				<li>
+					<p class="error">Achtung!<br />Wenn du bestätigst werden alle bereits gesetzten Schiffe gelöscht und müssen erneut gesetzt werden.</p>
+				</li>
+				<!-- END: warning -->
+			</ul>
+		
+			<!-- BEGIN: submit -->
+			<input type="submit" name="selectstart" value="Bestätigen" />
+			<!-- END: submit -->
+			
+			<!-- BEGIN: fixate -->
+			<hr>
+			<h2>Zug beenden</h2>
+			<p>Achtung, wenn du den folgenden Knopf drückst werden die Startfelder fixiert und du kannst sie nicht mehr ändern. Erst wenn alle Spieler diesen Zug beendet haben startet das Spiel.</p>
+			<input type="submit" name="fixate_start" value="Beenden" />
+			<!-- END: fixate -->
+			
+		</form>
+	<!-- END: startcountries -->
+	
+	<!-- BEGIN: nextphase -->
+		<div class="error">Die Länder wurden bereits vergeben. Bitte wählen Sie jetzt Ihre Flotte.</div>
+	<!-- END: nextphase -->
+	
+<!-- END: main -->

@@ -1,0 +1,49 @@
+<!-- BEGIN: main -->
+
+	<!-- BEGIN: game -->
+		<p>Wollen Sie wirklich folgendem Spiel beitreten?</p>
+		
+		<table>
+			<tr><td>Name:</td><td>{gameinfo.name}</td></tr>
+			<tr><td>Ersteller:</td><td>{gameinfo.creator}</td></tr>
+			
+			<!-- BEGIN: player -->
+			<tr><td>Mitspieler:</td><td>{player_login}</td></tr>
+			<!-- END: player -->
+			<form method="post" action="{PHP._SERVER.PHP_SELF}?content=joingame">
+			<tr>
+				<td>Farbe wählen:</td>
+				<td>
+					<select name="color" size="1">
+					<!-- BEGIN: color -->
+						<option value="{color.id}" name="color">{color.color}</option>
+					<!-- END: color -->
+					</select>
+				</td>
+			</tr>
+			<!-- BEGIN: password -->
+			<tr>
+				<td>Passwort:</td>
+				<td>
+					<input type="password" value="" name="password" />
+				</td>
+			</tr>
+			<!-- END: password -->
+			<tr>
+			<td>
+				
+				<input type="submit" value="Beitreten" name="join" />
+				<input type="hidden" value="{gameinfo.id}" name="id_game">
+			</td>
+			</form>
+			<td>
+				<form method="post" action="{PHP._SERVER.PHP_SELF}?content=games">
+				<input type="submit" value="Abbrechen" name="abort" />
+				</form>
+			</td>
+			</tr>
+		</table>
+		
+	<!-- END: game -->
+
+<!-- END: main -->

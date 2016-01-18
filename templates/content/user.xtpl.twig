@@ -1,0 +1,114 @@
+<!-- BEGIN: main -->
+
+	
+	<!-- BEGIN: deleted -->
+		<p>
+		
+		<!-- BEGIN: user -->
+		Benutzer <strong>{user_login}</strong> erfolgreich gel&ouml;scht<br />
+		<!-- END: user -->
+		
+		<a href="{PHP._SERVER.PHP_SELF}?content=user">Zur&uuml;ck</a></p>
+	<!-- END: deleted -->
+	
+	<!-- BEGIN: delete -->
+			<p>Wollen Sie wirklich folgende(n) Benutzer l&ouml;schen?</p>
+			<form method="post" action="{PHP._SERVER.PHP_SELF}?content=user">
+			<table>
+				<tr>
+					<th></th>
+					<th>id</th>
+					<th>vorname</th>
+					<th>nachname</th>
+					<th>login</th>
+					<th>email</th>
+					<th>status</th>
+				<tr>
+				
+				<!-- BEGIN: user -->
+				<tr>
+					<td><input type="checkbox" name="action[]" value="{user.id}" checked="checked"></td>
+					<td>{user.id}</td>
+					<td>{user.name}</td>
+					<td>{user.lastname}</td>
+					<td>{user.login}</td>
+					<td>{user.email}</td>
+					<td>{user.status}</td>
+				</tr>
+				<!-- END: user-->
+				
+			</table>
+			<p>
+				<input type="submit" value="L&ouml;schen" name="affirmate_delete" />
+				<input type="submit" value="Abbrechen" name="abort" />
+			</p>
+				<input type="hidden" name="criteria" value="{criteria}" />
+				<input type="hidden" name="updown" value="{updown}" />
+			</form>
+
+	<!-- END: delete -->
+
+	<h1>User &Uuml;bersicht</h1>
+	<form method="post" action="{PHP._SERVER.PHP_SELF}?content=user">
+		<table>
+			<tr>
+				<th></th>
+				<th>id</th>
+				<th>vorname</th>
+				<th>nachname</th>
+				<th>login</th>
+				<th>email</th>
+				<th>status</th>
+			</tr>
+			
+			<!-- BEGIN: user -->
+			<tr>
+				<!-- BEGIN: box -->
+				<td><input type="checkbox" name="action[]" value="{user.id}" {checked}></td>
+				<!-- END: box -->
+				<!-- BEGIN: nobox -->
+				<td></td>
+				<!-- END: nobox -->
+				<td>{user.id}</td>
+				<td>{user.name}</td>
+				<td>{user.lastname}</td>
+				<td>{user.login}</td>
+				<td>{user.email}</td>
+				<td>{user.status}</td>
+			</tr>
+			<!-- END: user-->
+			
+		</table>
+		
+		<p>
+		<input type="submit" name="checked" value="alle"> <input type="submit" name="unchecked" value="keine"> markierte User: 
+		<input type="image" name="activate" value="activate" src="./images/activate.gif" /> 
+		<input type="image" name="deactivate" value="deactivate" src="./images/deactivate.gif" /> 
+		<input type="image" name="set_moderator" value="set_moderator" src="./images/moderator.gif" /> 
+		<input type="image" name="set_admin" value="set_admin" src="./images/admin.gif" /> 
+		<input type="image" name="delete" value="delete" src="./images/delete.gif" />
+		</p>
+		
+		<input type="hidden" name="criteria" value="{criteria}" />
+		<input type="hidden" name="updown" value="{updown}" />
+	</form>
+	<form method="post" action="{PHP._SERVER.PHP_SELF}?content=user">
+		<p>Sortierung:
+		<select name="criteria" size="1">
+			<option value="id" {selected_id}>id</option>
+			<option value="name" {selected_name}>vorname</option>
+			<option value="lastname" {selected_lastname}>nachname</option>
+			<option value="login" {selected_login}>login</option>
+			<option value="email" {selected_email}>email</option>
+			<option value="status" {selected_status}>status</option>
+		</select>
+		<select name="updown" size="1">
+			<option value="asc" {selected_asc}>aufsteigend</option>
+			<option value="desc" {selected_desc}>absteigend</option>
+		</select>
+		<input type="submit" name="sort" value="Go" /><br />
+		<a href="{PHP._SERVER.PHP_SELF}?content=user">Sortierung aufheben</a>
+		</p>
+	</form>
+
+<!-- END: main -->

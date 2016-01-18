@@ -1,0 +1,123 @@
+<!-- BEGIN: main -->
+
+	<!-- BEGIN: error -->
+	<p class="error">{error_msg}</p>
+	<!-- END: error -->
+
+	<!-- BEGIN: deleted -->
+		<p>
+		
+		<!-- BEGIN: games -->
+		Spiel <strong>{game_name}</strong> erfolgreich gel&ouml;scht<br />
+		<!-- END: games -->
+		
+		</p>
+	<!-- END: deleted -->
+	
+	<!-- BEGIN: delete -->
+			<p>Wollen Sie wirklich folgende(s) Spiel(e) l&ouml;schen?</p>
+			<form method="post" action="{PHP._SERVER.PHP_SELF}?content=gamesmod">
+			<table>
+				<tr>
+					<th></th>
+					<th>id</th>
+					<th>name</th>
+					<th>spieler</th>
+					<th>max.</th>
+					<th>ersteller</th>
+					<th>status</th>
+				<tr>
+				
+				<!-- BEGIN: games -->
+				<tr>
+					<td><input type="checkbox" name="action[]" value="{games.id}" checked="checked"></td>
+					<td>{games.id}</td>
+					<td>{games.name}</td>
+					<td>{games.players}</td>
+					<td>{games.maxplayers}</td>
+					<td>{games.creator}</td>
+					<td>{games.status}</td>
+				</tr>
+				<!-- END: games-->
+				
+			</table>
+			<p>
+				<input type="submit" value="L&ouml;schen" name="affirmation" />
+				<input type="submit" value="Abbrechen" name="abort" />
+			</p>
+				<input type="hidden" name="criteria" value="{criteria}" />
+				<input type="hidden" name="updown" value="{updown}" />
+				<input type="hidden" name="gamesmod_action" value="1" />
+			</form>
+
+	<!-- END: delete -->
+
+	<h1>Spiele &Uuml;bersicht</h1>
+	<form method="post" action="{PHP._SERVER.PHP_SELF}?content=gamesmod">
+		<table class="gamesmod fullwidth">
+			<tr>
+				<th></th>
+				<th>id</th>
+				<th>name</th>
+				<th>spieler</th>
+				<th>max.</th>
+				<th>ersteller</th>
+				<th>status</th>
+				<th>momentane phase</th>
+				<th>neu</th>
+				<th>laufend</th>
+				<th>fertig</th>
+				<th>del.</th>
+			</tr>
+			
+			<!-- BEGIN: games -->
+			<tr>
+				<td><input type="checkbox" name="action[]" value="{games.id}" {checked}></td>
+				<td>{games.id}</td>
+				<td>{games.name}</td>
+				<td>{games.players}</td>
+				<td>{games.maxplayers}</td>
+				<td>{games.creator}</td>
+				<td>{games.status}</td>
+				<td>{games.phase}</td>
+				<td class="button" align="center" valign="center"><input type="image" value="{games.id}" name="new" src="./images/new.gif" /></td>
+				<td class="button" align="center" valign="center"><input type="image" value="{games.id}" name="running" src="./images/running.gif" /></td>
+				<td class="button" align="center" valign="center"><input type="image" value="{games.id}" name="done" src="./images/done.gif" /></td>
+				<td class="button" align="center" valign="center"><input type="image" value="{games.id}" name="delete" src="./images/delete.gif" /></td>
+			</tr>
+			<!-- END: games-->
+		</table>
+		<p>
+			markierte Spiele: 
+			<input type="image" name="new_multiple" value="marked" src="./images/new.gif" /> 
+			<input type="image" name="running_multiple" value="marked" src="./images/running.gif" /> 
+			<input type="image" name="done_multiple" value="marked" src="./images/done.gif" /> 
+			<input type="image" name="delete_multiple" value="marked" src="./images/delete.gif" />
+		</p>
+		<input type="hidden" name="criteria" value="{criteria}" />
+		<input type="hidden" name="updown" value="{updown}" />
+		<input type="hidden" name="gamesmod_action" value="1" />
+	</form>
+	
+	<!--
+	<form method="post" action="{PHP._SERVER.PHP_SELF}?content=gamesmod">
+		<p>Sortierung:
+		<select name="criteria" size="1">
+			<option value="id" {selected_id}>id</option>
+			<option value="name" {selected_name}>name</option>
+			<option value="players" {selected_players}>spieler</option>
+			<option value="maxplayers" {selected_maxplayers}>max. spieler</option>
+			<option value="creator" {selected_creator}>ersteller</option>
+			<option value="status" {selected_status}>status</option>
+		</select>
+		<select name="updown" size="1">
+			<option value="asc" {selected_asc}>aufsteigend</option>
+			<option value="desc" {selected_desc}>absteigend</option>
+		</select>
+		<input type="submit" name="sort" value="Go" /><br />
+		<a href="{PHP._SERVER.PHP_SELF}?content=gamesmod">Sortierung aufheben</a>
+		</p>
+	</form>
+	-->
+	
+<!-- END: main -->

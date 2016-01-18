@@ -1,0 +1,245 @@
+<!-- BEGIN: main -->
+<!DOCTYPE "html">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Attck Online Karte</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script src="js/atton.js" type="text/javascript"></script>
+</head>
+
+<body onload="draginit()">
+	<div class="map" id="small_map">
+		<!-- BEGIN: infobox_float -->
+		<div class="infobox_float" id="infobox_float_{country.ctrnr}" style="{horizontal_align}" onmousedown="dragstart(this)">
+					<table>
+						<tr>
+							<th>{country.country}</th><th>{country.ctrnr}</th>
+						</tr>
+						<!-- BEGIN: user -->
+						<tr>
+							<td>{user}</td><td align="center">{country.tank}</td>
+						</tr>
+						<!-- END: user -->
+						<!-- BEGIN: resource -->
+						<tr>
+							<th>{country.resource}</th><th>{country.prod}</th>
+						</tr>
+						<!-- END: resource -->
+						
+							<!-- BEGIN: unit -->
+							<tr>
+								<td>{country.unit}:</td><td>{country.unr}</td>
+							</tr>
+							<!-- END: unit -->
+							<tr><th colspan="2"></th></tr>
+							<!-- BEGIN: ship -->
+							<tr>
+								<td>{country.unit}</td><td>{country.shipname}</td>
+							
+							
+								<!-- BEGIN: coast -->
+								
+								<td>{country.coast}</td><td>{country.coastnr}</td>
+								
+								<!-- END: coast -->
+							</tr>
+							<!-- END: ship -->
+							<!-- BEGIN: shipatsea -->
+							<tr>
+								<td>{country.shipclass_atsea}</td><td>{country.shipname_atsea}</td>
+								<!-- BEGIN: otheruser -->
+								<td>{country.ships_user}</td>
+								<!-- END: otheruser -->
+							</tr>
+							<!-- END: shipatsea -->
+						
+						<!-- BEGIN: options -->
+							<tr>
+								<td>Einheiten je Typ</td><td>{units}</td>
+							</tr>
+							<tr>
+								<td>Option</td><td>{options}</td>
+							</tr>
+							<tr>
+								<td>L&auml;nder</td><td>{countries}</td>
+							</tr>
+						<!-- END: options -->
+						
+						<!-- BEGIN: traderoute -->
+							<tr>
+								<th>Handelsrouten</th>
+							</tr>
+								<!-- BEGIN: area1 -->
+								<tr>
+									<td>{country.TR_area1_name}</td><td>{country.TR_area1}</td>
+								</tr>
+								<!-- END: area1 -->
+								<!-- BEGIN: area2 -->
+								<tr>
+									<td>{country.TR_area2_name}</td><td>{country.TR_area2}</td>
+								</tr>
+								<!-- END: area2 -->
+						<!-- END: traderoute -->
+						
+					</table>
+		</div>
+		<!-- END: infobox_float -->
+		
+		<div class="imagemap">
+			<!-- BEGIN: country -->
+			<div class="{area_type}" style="top: {country.postop}px; left: {country.posleft}px; height: {country.height}px; width: {country.width}px; background-image: url(./images/countries/{color}/{country.ctrnr}.gif)" id="{country.ctrnr}" >
+			</div>
+			
+				<div class="infobox" id="infobox_{country.ctrnr}" style="top: {country.postop}px; left: {infobox_posleft}px;">
+					<table>
+						<tr>
+							<th>{country.country}</th><th>{country.ctrnr}</th>
+						</tr>
+						<!-- BEGIN: user -->
+						<tr>
+							<td>{user}</td><td align="center">{country.tank}</td>
+						</tr>
+						<!-- END: user -->
+						<!-- BEGIN: resource -->
+						<tr>
+							<th>{country.resource}</th><th>{country.prod}</th>
+						</tr>
+						<!-- END: resource -->
+						
+							<!-- BEGIN: unit -->
+							<tr>
+								<td>{country.unit}:</td><td>{country.unr}</td>
+							</tr>
+							<!-- END: unit -->
+							<tr><th colspan="2"></th></tr>
+							<!-- BEGIN: ship -->
+							<tr>
+								<td>{country.unit}</td><td>{howmanyships}</td>
+							</tr>
+							<!-- END: ship -->
+							<!-- BEGIN: shipatsea -->
+							<tr>
+								<td>{country.shipclass_atsea}</td><td>{howmanyships_atsea}
+								<!-- BEGIN: otheruser -->
+								 ({howmanyships_atsea_otheruser})
+								<!-- END: otheruser -->
+								</td>
+							</tr>
+							<!-- END: shipatsea -->
+						
+						<!-- BEGIN: options -->
+							<tr>
+								<td>Einheiten je Typ</td><td>{units}</td>
+							</tr>
+							<tr>
+								<td>Option</td><td>{options}</td>
+							</tr>
+							<tr>
+								<td>L&auml;nder</td><td>{countries}</td>
+							</tr>
+						<!-- END: options -->
+						
+						<!-- BEGIN: traderoute -->
+							<tr>
+								<th>Handelsrouten</th>
+							</tr>
+								<!-- BEGIN: area1 -->
+								<tr>
+									<td>{country.TR_area1_name}</td><td>{country.TR_area1}</td>
+								</tr>
+								<!-- END: area1 -->
+								<!-- BEGIN: area2 -->
+								<tr>
+									<td>{country.TR_area2_name}</td><td>{country.TR_area2}</td>
+								</tr>
+								<!-- END: area2 -->
+						<!-- END: traderoute -->
+						
+					</table>
+				</div>
+				<!-- BEGIN: resourceimg -->
+				<div class="resource" style="top: {country.yres}px; left: {country.xres}px;" id="resource_{country.ctrnr}">
+					<img src="./images/resources/{country.res_label}{country.prod}.gif" class="resource" alt="" />
+				</div>
+				<!-- END: resourceimg -->
+				<!-- BEGIN: tankimg -->
+				<div class="tank" style="top: {country.yres}px; left: {country.xres}px;" id="tank_{country.ctrnr}">
+					<img src="./images/tank{country.tank}.gif" class="tank" alt="" />
+				</div>
+				<!-- END: tankimg -->
+				<!-- BEGIN: traderouteimg -->
+				<div class="traderoute" style="top: {country.yres}px; left: {country.xres}px;" id="traderoute_{country.ctrnr}">
+					<img src="./images/traderoute.gif" class="traderoute" alt="" />
+				</div>
+				<!-- END: traderouteimg -->
+				<!-- BEGIN: unitimg -->
+				<div class="units" style="top: {country.yres}px; left: {country.xres}px;" >
+					<!-- BEGIN: landunits -->
+					<div class="landunits" id="landunit_{country.ctrnr}">
+						<img src="./images/units/land/{unitCount}.gif" class="landunits" alt="" />
+					</div>
+					<!-- END: landunits -->
+					<!-- BEGIN: seaunits -->
+					<div class="seaunits" id="seaunit_{country.ctrnr}">
+						<img src="./images/units/sea/{shipCount}.gif" class="{seaunits}" alt="" />
+					</div>
+					<!-- END: seaunits -->
+				</div>
+				<!-- END: unitimg -->
+			<!-- END: country -->
+			
+			<div class="transparent">
+				<img src="./images/transparent.gif" width="1000" height="400" border="0" alt="map" usemap="#imagemap" class="imagemap" />
+				<map name="imagemap">
+					<!-- BEGIN: country_imagemap -->
+					<area shape="poly" coords="{country.coords}" href="#" alt="{country.country}" title="{country.country}" onmouseover="javascript:HighlightSingleCountry({country.ctrnr})" onmouseout="javascript:ClearHighlightSingleCountry({country.ctrnr})" onClick="HighlightMultipleCountries({country.ctrnr}, new Array({adjacentCountries}))" />
+					<!-- END: country_imagemap -->
+
+				</map>
+			</div>
+
+			
+		</div>
+
+				<div class="caption">
+				<p><img src="./images/resources/population1.gif"> = Population  <img src="./images/resources/transport1.gif"> = Transport  <img src="./images/resources/minerals1.gif"> = Mineralien  <img src="./images/resources/industry1.gif"> = Industrie  <img src="./images/resources/oil1.gif"> = &Ouml;l</p>
+				<p><img src="./images/units/land/1.gif"> = Landeinheiten  <img src="./images/units/sea/1.gif"> = Seeeinheiten <br />Ab 50 Land- oder 30 Seeeinheiten wird ein + angezeigt.</p>
+				<p><img src="./images/traderoute.gif" /> = dieses Land besitzt eine Handelsroute</p>
+				</div>
+			
+			<div>
+				<form action="#" method="post">
+				<table class="display_java">
+					<tr><th colspan="2">Anzeige</th></tr>
+					<tr>
+					<td align="right">Ressourcen</td>
+					<td><input type="radio" name="display" onchange="toggleResources(143)" checked="checked" /></td>
+					</tr>
+					<tr>
+					<td align="right">&Ouml;l-Tanks</td>
+					<td><input type="radio" name="display" onchange="toggleTank(143)" /></td>
+					</tr>
+					<tr>
+					<td align="right">Handelsrouten</td>
+					<td><input type="radio" name="display" onchange="toggleTraderoutes(143)" /></td>
+					</tr>
+					<tr>
+					<td align="right">Landeinheiten</td>
+					<td><input type="radio" name="display" onchange="toggleLandUnits(143)" /></td>
+					</tr>
+					<tr>
+					<td align="right">Seeeinheiten</td>
+					<td><input type="radio" name="display" onchange="toggleSeaUnits(143)" /></td>
+					</tr>
+					<tr>
+					<td align="right">nur L&auml;nder</td>
+					<td><input type="radio" name="display" onchange="clearDisplay(143)" /></td>
+					</tr>
+				</table>
+				</form>
+			</div>
+	</div>
+</body>
+</html>
+<!-- END: main -->

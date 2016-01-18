@@ -1,0 +1,89 @@
+<!-- BEGIN: main -->
+
+	<h1>Profil-Einstellungen</h1>
+	<h2>Spiel-spezifische Einstellungen</h2>
+	<h3>Benachrichtigung bei Phasen-Ende</h3>
+	<p>Hier k&ouml;nnen Sie einstellen, ob Sie per Mail benachrichtigt werden wollen, wenn eine Phase beendet wurde.</p>
+	
+	
+	<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
+		<table width="589">
+		<colgroup>
+			<col width="100" span="1"/>
+
+		</colgroup>
+			<tr>
+				<th>Spiel</th>
+				<!-- BEGIN: phase -->
+				<th>{phase}</th>
+				<!-- END: phase -->
+			</tr>
+			<!-- BEGIN: game -->
+			<tr>
+				<td>
+					{game_name}
+					<input type="hidden" name="games[]" value="{id_game}" />
+				</td>
+				<!-- BEGIN: phase -->
+				<td class="center">
+					<select name="{id_game}_{id_phase}" size="1">
+						<option value="1" name="yes" {yes_selected}>Ja</option>
+						<option value="0" name="no" {no_selected}>Nein</option>
+					</select>
+				</td>
+				<!-- END: phase -->
+			</tr>
+			<!-- END: game -->
+		</table>
+		<br />
+		<table width="589">
+		<colgroup>
+			<col width="100" span="1"/>
+		</colgroup>
+			<tr>
+				<td>default</td>
+				<!-- BEGIN: standard_phase -->
+				<td class="center">
+					<select name="0_{id_phase}" size="1">
+						<option value="1" name="yes" {yes_selected}>Ja</option>
+						<option value="0" name="no" {no_selected}>Nein</option>
+					</select>
+				</td>
+				<!-- END: standard_phase -->
+			</tr>
+
+		</table>
+		<!-- BEGIN: gameids -->
+		<input type="hidden" name="game_ids[]" value="{game.id_game}" />
+		<!-- END: gameids -->
+		<p><input type="submit" value="Best&auml;tigen" name="submit_message_rules" /></p>
+	</form>
+	
+	<hr>
+	<h3>Quick-Infos &uuml;ber der Karte</h3>
+	<p>Hier k&ouml;nnen sie einstellen, welche Informationen Sie in einer Leiste &uuml;ber der Karte angezeigt haben wollen</p>
+	<p class="error">Noch nicht aktiv!</p>
+
+	<h2>Account-spezifische Einstellungen</h2>
+	<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}#account">
+		<p><a name="account"></a>
+		Hier k&ouml;nnen Sie Ihre Daten einsehen und Ihre E-Mail-Adresse oder Ihr Passwort &auml;ndern.
+		<table>
+			<tr><td>Vorname:</td><td>{user.name}</td></tr>
+			<tr><td>Nachname:</td><td>{user.lastname}</td></tr>
+			<tr><td>E-Mail:</td><td>{user.email}</td></tr>
+			<tr><td>Username:</td><td>{user.login}</td></tr>
+		</table>
+		<br />
+		<table>
+			<tr><td>E-Mail:</td><td><input type="text" id="email" name="email" value="{user_email}" maxlength="40" size="40" /></td></tr>
+			<tr><td>Neues Passwort:</td><td><input type="password" id="password1" name="password1" maxlength="40" size="40" /></td></tr>
+			<tr><td>Neues Passwort wiederholen:</td><td><input type="password" id="password2" name="password2" maxlength="40" size="40" /></td></tr>
+			<tr><td>Passwort:</td><td><input type="password" id="password" name="password" maxlength="40" size="40" /></td></tr>
+			<tr><td><input type="submit" value="&Auml;ndern" name="change_account_data" /></td></tr>
+		</table>
+		</p>
+	</form>
+	
+
+<!-- END: main -->

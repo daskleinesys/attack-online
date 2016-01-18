@@ -1,0 +1,96 @@
+<!-- BEGIN: main -->
+
+	<h1>Landz&uuml;ge</h1>
+
+		
+		<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
+		<table>
+			<colgroup>
+				<col span="2"/>
+				<col span="4"/>
+				<col />
+			</colgroup>
+			
+			<tr>
+				<th>Startfeld</th>
+				<th>Zielfeld</th>
+				<!-- BEGIN: unit -->
+				<th>{abbr}</th>
+				<!-- END: unit -->
+				<th></th>
+			</tr>
+			
+			<!-- BEGIN: move -->
+			<tr>
+				<td>{move.start}</td>
+				<td>{move.destination}</td>
+				<!-- BEGIN: unit -->
+				<td class="center">{count}</td>
+				<!-- END: unit -->
+				<td class="button">
+					<!-- BEGIN: delete -->
+					<button type="submit" value="{move.id}" name="delete"><img src="./images/delete.gif" alt="delete_mvoe" /></button>
+					<!-- END: delete -->
+				</td>
+			</tr>
+			<!-- END: move -->
+			
+			<!-- BEGIN: newmove -->
+			<tr>
+				<td>
+					<select name="start" size="1">
+						<option value="">Land wählen</option>
+						<!-- BEGIN: startarea -->
+						<option value="{area.idzarea}" {selected}>{area.number} {area.name}</option>
+						<!-- END: startarea -->
+						
+					</select>
+				</td>
+				
+				<td>
+					<select name="destination" size="1">
+						<option value="">Land wählen</option>
+						<!-- BEGIN: destinationarea -->
+						<option value="{area.idzarea}" {selected}>{area.number} {area.name}</option>
+						<!-- END: destinationarea -->
+					</select>
+				</td>
+				
+				<!-- BEGIN: unit -->
+				<td class="center">
+					<input class="number" type="number" name="{abbr}" value="0" min="0" max="99" />
+				</td>
+				<!-- END: unit -->
+				
+				<td>
+					<input type="submit" name="newmove" value="+" />
+				</td>
+			</tr>
+			<!-- END: newmove -->
+			
+		</table>
+		</form>
+	
+		<!-- BEGIN: notactualphase -->
+		<p class="error"><small>Achtung, dies ist nicht die aktuelle Phase.<br />Es könnte sein, dass ihr eure Züge noch vor dem Ende dieser Runde ändern wollt, um euch auf unvorhergesehene Züge der Mitspieler einzustellen.</small></p>
+		<!-- END: notactualphase -->
+		
+		<p>
+			<!-- BEGIN: unitdescription -->
+			{abbr} = {unit}<br/>
+			<!-- END: unitdescription -->
+		</p>
+	
+		<hr />
+		
+		<!-- BEGIN: fixate -->
+		<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
+		<h2>Zug beenden</h2>
+		<p>Achtung, wenn du den folgenden Knopf drückst wird der Landzug fixiert und du kannst ihn nicht mehr ändern. Erst wenn alle Spieler diesen Zug beendet haben erfolgt die Berechnung und das Spiel geht in die nächste Phase.</p>
+		<input type="submit" name="fixate_land_move" value="Beenden" />
+		</form>
+		<!-- END: fixate -->
+		
+		<p><small>Nähere Infos zum Landzug findet ihr <a class="linktext" href="{PHP._SERVER.PHP_SELF}?content=manual&amp;topic=moves&amp;type=land">hier</a>. (Angreifen neutraler Länder, Angriffsbegrenzungen, Kampfsystem, etc.)</small></p>
+
+<!-- END: main -->

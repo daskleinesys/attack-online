@@ -1,0 +1,42 @@
+
+<!-- BEGIN: error_msg -->
+<div id="error">
+	<h1>An Error occurred.</h1>
+	<p>{error_msg}</p>
+	<br />
+	<p><a href="{PHP._SERVER.PHP_SELF}?content=home">Back</a></p>
+</div>
+<!-- END: error_msg -->
+
+<!-- BEGIN: login_error -->
+<div id="loginerror">
+	<p>{error_msg}</p>
+	<p>Username/Password <a href="{PHP._SERVER.PHP_SELF}?content=forgotten" class="linktext">forgotten</a>?</p>
+</div>
+<!-- END: login_error -->
+
+<!-- BEGIN: begin_content -->
+<div class="content">
+<!-- END: begin_content -->
+
+<!-- BEGIN: end_content -->
+</div>
+<!-- END: end_content -->
+
+<!-- BEGIN: content_error -->
+<div id="error">
+	<p>{error_msg}</p>
+</div>
+<!-- END: content_error -->
+
+<!-- BEGIN: content_info -->
+<div id="content_info">
+	<p>{msg}</p>
+</div>
+<!-- END: content_info -->
+
+<!-- BEGIN: game_info -->
+<div class="showmoves">
+	<p><strong>{game.name}</strong><br /><small>(Runde {game.round} / {game.phase})<br /><a href="map.php" target="_blank" class="linktext">Karte</a></small></p>
+</div>
+<!-- END: game_info -->
