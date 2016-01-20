@@ -1,5 +1,4 @@
 <?php
-
 namespace AttOn\Model\DataBase;
 
 class DataSource {
@@ -15,7 +14,7 @@ class DataSource {
 	// predefined SQL queries
 	private $stmts_predefined = array();
 	private $stmts_predefined_queries = array();
-	
+
 	// info which queries are game specific
 	private $game_specific_queries = array();
 
@@ -30,7 +29,7 @@ class DataSource {
 		}
 		return self::$singleton_instance;
 	}
-	
+
 	/**
 	 * return singleton_instance, create it first if it hasn't been yet
 	 * Singleton() == getInstance()
@@ -71,7 +70,7 @@ class DataSource {
 	public function commit() {
 		$this->dbh->commit();
 	}
-	
+
 	/**
 	 * rolls back a running transaction
 	 * @throws PDOException - if no transaction active
@@ -82,7 +81,7 @@ class DataSource {
 	}
 
 	/**
-	 * 
+	 *
 	 * load queries (used by SQL class which fills this class)
 	 * @param $prep_stmt string (identifier for query)
 	 * @param $sql string (sql statement)
@@ -99,7 +98,7 @@ class DataSource {
 		$this->stmts_predefined_queries[$prep_stmt] = $sql;
 		if ($game_specific) $this->game_specific_queries[] = $prep_stmt;
 	}
-	
+
 	/**
 	 * deletes all game specific predefined queries
 	 * @return void
@@ -121,7 +120,7 @@ class DataSource {
 		if (empty($this->stmts_predefined[$prep_stmt])) {
 			$this->prepare_predefined_query($prep_stmt);
 		}
-		
+
 		$this->stmts_predefined[$prep_stmt]->execute($dictionary);
 
 		if (!$this->checkPredefErrors($prep_stmt)) {
@@ -130,7 +129,7 @@ class DataSource {
 
 		return $this->stmts_predefined[$prep_stmt]->fetchAll(PDO::FETCH_ASSOC);
 	}
-	
+
 
 	/**
 	 * executes a prepared statement
@@ -142,7 +141,7 @@ class DataSource {
 	public function epp($prep_stmt,$dictionary = NULL) {
 		return self::execute_predefined_prepare($prep_stmt,$dictionary);
 	}
-	
+
 	/**
 	 * returns the id of the last row inserted
 	 * @return int

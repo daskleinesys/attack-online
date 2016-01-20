@@ -1,13 +1,13 @@
 <header>
     <h1>Attack Online</h1>
     <div class="login">
-        {% if (loggedInd) %}
+        {% if (user.loggedIn) %}
         {# --- START --- logout-form --- #}
         <form method="post" action="{{absRefPrefix}}">
             <table class="logout">
                 <tr>
                     <td>
-                        <p>{user_name}</p>
+                        <p>{{user.login}}</p>
                     </td>
                 </tr>
                 <tr>
@@ -15,21 +15,21 @@
                         <p id="logout">(<a href="logout.php" class="linktext">Log Out</a>)</p>
                     </td>
                 </tr>
-                
-                {% if (inactive) %}
+
+                {% if (user.status == 'inactive') %}
                 <tr>
                     <td>
                         <p class="error">Account inactive</p>
                     </td>
                 </tr>
                 {% endif %}
-                
+
                 <tr>
                     <td>
                         <select name="select_game" size="1" onchange="submit()">
                             <option value="" class="game" disabled="disabled" selected="selected">Select game</option>
-                            {% for game in games %}
-                            <option value="{game.id}" class="game">{game.name}</option>
+                            {% for game in user.games %}
+                            <option value="{{game.id}}" class="game">{{game.name}}</option>
                             {% endfor %}
                         </select>
                     </td>
@@ -44,7 +44,7 @@
             <table class="login">
                     <tr><td>
                         <p>
-                            <input type="text" id="username" name="username" value="{user_username}" maxlength="15" size="20" />
+                            <input type="text" id="username" name="username" value="{{ (user.name) ? user.name : 'username' }}" maxlength="15" size="20" />
                         </p>
                     </td></tr>
                     <tr><td>

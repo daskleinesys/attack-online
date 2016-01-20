@@ -9,8 +9,9 @@ if ($debug) {
 }
 $nomerge = isset($_REQUEST['no_merge']) || isset($_REQUEST['nomerge']) ? true : false;
 
-// SETUP TIMEZONE
+// SETUP PHP
 date_default_timezone_set('Europe/Vienna');
+session_start();
 
 // LOADING FRAMEWORKS
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
