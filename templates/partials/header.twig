@@ -3,7 +3,7 @@
     <div class="login">
         {% if (user.loggedIn) %}
         {# --- START --- logout-form --- #}
-        <form method="post" action="{{absRefPrefix}}">
+        <form method="post" action="{{absRefPrefix}}logout/">
             <table class="logout">
                 <tr>
                     <td>
@@ -39,7 +39,7 @@
         {# --- END --- logout-form --- #}
         {% else %}
         {# --- START --- login-form --- #}
-        <form method="post" action="{{absRefPrefix}}">
+        <form method="post" action="{{absRefPrefix}}login/">
             <input type="hidden" name="login_action_required" />
             <table class="login">
                     <tr><td>
