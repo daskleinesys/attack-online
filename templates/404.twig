@@ -6,11 +6,19 @@
 <!--[if (gt IE 9)|!(IE)]><!-->
 <html class="no-js" lang="de" dir="ltr"><!--<![endif]-->
     <head>
-        {% include 'partials/head/default.twig' %}
+        {% include 'partials/head.twig' %}
     </head>
     <body id="top" class="layout_1">
-        <h1 role="alert">Seite nicht gefunden.</h1>
-        
+        {% include 'partials/header.twig' %}
+
+        <section id="global">
+            {% include 'partials/nav.twig' %}
+
+            <div class="content">
+                <h1 role="alert">404 : Seite nicht gefunden.</h1>
+            </div>
+        </section>
+
         {% include 'partials/footer.twig' %}
     </body>
 </html>
