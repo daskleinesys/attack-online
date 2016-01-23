@@ -1,3 +1,4 @@
-<?php 
-class UserAdministrationException extends Exception {}
-?>
+<?php
+namespace AttOn\Exceptions;
+
+class UserAdministrationException extends \Exception {}

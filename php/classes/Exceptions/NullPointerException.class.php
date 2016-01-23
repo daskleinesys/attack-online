@@ -1,3 +1,4 @@
-<?php 
-class NullPointerException extends Exception {}
-?>
+<?php
+namespace AttOn\Exceptions;
+
+class NullPointerException extends \Exception {}

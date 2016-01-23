@@ -1,3 +1,4 @@
-<?php 
-class JoinUserException extends Exception {}
-?>
+<?php
+namespace AttOn\Exceptions;
+
+class JoinUserException extends \Exception {}

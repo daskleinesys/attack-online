@@ -1,3 +1,4 @@
-<?php 
-class SessionException extends Exception {}
-?>
+<?php
+namespace AttOn\Exceptions;
+
+class SessionException extends \Exception {}

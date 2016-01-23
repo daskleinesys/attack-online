@@ -3,7 +3,7 @@ namespace AttOn;
 
 $app->post('/login/', function() use ($app, $debug) {
 
-    Controller\User\UserActions::login();
+    Controller\User\UserActions::login('username', 'password', false);
 
     // TODO : check if correct login data
     echo 'TODO : check if correct login data';

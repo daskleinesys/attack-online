@@ -1,5 +1,7 @@
 <?php
 namespace AttOn\Model\User;
+use AttOn\Model\DataBase\DataSource;
+use AttOn\Exceptions;
 
 class ModelUser {
 
@@ -35,7 +37,7 @@ class ModelUser {
 
 		// fill user data
 		if (!$this->fill_member_vars()) {
-            throw new NullPointerException('User not found.');
+            throw new Exceptions\NullPointerException('User not found.');
         }
 	}
 
@@ -91,7 +93,7 @@ class ModelUser {
 		// query user
 		try {
 			$result = DataSource::Singleton()->epp($query,$dict);
-		} catch (DataSourceException $ex) {
+		} catch (Exceptions\DataSourceException $ex) {
 			throw $ex;
 		}
 
@@ -121,7 +123,7 @@ class ModelUser {
 	public static function create($name, $lastname, $login, $password, $email, $verify) {
 		// check if login-name is taken
 		$result = DataSource::Singleton()->epp('check_if_login_exists',array(':login' => $login));
-		if (!empty($result)) throw new UserCreationException('Username already taken.');
+		if (!empty($result)) throw new Exceptions\UserCreationException('Username already taken.');
 
 		$data = array();
 		$data[':name'] = $name;
@@ -133,7 +135,7 @@ class ModelUser {
 		try {
 			DataSource::Singleton()->epp('create_new_user',$data);
 		} catch (DataSourceException $ex) {
-			throw new GameCreationException('Unexpected error. Please try again.');
+			throw new Exceptions\GameCreationException('Unexpected error. Please try again.');
 		}
 
 		// create user
@@ -159,7 +161,7 @@ class ModelUser {
 		$result = DataSource::Singleton()->epp('check_user_login',array(':username' => $user_name, ':password' => $password));
 
 		if (empty($result)) {
-            throw new LoginException('Username/password wrong.');
+            throw new Exceptions\LoginException('Username/password wrong.');
         }
 
         $this->current_user = ModelUser::getUser($result[0]['id']);

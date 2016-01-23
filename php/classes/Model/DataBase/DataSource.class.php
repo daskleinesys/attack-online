@@ -127,7 +127,7 @@ class DataSource {
 			return DATABASE_ERROR;
 		}
 
-		return $this->stmts_predefined[$prep_stmt]->fetchAll(PDO::FETCH_ASSOC);
+		return $this->stmts_predefined[$prep_stmt]->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 

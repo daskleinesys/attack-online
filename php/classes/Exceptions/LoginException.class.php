@@ -1,3 +1,4 @@
-<?php 
-class LoginException extends Exception {}
-?>
+<?php
+namespace Atton\Exceptions;
+
+class LoginException extends \Exception {}

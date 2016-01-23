@@ -1,3 +1,4 @@
-<?php 
-class GameAdministrationException extends Exception {}
-?>
+<?php
+namespace AttOn\Exceptions;
+
+class GameAdministrationException extends \Exception {}

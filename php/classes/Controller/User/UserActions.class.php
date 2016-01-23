@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Controller\User;
+use AttOn\Model\User\ModelUser;
 
 class UserActions {
 
