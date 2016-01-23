@@ -31,7 +31,7 @@ $view->parserExtensions = array(new \Twig_Extension_Debug());
 $view->parserOptions = array('debug' => $debug);
 
 // DEFINE SLIM-ERROR HANDLING
-$app->error(function(\Exception $e) use ($app) {
+$app->error(function(\Exception $e) use ($app, $logger) {
     $logger->error($e->getMessage());
     $app->render('error.twig');
 });

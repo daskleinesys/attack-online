@@ -1,15 +1,7 @@
 <?php
-class UserActions extends ConstrictedController {
-	private $_Logger;
-	
-	/**
-	 * @param int $id_user - id of the user accessing the moderation actions
-	 */
-	public function __construct($id_user) {
-		parent::__construct($id_user);
-		$this->_Logger = Logger::getLogger('UserActions');
-	}
-	
+namespace AttOn\Controller\User;
+
+class UserActions {
 
 	/**
 	 * tries to create a new user, returns a state if error or successfull
@@ -111,7 +103,7 @@ class UserActions extends ConstrictedController {
 		// return state
 		return 1;
 	}
-	
+
 	/**
 	 * logs the user in (setting $_SESSION['user_id']), throws exception if anything happens
 	 * @param string username
@@ -139,7 +131,7 @@ class UserActions extends ConstrictedController {
 
 		// The log-in is OK so set the user ID and username cookies, and redirect to the home page
 		$_SESSION['user_id'] = $_User->getUserId();
-		
+
 		// cookies setzen wenn remember box angekreuzt ist
 		if ($remember) {
 			setcookie('user_id', $_User->getUserId(), time() + (60 * 60 * 24 * 30));
@@ -171,79 +163,15 @@ class UserActions extends ConstrictedController {
 		} catch (Exception $ex) {
 			return 4;
 		}
-		
+
 		// check verification code
 		if ($verification_code != $_User->getVerify()) return 5;
-		
+
 		// activate user (if inactive)
 		if ($_User->getStatus() == STATUS_USER_INACTIVE) $_User->setUserToActive();
 
 		// return state
 		return 1;
-
 	}
 
-	/**
-	 * updates standard notification rules
-	 * @throws NullPointerException
-	 * @param array $rules - dict(int id_phase => bool)
-	 */
-	public function updateStandardIngameNotificationRules($rules) {
-		foreach ($rules as $id_phase => $rule) {
-			ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user,0)->setNotificationRule($id_phase,$rule);
-		}
-	}
-
-	/**
-	 * @throws NullPointerException, ControllerException
-	 * @param array $rules - dict(int id_game => dict(int id_phase => bool))
-	 */
-	public function updateIngameNotificationRules($rules) {
-		foreach ($rules as $id_game => $notif_rules) {
-			if (!$this->checkInGame($id_game)) throw new ControllerException('User not in this game!');
-			foreach ($notif_rules as $id_phase => $rule) {
-				ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user,$id_game)->setNotificationRule($id_phase,$rule);
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * changes email and/or password if given, correct old password needed !
-	 * @param string $email
-	 * @param string $new_password1
-	 * @param string $new_password2
-	 * @param string $password
-	 * @throws ControllerException
-	 * @return boolean - true on success
-	 */
-	public function updateAccountData($email, $new_password1, $new_password2, $password) {
-		if (empty($email) && empty($new_password1) && empty($new_password2)) return false;
-		$new_mail = false;
-		$new_password = false;
-
-		if (!empty($email)) {
-			if (!preg_match("/^([a-zA-Z0-9._%+-]{1,30}@[a-zA-Z0-9.-]{1,30}\.[a-zA-Z]{2,4})?$/",$email)) throw new ControllerException('Invalid E-Mail.');
-			$new_mail = true;
-		}
-
-		if ((!empty($new_password1)) || (!empty($new_password2))) {
-			if ($new_password1 !== $new_password2) throw new ControllerException('New passwords don\'t match.');
-			if (!preg_match("/^([a-zA-Z0-9$%'-]{5,})?$/",$user_password1)) throw new ControllerException('Invalid new password.');
-			$new_password = true;
-		}
-
-		// check password
-		if (empty($password)) throw new ControllerException('Please enter your old password.');
-		if (!preg_match("/^([a-zA-Z0-9$%'-]{5,})?$/",$password)) throw new ControllerException('Invalid password.');
-		
-		// check password
-		$_User = Modeluser::getUser($this->id_user);
-		if (!$_User->checkPassword($password)) throw new ControllerException('Wrong password!');
-
-		if ($new_mail) $_User->setNewEmail($email);
-		if ($new_password) $_User->setNewPassword($new_password1);
-		return true;
-	}
 }
-?>

@@ -1,7 +1,7 @@
 <?php
 class UserAdministration extends ConstrictedController {
 	private $_Logger;
-	
+
 	/**
 	 * @param int $id_user - id of the user accessing the moderation actions
 	 */
@@ -57,6 +57,69 @@ class UserAdministration extends ConstrictedController {
 		foreach ($user_ids as $user) {
 			$this->changeUserState($new_state, $user);
 		}
+	}
+
+	/**
+	 * updates standard notification rules
+	 * @throws NullPointerException
+	 * @param array $rules - dict(int id_phase => bool)
+	 */
+	public function updateStandardIngameNotificationRules($rules) {
+		foreach ($rules as $id_phase => $rule) {
+			ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user,0)->setNotificationRule($id_phase,$rule);
+		}
+	}
+
+	/**
+	 * @throws NullPointerException, ControllerException
+	 * @param array $rules - dict(int id_game => dict(int id_phase => bool))
+	 */
+	public function updateIngameNotificationRules($rules) {
+		foreach ($rules as $id_game => $notif_rules) {
+			if (!$this->checkInGame($id_game)) throw new ControllerException('User not in this game!');
+			foreach ($notif_rules as $id_phase => $rule) {
+				ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user,$id_game)->setNotificationRule($id_phase,$rule);
+			}
+		}
+	}
+
+	/**
+	 *
+	 * changes email and/or password if given, correct old password needed !
+	 * @param string $email
+	 * @param string $new_password1
+	 * @param string $new_password2
+	 * @param string $password
+	 * @throws ControllerException
+	 * @return boolean - true on success
+	 */
+	public function updateAccountData($email, $new_password1, $new_password2, $password) {
+		if (empty($email) && empty($new_password1) && empty($new_password2)) return false;
+		$new_mail = false;
+		$new_password = false;
+
+		if (!empty($email)) {
+			if (!preg_match("/^([a-zA-Z0-9._%+-]{1,30}@[a-zA-Z0-9.-]{1,30}\.[a-zA-Z]{2,4})?$/",$email)) throw new ControllerException('Invalid E-Mail.');
+			$new_mail = true;
+		}
+
+		if ((!empty($new_password1)) || (!empty($new_password2))) {
+			if ($new_password1 !== $new_password2) throw new ControllerException('New passwords don\'t match.');
+			if (!preg_match("/^([a-zA-Z0-9$%'-]{5,})?$/",$user_password1)) throw new ControllerException('Invalid new password.');
+			$new_password = true;
+		}
+
+		// check password
+		if (empty($password)) throw new ControllerException('Please enter your old password.');
+		if (!preg_match("/^([a-zA-Z0-9$%'-]{5,})?$/",$password)) throw new ControllerException('Invalid password.');
+
+		// check password
+		$_User = Modeluser::getUser($this->id_user);
+		if (!$_User->checkPassword($password)) throw new ControllerException('Wrong password!');
+
+		if ($new_mail) $_User->setNewEmail($email);
+		if ($new_password) $_User->setNewPassword($new_password1);
+		return true;
 	}
 }
 ?>

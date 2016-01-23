@@ -3,6 +3,7 @@ namespace AttOn;
 
 $app->get('/', function() use ($app, $debug) {
     // TODO : instanciate controller that checks cookie/session and creates user model if applicable
+    echo 'TODO : instanciate controller that checks cookie/session and creates user model if applicable';
 
     $user = Model\User\ModelUser::getCurrentUser();
 
