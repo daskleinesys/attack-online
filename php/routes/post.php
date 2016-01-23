@@ -3,16 +3,29 @@ namespace AttOn;
 
 $app->post('/login/', function() use ($app, $debug) {
 
-    Controller\User\UserActions::login('username', 'password', false);
+    try {
+        $username = (isset($_POST['username'])) ? $_POST['username'] : '';
+        $password = (isset($_POST['password'])) ? $_POST['password'] : '';
+        $remember = (isset($_POST['remember'])) ? true : false;
+        Controller\User\UserActions::login($username, $password, $remember);
 
-    // TODO : check if correct login data
-    echo 'TODO : check if correct login data';
+        // successfully logged in, redirect to main route
+        $app->redirect(ABS_REF_PREFIX);
+    } catch (Exceptions\LoginException $ex) {
+        $user = Model\User\ModelUser::getCurrentUser();
 
-    // TODO : on error post error + main page
-    echo 'TODO : on error post error + main page';
+        $data = array();
+        $data['user'] = $user->getViewData();
+        $data['errors'] = array(
+            'login' => $ex->getMessage()
+        );
 
-    // successfully logged in, redirect to main route
-    $app->redirect(ABS_REF_PREFIX);
+        if (isset($_POST['username']) && !empty($_POST['username'])) {
+            $data['user']['username'] = $_POST['username'];
+        }
+
+        $app->render('main.twig', $data);
+    }
 });
 
 $app->post('/logout/', function() use ($app, $debug) {

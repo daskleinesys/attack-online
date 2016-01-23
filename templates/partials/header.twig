@@ -40,21 +40,23 @@
         {% else %}
         {# --- START --- login-form --- #}
         <form method="post" action="{{absRefPrefix}}login/">
-            <input type="hidden" name="login_action_required" />
             <table class="login">
                     <tr><td>
                         <p>
-                            <input type="text" id="username" name="username" value="{{ (user.name) ? user.name : 'username' }}" maxlength="15" size="20" />
+                            <input type="text" id="username" name="username" placeholder="Username" maxlength="15" size="20" value="{{ (user.username) ? user.username : '' }}" required />
                         </p>
                     </td></tr>
                     <tr><td>
                         <p>
-                            <input type="password" id="password" name="password" value="Passwort" maxlength="40" size="20" />
+                            <input type="password" id="password" name="password" placeholder="Passwort" maxlength="40" size="20" value="" required />
                         </p>
                     </td></tr>
                     <tr><td>
                         <p>
-                            <input type="submit" value="Log In" name="login" /> <input type="checkbox" class="checkbox" name="remember" /> merken?
+                            <label>
+                                <input type="checkbox" class="checkbox" name="remember" /> merken?
+                            </label>
+                            <input type="submit" value="Log In" name="login" />
                         </p>
                     </td></tr>
             </table>

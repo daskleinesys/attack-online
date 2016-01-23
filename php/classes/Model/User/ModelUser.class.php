@@ -5,7 +5,7 @@ use AttOn\Exceptions;
 
 class ModelUser {
 
-    // current user_error
+    // currently (logged in) user model
     private static $current_user = null;
 
 	// list of all user models
@@ -157,17 +157,15 @@ class ModelUser {
 	 * @return ModelUser
 	 */
 	public static function login($user_name, $password) {
-
 		$result = DataSource::Singleton()->epp('check_user_login',array(':username' => $user_name, ':password' => $password));
 
 		if (empty($result)) {
             throw new Exceptions\LoginException('Username/password wrong.');
         }
 
-        $this->current_user = ModelUser::getUser($result[0]['id']);
+        self::$current_user = ModelUser::getUser($result[0]['id']);
 
-		return $this->current_user;
-
+		return self::$current_user;
 	}
 
     /**
@@ -208,8 +206,15 @@ class ModelUser {
      * @return dictionary
      */
     public function getViewData() {
-        // TODO : do it
-        return array('name' => 'hello');
+        $data = array(
+            'given_name' => $this->given_name,
+            'last_name' => $this->last_name,
+            'username' => $this->login,
+            'email' => $this->email,
+            'status' => $this->status
+        );
+
+        return $data;
     }
 
 	/**
@@ -373,6 +378,12 @@ class ModelUser {
 	}
 
     private function fill_default_vars() {
-        // TODO : do it
+        $this->id = 0;
+        $this->given_name = '';
+        $this->last_name = '';
+        $this->login = '';
+        $this->email = '';
+        $this->status = '';
+        $this->verify = '';
     }
 }
