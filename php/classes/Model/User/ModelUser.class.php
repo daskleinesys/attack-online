@@ -19,6 +19,7 @@ class ModelUser {
 	private $email; // string
 	private $status; // string
 	private $verify; // string
+	private $token; // string
 
 	/**
 	 * creates a new user-object, that loads user-data
@@ -92,7 +93,7 @@ class ModelUser {
 
 		// query user
 		try {
-			$result = DataSource::Singleton()->epp($query,$dict);
+			$result = DataSource::Singleton()->epp($query, $dict);
 		} catch (Exceptions\DataSourceException $ex) {
 			throw $ex;
 		}
@@ -122,7 +123,7 @@ class ModelUser {
 	 */
 	public static function create($name, $lastname, $login, $password, $email, $verify) {
 		// check if login-name is taken
-		$result = DataSource::Singleton()->epp('check_if_login_exists',array(':login' => $login));
+		$result = DataSource::Singleton()->epp('check_if_login_exists', array(':login' => $login));
 		if (!empty($result)) throw new Exceptions\UserCreationException('Username already taken.');
 
 		$data = array();
@@ -133,13 +134,13 @@ class ModelUser {
 		$data[':email'] = $email;
 		$data[':verify'] = $verify;
 		try {
-			DataSource::Singleton()->epp('create_new_user',$data);
+			DataSource::Singleton()->epp('create_new_user', $data);
 		} catch (DataSourceException $ex) {
 			throw new Exceptions\GameCreationException('Unexpected error. Please try again.');
 		}
 
 		// create user
-		$result = DataSource::Singleton()->epp('get_id_for_login',array(':login' => $login));
+		$result = DataSource::Singleton()->epp('get_id_for_login', array(':login' => $login));
 		$id_newuser = intval($result[0]['id']);
 
 		// user default setting for game infos
@@ -157,7 +158,7 @@ class ModelUser {
 	 * @return ModelUser
 	 */
 	public static function login($user_name, $password) {
-		$result = DataSource::Singleton()->epp('check_user_login',array(':username' => $user_name, ':password' => $password));
+		$result = DataSource::Singleton()->epp('check_user_login', array(':username' => $user_name, ':password' => $password));
 
 		if (empty($result)) {
             throw new Exceptions\LoginException('Username/password wrong.');
@@ -225,7 +226,7 @@ class ModelUser {
 	 * @return bool true if password is correct
 	 */
 	public function checkPassword($password) {
-		$result = DataSource::Singleton()->epp('check_user_password',array(':id_user' => $this->id, ':password' => $password));
+		$result = DataSource::Singleton()->epp('check_user_password', array(':id_user' => $this->id, ':password' => $password));
 		if (empty($result)) return false;
 		return true;
 	}
@@ -248,7 +249,7 @@ class ModelUser {
 	 * @return void
 	 */
 	public function setUserToActive() {
-		DataSource::Singleton()->epp('activate_user',array(':id_user' => $this->id));
+		DataSource::Singleton()->epp('activate_user', array(':id_user' => $this->id));
 		$this->status = STATUS_USER_ACTIVE;
 		return true;
 
@@ -259,7 +260,7 @@ class ModelUser {
 	 * @return void
 	 */
 	public function deactivateUser() {
-		DataSource::Singleton()->epp('deactivate_user',array(':id_user' => $this->id));
+		DataSource::Singleton()->epp('deactivate_user', array(':id_user' => $this->id));
 		$this->status = STATUS_USER_INACTIVE;
 		return true;
 	}
@@ -269,7 +270,7 @@ class ModelUser {
 	 * @return void
 	 */
 	public function setUserToModerator() {
-		DataSource::Singleton()->epp('set_user_to_moderator',array(':id_user' => $this->id));
+		DataSource::Singleton()->epp('set_user_to_moderator', array(':id_user' => $this->id));
 		$this->status = STATUS_USER_MODERATOR;
 		return true;
 	}
@@ -279,7 +280,7 @@ class ModelUser {
 	 * @return void
 	 */
 	public function setUserToAdmin() {
-		DataSource::Singleton()->epp('set_user_to_admin',array(':id_user' => $this->id));
+		DataSource::Singleton()->epp('set_user_to_admin', array(':id_user' => $this->id));
 		$this->status = STATUS_USER_ADMIN;
 		return true;
 	}
@@ -289,7 +290,7 @@ class ModelUser {
 	 * @return void
 	 */
 	public function setUserToDeleted() {
-		DataSource::Singleton()->epp('set_user_to_deleted',array(':id_user' => $this->id));
+		DataSource::Singleton()->epp('set_user_to_deleted', array(':id_user' => $this->id));
 		$this->status = STATUS_USER_DELETED;
 		return true;
 	}
@@ -299,14 +300,21 @@ class ModelUser {
 	 */
 	public function setNewEmail($email) {
 		$this->email = $email;
-		DataSource::Singleton()->epp('update_email',array(':id_user' => $this->id, ':email' => $email));
+		DataSource::Singleton()->epp('update_email', array(':id_user' => $this->id, ':email' => $email));
 	}
 
 	/**
 	 * @param string $password
 	 */
 	public function setNewPassword($password) {
-		DataSource::Singleton()->epp('update_password',array(':id_user' => $this->id, ':password' => $password));
+		DataSource::Singleton()->epp('update_password', array(':id_user' => $this->id, ':password' => $password));
+	}
+
+	/**
+	 * @param string $password
+	 */
+	public function setToken($token) {
+		DataSource::Singleton()->epp('update_token', array(':id_user' => $this->id, ':token' => $token));
 	}
 
 	/**
@@ -365,9 +373,18 @@ class ModelUser {
 		return $this->verify;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getToken() {
+		return $this->token;
+	}
+
 	private function fill_member_vars() {
-		$result = DataSource::Singleton()->epp('get_all_user_data',array(':id_user' => $this->id));
-		if (empty($result)) return false;
+		$result = DataSource::Singleton()->epp('get_all_user_data', array(':id_user' => $this->id));
+		if (empty($result)) {
+            return false;
+        }
 		$data = $result[0];
 		$this->given_name = $data['name'];
 		$this->last_name = $data['lastname'];
@@ -375,6 +392,7 @@ class ModelUser {
 		$this->email = $data['email'];
 		$this->status = $data['status'];
 		$this->verify = $data['verify'];
+        $this->token = $data['token'];
 
 		return true;
 	}
@@ -387,5 +405,6 @@ class ModelUser {
         $this->email = '';
         $this->status = '';
         $this->verify = '';
+        $this->token = '';
     }
 }

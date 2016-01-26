@@ -10,6 +10,7 @@ class CheckSessions {
             return true;
         }
         // TODO : do not set user_id into cookie
+        echo 'TODO : do not set user_id into cookie';
 		if (!isset($_COOKIE['user_id'])) {
             return false;
         }
@@ -19,4 +20,3 @@ class CheckSessions {
 	}
 
 }
-?>

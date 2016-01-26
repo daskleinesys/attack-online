@@ -143,11 +143,11 @@ class UserActions {
 
 		// set cookie
 		if ($remember) {
-            // TODO : do not write user-id into cookie (save auth-token in DB and cookie)
-            echo 'TODO : do not write user-id into cookie (save auth-token in DB and cookie)';
-			setcookie('user_id', $_User->getUserId(), time() + (60 * 60 * 24 * 30));
+            $auth_token = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, USER_TOKEN_MAX_LENGTH);
+            $_User->setToken($auth_token);
+			setcookie('user_token', $auth_token, time() + (60 * 60 * 24 * 30), ABS_REF_PREFIX);
 		}
-		return $_User->getUserId();
+		return true;
 	}
 
     /**

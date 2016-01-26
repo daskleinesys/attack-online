@@ -34,7 +34,7 @@ class SQLCommands {
 			self::$DataSource->load_query('check_user_password',"SELECT id FROM user WHERE id = :id_user AND password = SHA(:password)");
 			self::$DataSource->load_query('get_user_login',"SELECT id,login FROM user WHERE id = :id_user LIMIT 1");
 			self::$DataSource->load_query('check_user_login',"SELECT id, login, status FROM user WHERE login = :username AND password = SHA(:password)");
-			self::$DataSource->load_query('get_all_user_data',"SELECT id, name, lastname, login, email, status, verify FROM user WHERE id = :id_user");
+			self::$DataSource->load_query('get_all_user_data',"SELECT id, name, lastname, login, email, status, verify, token FROM user WHERE id = :id_user");
 			self::$DataSource->load_query('get_all_users',"SELECT id FROM user ORDER BY id ASC");
 			self::$DataSource->load_query('get_all_users_asc',"SELECT id FROM user ORDER BY id ASC");
 			self::$DataSource->load_query('get_all_users_desc',"SELECT id FROM user ORDER BY id DESC");
@@ -66,6 +66,7 @@ class SQLCommands {
 			self::$DataSource->load_query('set_user_to_deleted',"UPDATE user SET status = 'deleted' WHERE id = :id_user");
 			self::$DataSource->load_query('update_email',"UPDATE user SET email = :email WHERE id = :id_user");
 			self::$DataSource->load_query('update_password',"UPDATE user SET password = SHA(:password) WHERE id = :id_user");
+			self::$DataSource->load_query('update_token',"UPDATE user SET token = :token WHERE id = :id_user");
 
 			// register new user
 			self::$DataSource->load_query('check_if_login_exists','SELECT id FROM user WHERE login = :login');
