@@ -9,12 +9,12 @@
 			<li>
 				<ul class="nav_main">
 					<li>
-						<a href="index.php">Home</a><br />
+						<a href="{{absRefPrefix}}">Home</a><br />
 					</li>
-					
+
 				</ul>
 			</li>
-			
+
             {% if (active) %}
             {# --- START --- active-user (logged-in) --- #}
 			<li>
@@ -24,7 +24,7 @@
 					</li>
 				</ul>
 			</li>
-				
+
 			<!-- BEGIN: ingame -->
 			<li>
 				<ul class="nav_game">
@@ -34,31 +34,31 @@
 					<li>
 						<a href="index.php?content=landmove" class="turns">Landzug</a><br />
 					</li>
-					
+
 					<!-- BEGIN: seamove -->
 					<li>
 						<a href="index.php?content=seamove" class="turns">Seezug</a><br />
 					</li>
 					<!-- END: seamove -->
-					
+
 					<!-- BEGIN: traderoute -->
 					<li>
 						<a href="index.php?content=traderoute" class="turns">Handelsrouten</a><br />
 					</li>
 					<!-- END: traderoute -->
-					
+
 					<!-- BEGIN: troopsmove -->
 					<li>
 						<a href="index.php?content=troopsmove" class="turns">Verlegen</a><br />
 					</li>
 					<!-- END: troopsmove -->
-					
+
 					<!-- BEGIN: production -->
 					<li>
 						<a href="index.php?content=production" class="turns">Produktion</a><br />
 					</li>
 					<!-- END: production -->
-					
+
 					<!-- BEGIN: techtree -->
 					<li>
 						<a href="index.php?content=techtree" class="turns">Tech-Tree</a><br />
@@ -67,7 +67,7 @@
 				</ul>
 			</li>
 			<!-- END: ingame -->
-							
+
 			<!-- BEGIN: started -->
 			<li>
 				<ul class="nav_game">
@@ -77,7 +77,7 @@
 					<li>
 						<a href="index.php?content=selectstart" class="turns">Startfelder</a><br />
 					</li>
-					
+
 					<!-- BEGIN: setships -->
 					<li>
 						<a href="index.php?content=setships" class="turns">Schiffe</a><br />
@@ -86,7 +86,7 @@
 				</ul>
 			</li>
 			<!-- END: started -->
-			
+
 			<li>
 				<ul class="nav_controls">
 					<!-- BEGIN: moderator -->
@@ -94,13 +94,13 @@
 						<a href="index.php?content=gamesmod" class="mod">Spiele</a><br />
 					</li>
 					<!-- END: moderator -->
-					
+
 					<!-- BEGIN: admin -->
 					<li>
 						<a href="index.php?content=user" class="admin">User</a><br />
 					</li>
 					<!-- END: admin -->
-					
+
 					<li>
 						<a href ="index.php?content=profile">Profil</a><br />
 					</li>
@@ -121,7 +121,7 @@
 			</li>
             {# --- END --- inactive-user (not-logged-in) --- #}
             {% endif %}
-			
+
 			<li>
 				<ul class="info">
 					<li>
@@ -133,7 +133,7 @@
 				</ul>
 			</li>
 		</ul>
-		
+
 	</div>
 	<div class="menubottom">
 	</div>
