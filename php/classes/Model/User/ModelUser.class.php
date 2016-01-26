@@ -209,10 +209,12 @@ class ModelUser {
         $data = array(
             'given_name' => $this->given_name,
             'last_name' => $this->last_name,
-            'username' => $this->login,
+            'login' => $this->login,
             'email' => $this->email,
             'status' => $this->status
         );
+
+        $data['loggedIn'] = ($this->id > 0);
 
         return $data;
     }

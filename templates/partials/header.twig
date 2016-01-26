@@ -3,7 +3,7 @@
     <div class="login">
         {% if (user.loggedIn) %}
         {# --- START --- logout-form --- #}
-        <form method="post" action="{{absRefPrefix}}logout/">
+        <form method="post" action="{{absRefPrefix}}game/">
             <table class="logout">
                 <tr>
                     <td>
@@ -12,7 +12,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <p id="logout">(<a href="logout.php" class="linktext">Log Out</a>)</p>
+                        <p id="logout">(<a href="{{absRefPrefix}}logout/" class="linktext">Log Out</a>)</p>
                     </td>
                 </tr>
 
@@ -43,7 +43,7 @@
             <table class="login">
                     <tr><td>
                         <p>
-                            <input type="text" id="username" name="username" placeholder="Username" maxlength="15" size="20" value="{{ (user.username) ? user.username : '' }}" required />
+                            <input type="text" id="username" name="username" placeholder="Username" maxlength="15" size="20" value="{{ (user.login) ? user.login : '' }}" required />
                         </p>
                     </td></tr>
                     <tr><td>
