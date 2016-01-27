@@ -34,6 +34,7 @@ class SQLCommands {
 			self::$DataSource->load_query('check_user_password',"SELECT id FROM user WHERE id = :id_user AND password = SHA(:password)");
 			self::$DataSource->load_query('get_user_login',"SELECT id,login FROM user WHERE id = :id_user LIMIT 1");
 			self::$DataSource->load_query('check_user_login',"SELECT id, login, status FROM user WHERE login = :username AND password = SHA(:password)");
+			self::$DataSource->load_query('check_user_token',"SELECT id, login, status FROM user WHERE token = :token LIMIT 1");
 			self::$DataSource->load_query('get_all_user_data',"SELECT id, name, lastname, login, email, status, verify, token FROM user WHERE id = :id_user");
 			self::$DataSource->load_query('get_all_users',"SELECT id FROM user ORDER BY id ASC");
 			self::$DataSource->load_query('get_all_users_asc',"SELECT id FROM user ORDER BY id ASC");

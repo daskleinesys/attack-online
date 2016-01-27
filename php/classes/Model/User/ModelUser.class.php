@@ -169,6 +169,25 @@ class ModelUser {
 		return self::$current_user;
 	}
 
+	/**
+	 * tries to log a user in, if successfull loads userdata
+     *
+	 * @param string $token
+	 * @throws LoginException
+	 * @return ModelUser
+	 */
+    public static function loginWithToken($token) {
+		$result = DataSource::Singleton()->epp('check_user_token', array(':token' => $token));
+
+		if (empty($result)) {
+            throw new Exceptions\LoginException('Invalid token.');
+        }
+
+        self::$current_user = ModelUser::getUser($result[0]['id']);
+
+		return self::$current_user;
+    }
+
     /**
      * sets the current user to model with given id (or resets to dummy model if id === 0)
      *

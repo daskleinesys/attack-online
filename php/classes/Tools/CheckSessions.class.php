@@ -1,21 +1,24 @@
 <?php
 namespace AttOn\Tools;
-use AttOn\Model\User;
+use AttOn\Model\User\ModelUser;
+use AttOn\Exceptions;
 
 class CheckSessions {
 
 	public static function checkCookies() {
 		if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) > 0) {
-            User\ModelUser::setCurrentUser($_SESSION['user_id']);
+            ModelUser::setCurrentUser($_SESSION['user_id']);
             return true;
         }
-        // TODO : do not set user_id into cookie
-        echo 'TODO : do not set user_id into cookie';
-		if (!isset($_COOKIE['user_id'])) {
+		if (!isset($_COOKIE['user_token'])) {
             return false;
         }
-		$_SESSION['user_id'] = $_COOKIE['user_id'];
-        User\ModelUser::setCurrentUser($_SESSION['user_id']);
+        try {
+            $user_id = ModelUser::loginWithToken($_COOKIE['user_token']);
+            $_SESSION['user_id'] = $user_id;
+        } catch (Exceptions\LoginException $ex) {
+            return false;
+        }
 		return true;
 	}
 
