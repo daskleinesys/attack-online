@@ -15,94 +15,85 @@
 				</ul>
 			</li>
 
-            {% if (active) %}
+            {% if (user.loggedIn) %}
             {# --- START --- active-user (logged-in) --- #}
 			<li>
 				<ul class="nav_active">
 					<li>
-						<a href="index.php?content=games" class="games">Partien</a><br />
+						<a href="{{absRefPrefix}}games/" class="games">Partien</a><br />
 					</li>
 				</ul>
 			</li>
 
-			<!-- BEGIN: ingame -->
+            {% if (user.inActiveGame) %}
+            {# --- START --- user-selected-active-game --- #}
 			<li>
 				<ul class="nav_game">
 					<li>
-						<a href="index.php?content=overview" class="turns">Übersicht</a><br />
+						<a href="{{absRefPrefix}}overview/" class="turns">Übersicht</a><br />
 					</li>
 					<li>
-						<a href="index.php?content=landmove" class="turns">Landzug</a><br />
+						<a href="{{absRefPrefix}}landmove/" class="turns">Landzug</a><br />
 					</li>
-
-					<!-- BEGIN: seamove -->
 					<li>
-						<a href="index.php?content=seamove" class="turns">Seezug</a><br />
+						<a href="{{absRefPrefix}}seamove/" class="turns">Seezug</a><br />
 					</li>
-					<!-- END: seamove -->
-
-					<!-- BEGIN: traderoute -->
 					<li>
-						<a href="index.php?content=traderoute" class="turns">Handelsrouten</a><br />
+						<a href="{{absRefPrefix}}traderoute/" class="turns">Handelsrouten</a><br />
 					</li>
-					<!-- END: traderoute -->
-
-					<!-- BEGIN: troopsmove -->
 					<li>
-						<a href="index.php?content=troopsmove" class="turns">Verlegen</a><br />
+						<a href="{{absRefPrefix}}troopsmove/" class="turns">Verlegen</a><br />
 					</li>
-					<!-- END: troopsmove -->
-
-					<!-- BEGIN: production -->
 					<li>
-						<a href="index.php?content=production" class="turns">Produktion</a><br />
+						<a href="{{absRefPrefix}}production/" class="turns">Produktion</a><br />
 					</li>
-					<!-- END: production -->
-
-					<!-- BEGIN: techtree -->
 					<li>
-						<a href="index.php?content=techtree" class="turns">Tech-Tree</a><br />
+						<a href="{{absRefPrefix}}techtree/" class="turns">Tech-Tree</a><br />
 					</li>
-					<!-- END: techtree -->
 				</ul>
 			</li>
-			<!-- END: ingame -->
+            {# --- END --- user-selected-active-game --- #}
+            {% endif %}
 
-			<!-- BEGIN: started -->
+            {% if (user.inNewGame) %}
+            {# --- START --- user-selected-new-game --- #}
 			<li>
 				<ul class="nav_game">
 					<li>
-						<a href="index.php?content=overview" class="turns">Übersicht</a><br />
+						<a href="{{absRefPrefix}}overview/" class="turns">Übersicht</a><br />
 					</li>
 					<li>
-						<a href="index.php?content=selectstart" class="turns">Startfelder</a><br />
+						<a href="{{absRefPrefix}}selectstart/" class="turns">Startfelder</a><br />
 					</li>
-
-					<!-- BEGIN: setships -->
 					<li>
-						<a href="index.php?content=setships" class="turns">Schiffe</a><br />
+						<a href="{{absRefPrefix}}setships/" class="turns">Schiffe</a><br />
 					</li>
-					<!-- END: setships -->
 				</ul>
 			</li>
-			<!-- END: started -->
+            {# --- END --- user-selected-new-game --- #}
+            {% endif %}
 
 			<li>
 				<ul class="nav_controls">
-					<!-- BEGIN: moderator -->
-					<li>
-						<a href="index.php?content=gamesmod" class="mod">Spiele</a><br />
-					</li>
-					<!-- END: moderator -->
 
-					<!-- BEGIN: admin -->
+                    {% if (user.status == 'moderator' or user.status == 'admin') %}
+                    {# --- START --- moderator-section --- #}
 					<li>
-						<a href="index.php?content=user" class="admin">User</a><br />
+						<a href="{{absRefPrefix}}gamesmod/" class="mod">Spiele</a><br />
 					</li>
-					<!-- END: admin -->
+                    {# --- END --- moderator-section --- #}
+                    {% endif %}
+
+                    {% if (user.status == 'admin') %}
+                    {# --- START --- admin-section --- #}
+					<li>
+						<a href="{{absRefPrefix}}user/" class="admin">User</a><br />
+					</li>
+                    {# --- END --- admin-section --- #}
+                    {% endif %}
 
 					<li>
-						<a href ="index.php?content=profile">Profil</a><br />
+						<a href ="{{absRefPrefix}}profile/">Profil</a><br />
 					</li>
 				</ul>
 			</li>
@@ -112,10 +103,10 @@
 			<li>
 				<ul>
 					<li>
-						<a href="index.php?content=whatis">Was ist Att On?</a><br />
+						<a href="{{absRefPrefix}}whatis/">Was ist Att On?</a><br />
 					</li>
 					<li>
-						<a href="index.php?content=register">Registrieren</a><br />
+						<a href="{{absRefPrefix}}register/">Registrieren</a><br />
 					</li>
 				</ul>
 			</li>
@@ -125,10 +116,10 @@
 			<li>
 				<ul class="info">
 					<li>
-						<a href="index.php?content=manual">Manual</a><br />
+						<a href="{{absRefPrefix}}manual/">Manual</a><br />
 					</li>
 					<li>
-						<a href="index.php?content=imprint">Impressum</a><br />
+						<a href="{{absRefPrefix}}imprint/">Impressum</a><br />
 					</li>
 				</ul>
 			</li>

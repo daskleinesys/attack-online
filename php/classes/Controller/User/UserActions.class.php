@@ -157,13 +157,9 @@ class UserActions {
      */
     public static function logout() {
         $_SESSION = array();
-
-        // also, delete cookies
-        // TODO : do not save user_id in $_COOKIE
-        echo 'TODO : do not save user_id in $_COOKIE';
-        if (isset($_COOKIE['user_id'])) {
+        if (isset($_COOKIE['user_token'])) {
             // Delete the user ID and username cookies by setting their expirations to an hour ago (3600)
-            setcookie('user_id', '', time() - 3600);
+            setcookie('user_token', '', time() - 3600, ABS_REF_PREFIX);
         }
     }
 
