@@ -26,6 +26,7 @@ $app->post('/login/', function() use ($app, $debug) {
             $data['user']['username'] = $_POST['username'];
         }
 
+        $data['template'] = 'login';
         $app->render('main.twig', $data);
     }
 });

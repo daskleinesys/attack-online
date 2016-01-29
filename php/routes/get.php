@@ -4,15 +4,19 @@ namespace AttOn;
 $app->get('/', function() use ($app, $debug) {
     $data = array();
     $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    $data['template'] = 'home';
+    $app->render('main.twig', $data);
+});
+
+$app->get('/login/', function() use ($app, $debug) {
+    Controller\User\UserActions::logout();
+    $data['template'] = 'login';
     $app->render('main.twig', $data);
 });
 
 $app->get('/logout/', function() use ($app, $debug) {
     Controller\User\UserActions::logout();
-
-    $data = array();
-    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
-    $app->render('main.twig', $data);
+    $app->redirect(ABS_REF_PREFIX);
 });
 
 /*

@@ -1,0 +1,24 @@
+<h1>Welcome</h1>
+<form method="post" action="{{absRefPrefix}}login/">
+    <table class="login">
+            <tr><td>
+                <p>
+                    <input type="text" name="username" placeholder="Username" maxlength="15" size="20" value="{{ (user.login) ? user.login : '' }}" required />
+                </p>
+            </td></tr>
+            <tr><td>
+                <p>
+                    <input type="password" name="password" placeholder="Passwort" maxlength="40" size="20" value="" required />
+                </p>
+            </td></tr>
+            <tr><td>
+                <p>
+                    <label>
+                        <input type="checkbox" class="checkbox" name="remember" /> merken?
+                    </label>
+                    <input type="submit" value="Log In" name="login" />
+                </p>
+            </td></tr>
+    </table>
+</form>
+<p class="error">{{errors.login}}</p>
