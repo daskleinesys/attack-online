@@ -21,4 +21,6 @@
             </td></tr>
     </table>
 </form>
-<p class="error">{{errors.login}}</p>
+{% if errors.login %}
+<h3 class="error" role="alert">{{errors.login}}</h3>
+{% endif %}
