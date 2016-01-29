@@ -15,7 +15,7 @@ session_start();
 
 // LOADING FRAMEWORKS
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools' . DIRECTORY_SEPARATOR . 'AttonAutoloader.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'defines.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'gamevars.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'local_configuration.php';
@@ -29,6 +29,8 @@ $app = new \Slim\Slim( array('debug' => $debug, 'view' => new \Slim\Views\Twig()
 $view = $app->view();
 $view->parserExtensions = array(new \Twig_Extension_Debug());
 $view->parserOptions = array('debug' => $debug);
+$env = $app->environment();
+$env['basepath'] = __DIR__;
 
 // DEFINE SLIM-ERROR HANDLING
 $app->error(function(\Exception $e) use ($app, $logger) {

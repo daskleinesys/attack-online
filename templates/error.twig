@@ -15,7 +15,7 @@
             {% include 'partials/nav.twig' %}
 
             <div class="content">
-                {% if {{errors.message}} %}
+                {% if errors.message %}
                 <h3 class="error" role="alert">{{errors.message}}</h3>
                 {% else %}
                 <h3 class="error" role="alert">Unerwarteter Fehler.</h3>
