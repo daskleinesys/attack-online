@@ -33,10 +33,15 @@ $view->parserOptions = array('debug' => $debug);
 // DEFINE SLIM-ERROR HANDLING
 $app->error(function(\Exception $e) use ($app, $logger) {
     $logger->error($e->getMessage());
-    $app->render('error.twig');
+
+    $data = array();
+    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    $app->render('error.twig', $data);
 });
 $app->notFound(function() use ($app) {
-    $app->render('404.twig');
+    $data = array();
+    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    $app->render('404.twig', $data);
 });
 
 // INIT DB-CONNECTION
@@ -56,4 +61,5 @@ include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'rout
 
 // SET GLOBAL VARS
 $app->view->setData(array('debug' => $debug, 'nomerge' => $nomerge, 'absRefPrefix' => ABS_REF_PREFIX));
+Tools\CheckSessions::checkCookies();
 $app->run();

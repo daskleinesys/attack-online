@@ -2,20 +2,16 @@
 namespace AttOn;
 
 $app->get('/', function() use ($app, $debug) {
-    Tools\CheckSessions::checkCookies();
-
-    $user = Model\User\ModelUser::getCurrentUser();
     $data = array();
-    $data['user'] = $user->getViewData();
+    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
     $app->render('main.twig', $data);
 });
 
 $app->get('/logout/', function() use ($app, $debug) {
     Controller\User\UserActions::logout();
 
-    $user = Model\User\ModelUser::getCurrentUser();
     $data = array();
-    $data['user'] = $user->getViewData();
+    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
     $app->render('main.twig', $data);
 });
 
