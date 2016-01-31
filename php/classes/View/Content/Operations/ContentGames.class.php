@@ -1,23 +1,33 @@
 <?php
-class ContentGames extends ContentOperation {
+namespace AttOn\View\Content\Operations;
+use AttOn\Model;
+
+class ContentGames extends Interfaces\ContentOperation {
+
 	private $game_status;
 
-	public function run() {
-		
-		if (isset($_POST['leave'])) $this->leaveGame();
-		
+    public function getTemplate() {
+        return 'games';
+    }
+
+	public function run(array &$data) {
+
+        // TODO : make ContentGames work
+        echo 'TODO : make ContentGames work';
+        /*
+		if (isset($_POST['leave'])) {
+            $this->leaveGame();
+        }
+
 		$this->loadGames();
-		$iter_games = ModelGame::iterator($this->game_status);
-		
+		$iter_games = Model\Game\ModelGame::iterator($this->game_status);
+
 		$this->showStatusBar();
 		$this->parseGames($iter_games);
+        */
 
-		if ($iter_games->size() > 0) $this->xtpl->parse('main.' . $this->game_status);
-		else $this->xtpl->parse('main.no_game');
-		
-		$this->xtpl->parse('main');
-		$this->xtpl->out('main');
-		return true;
+        $data['template'] = $this->getTemplate();
+		return $data;
 	}
 
 	private function leaveGame() {
@@ -83,7 +93,7 @@ class ContentGames extends ContentOperation {
 			$game_info['creator'] = $_Game->getCreator()->getLogin();
 			$this->xtpl->assign('game',$game_info);
 			if ($_Game->checkPasswordProtection()) $this->xtpl->parse('main.' . $this->game_status . '.game.password');
-			
+
 			// user is ingame/creator
 			$ingame = '';
 			if (ModelUser::getUser($this->id_user_logged_in) == $_Game->getCreator()) $ingame = 'creator_';
@@ -91,10 +101,10 @@ class ContentGames extends ContentOperation {
 				$ingame .= 'ingame';
 				$this->xtpl->parse('main.' . $this->game_status . '.game.joined');
 			} else $ingame .= 'notingame';
-			
+
 			$this->xtpl->assign('ingame',$ingame);
-			
-			
+
+
 			$this->xtpl->parse('main.' . $this->game_status . '.game');
 			$this->xtpl->parse('main.' . $this->game_status . '.gamelist');
 			if (($this->game_status == GAME_STATUS_NEW) && ($_Game->getFreeSlots() > 0)) {
@@ -102,5 +112,5 @@ class ContentGames extends ContentOperation {
 			}
 		}
 	}
+
 }
-?>
