@@ -24,7 +24,7 @@ abstract class ContentFactory {
         $current_user = Model\User\ModelUser::getCurrentUser();
         $status = $current_user->getStatus();
 
-        $current_game = Model\Games\ModelGame::getCurrentGame();
+        $current_game = Model\Game\ModelGame::getCurrentGame();
 
 		switch ($required_session) {
 			case CHECK_SESSION_NONE:
