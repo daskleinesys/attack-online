@@ -12,14 +12,14 @@ class ModelUser {
 	private static $users = array();
 
 	// pre-filled member_vars
-	private $id; // int
-	private $given_name; // string
-	private $last_name; // string
-	private $login; // string
-	private $email; // string
-	private $status; // string
-	private $verify; // string
-	private $token; // string
+	private $id = 0; // int
+	private $given_name = null; // string
+	private $last_name = null; // string
+	private $login = null; // string
+	private $email = null; // string
+	private $status = null; // enum ('inactive','active','moderator','admin','deleted')
+	private $verify = null; // string
+	private $token = null; // string
 
 	/**
 	 * creates a new user-object, that loads user-data
@@ -418,12 +418,12 @@ class ModelUser {
 
     private function fill_default_vars() {
         $this->id = 0;
-        $this->given_name = '';
-        $this->last_name = '';
-        $this->login = '';
-        $this->email = '';
-        $this->status = '';
-        $this->verify = '';
-        $this->token = '';
+        $this->given_name = null;
+        $this->last_name = null;
+        $this->login = null;
+        $this->email = null;
+        $this->status = null;
+        $this->verify = null;
+        $this->token = null;
     }
 }

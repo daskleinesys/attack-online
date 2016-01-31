@@ -1,14 +1,15 @@
 <?php
 namespace AttOn\View\Content\Factories;
 
-class LandMoveFactory implements Interfaces\ContentFactoryInterface {
+class LandMoveFactory extends Interfaces\ContentFactory {
 
 	public function getName() {
 		return 'landmove';
 	}
 
-	public function getOperation($id_user, $id_game) {
-		$return = new ContentLandMove($id_user, $id_game, 'landmove', CHECK_SESSION_GAME_RUNNING);
+	public function getOperation() {
+        $this->checkAuth(CHECK_SESSION_GAME_RUNNING);
+		$return = new ContentLandMove();
 		return $return;
 	}
 

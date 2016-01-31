@@ -1,14 +1,15 @@
 <?php
 namespace AttOn\View\Content\Factories;
 
-class GamesModFactory implements Interfaces\ContentFactoryInterface {
+class GamesModFactory extends Interfaces\ContentFactory {
 
 	public function getName() {
 		return 'gamesmod';
 	}
 
-	public function getOperation($id_user, $id_game) {
-		$return = new ContentGamesMod($id_user, $id_game, 'gamesmod', CHECK_SESSION_MOD);
+	public function getOperation() {
+        $this->checkAuth(CHECK_SESSION_MOD);
+		$return = new ContentGamesMod();
 		return $return;
 	}
 

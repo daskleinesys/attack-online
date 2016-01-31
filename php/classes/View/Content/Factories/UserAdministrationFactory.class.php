@@ -1,14 +1,15 @@
 <?php
 namespace AttOn\View\Content\Factories;
 
-class UserAdministrationFactory implements Interfaces\ContentFactoryInterface {
+class UserAdministrationFactory extends Interfaces\ContentFactory {
 
 	public function getName() {
 		return 'user';
 	}
 
-	public function getOperation($id_user, $id_game) {
-		$return = new ContentUserAdministration($id_user, $id_game, 'user', CHECK_SESSION_ADMIN);
+	public function getOperation() {
+        $this->checkAuth(CHECK_SESSION_ADMIN);
+		$return = new ContentUserAdministration();
 		return $return;
 	}
 

@@ -1,14 +1,15 @@
 <?php
 namespace AttOn\View\Content\Factories;
 
-class OverviewFactory implements Interfaces\ContentFactoryInterface {
+class OverviewFactory extends Interfaces\ContentFactory {
 
 	public function getName() {
 		return 'overview';
 	}
 
-	public function getOperation($id_user, $id_game) {
-		$return = new ContentOverview($id_user, $id_game, 'overview', CHECK_SESSION_GAME);
+	public function getOperation() {
+        $this->checkAuth(CHECK_SESSION_GAME);
+		$return = new ContentOverview();
 		return $return;
 	}
 
