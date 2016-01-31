@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Factories;
+use AttOn\View\Content\Operations;
 
 class GamesFactory extends Interfaces\ContentFactory {
 
@@ -9,7 +10,7 @@ class GamesFactory extends Interfaces\ContentFactory {
 
 	public function getOperation() {
         $this->checkAuth(CHECK_SESSION_USER);
-		$return = new ContentGames();
+		$return = new Operations\ContentGames();
 		return $return;
 	}
 

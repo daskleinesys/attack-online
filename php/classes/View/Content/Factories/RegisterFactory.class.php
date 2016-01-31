@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Factories;
+use AttOn\View\Content\Operations;
 
 class RegisterFactory extends Interfaces\ContentFactory {
 
@@ -9,7 +10,7 @@ class RegisterFactory extends Interfaces\ContentFactory {
 
 	public function getOperation() {
         $this->checkAuth(CHECK_SESSION_NONE);
-		$return = new ContentRegister();
+		$return = new Operations\ContentRegister();
 		return $return;
 	}
 
