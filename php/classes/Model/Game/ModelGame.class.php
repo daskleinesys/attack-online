@@ -147,57 +147,61 @@ class ModelGame {
         $id_game = intval($result[0]['id']);
         self::setGameSpecificQueries($id_game);
 
-        DataSource::Singleton()->epp('create_areas_table',array());
-        DataSource::Singleton()->epp('create_battle_reports_table',array());
-        DataSource::Singleton()->epp('create_br_units_table',array());
-        DataSource::Singleton()->epp('create_br_user_table',array());
-        DataSource::Singleton()->epp('create_moves_table',array());
-        DataSource::Singleton()->epp('create_moves_new_ships_table',array());
-        DataSource::Singleton()->epp('create_moves_ships_table',array());
-        DataSource::Singleton()->epp('create_moves_units_table',array());
-        DataSource::Singleton()->epp('create_moves_steps_table',array());
-        DataSource::Singleton()->epp('create_moves_steps_zareas_table',array());
-        DataSource::Singleton()->epp('create_traderoutes_table',array());
-        DataSource::Singleton()->epp('create_units_table',array());
-        DataSource::Singleton()->epp('create_units_land_table',array());
-        DataSource::Singleton()->epp('create_units_sea_table',array());
-        DataSource::Singleton()->epp('create_units_in_harbor_table',array());
+        DataSource::Singleton()->epp('create_areas_table', array());
+        DataSource::Singleton()->epp('create_battle_reports_table', array());
+        DataSource::Singleton()->epp('create_br_units_table', array());
+        DataSource::Singleton()->epp('create_br_user_table', array());
+        DataSource::Singleton()->epp('create_moves_table', array());
+        DataSource::Singleton()->epp('create_moves_new_ships_table', array());
+        DataSource::Singleton()->epp('create_moves_ships_table', array());
+        DataSource::Singleton()->epp('create_moves_units_table', array());
+        DataSource::Singleton()->epp('create_moves_steps_table', array());
+        DataSource::Singleton()->epp('create_moves_steps_zareas_table', array());
+        DataSource::Singleton()->epp('create_traderoutes_table', array());
+        DataSource::Singleton()->epp('create_units_table', array());
+        DataSource::Singleton()->epp('create_units_land_table', array());
+        DataSource::Singleton()->epp('create_units_sea_table', array());
+        DataSource::Singleton()->epp('create_units_in_harbor_table', array());
         return self::getGame($id_game);
     }
 
     /**
-     *
      * deletes all tables,rows from database for this game
+     *
      * @throws GameAdministrationException - if game isn't loaded or the game isn't new
      * @return bool - true if successfull
      */
     public static function deleteGame($id_game) {
         try {
             $_Game = self::getGame($id_game);
-        } catch (NullPointerException $ex) {
-            throw new GameAdministrationException('Game not found.');
+        } catch (Exceptions\NullPointerException $ex) {
+            throw new Exceptions\GameAdministrationException('Game not found.');
         }
-        if ($_Game->getStatus() != GAME_STATUS_NEW) throw new GameAdministrationException('Only new games can be deleted.');
+        if ($_Game->getStatus() != GAME_STATUS_NEW) {
+            throw new Exceptions\GameAdministrationException('Only new games can be deleted.');
+        }
 
         self::setGameSpecificQueries($id_game);
         try {
-            DataSource::Singleton()->epp('drop_areas_table',array());
-            DataSource::Singleton()->epp('drop_battle_reports_table',array());
-            DataSource::Singleton()->epp('drop_br_units_table',array());
-            DataSource::Singleton()->epp('drop_br_user_table',array());
-            DataSource::Singleton()->epp('drop_moves_table',array());
-            DataSource::Singleton()->epp('drop_moves_new_ships_table',array());
-            DataSource::Singleton()->epp('drop_moves_ships_table',array());
-            DataSource::Singleton()->epp('drop_moves_units_table',array());
-            DataSource::Singleton()->epp('drop_moves_steps_table',array());
-            DataSource::Singleton()->epp('drop_moves_steps_zareas_table',array());
-            DataSource::Singleton()->epp('drop_traderoutes_table',array());
-            DataSource::Singleton()->epp('drop_units_table',array());
-            DataSource::Singleton()->epp('drop_units_land_table',array());
-            DataSource::Singleton()->epp('drop_units_sea_table',array());
-            DataSource::Singleton()->epp('drop_units_in_harbor_table',array());
-        } catch (DataSourceException $ex) {
-            if (!isset(self::$_Logger)) self::$_Logger = Logger::getLogger('ModelGame');
+            DataSource::Singleton()->epp('drop_areas_table', array());
+            DataSource::Singleton()->epp('drop_battle_reports_table', array());
+            DataSource::Singleton()->epp('drop_br_units_table', array());
+            DataSource::Singleton()->epp('drop_br_user_table', array());
+            DataSource::Singleton()->epp('drop_moves_table', array());
+            DataSource::Singleton()->epp('drop_moves_new_ships_table', array());
+            DataSource::Singleton()->epp('drop_moves_ships_table', array());
+            DataSource::Singleton()->epp('drop_moves_units_table', array());
+            DataSource::Singleton()->epp('drop_moves_steps_table', array());
+            DataSource::Singleton()->epp('drop_moves_steps_zareas_table', array());
+            DataSource::Singleton()->epp('drop_traderoutes_table', array());
+            DataSource::Singleton()->epp('drop_units_table', array());
+            DataSource::Singleton()->epp('drop_units_land_table', array());
+            DataSource::Singleton()->epp('drop_units_sea_table', array());
+            DataSource::Singleton()->epp('drop_units_in_harbor_table', array());
+        } catch (Exceptions\DataSourceException $ex) {
+            if (!isset(self::$_Logger)) {
+                self::$_Logger = Logger::getLogger('ModelGame');
+            }
             self::$_Logger->error($ex);
         }
         $dict = array(':id_game' => $id_game);
@@ -213,6 +217,7 @@ class ModelGame {
 
     /**
      * returns all ids of all games where everybody is finished
+     *
      * @return array(int id_game)
      */
     public static function getGamesForProcessing() {
@@ -226,7 +231,33 @@ class ModelGame {
     }
 
     /**
+     * sets the current game model to game-model using given id
+     *
+     * @throws NullPointerException if game not found
+     * @param $ig_game int
+     * @return ModelGame
+     */
+    public static function setCurrentGame($id_game) {
+		$id = intval($id_game);
+
+        // set game model
+        self::$current_game = self::getGame($id);
+
+        return self::getCurrentGame();
+    }
+
+    /**
+     * returns the currently selected game, or null if no game selected
+     *
+     * @return ModelGame/null
+     */
+    public static function getCurrentGame() {
+		return self::$current_game;
+    }
+
+    /**
      * sets game status of a new game to GAME_STATUS_STARTED
+     *
      * @throws GameAdministrationException
      * @return bool
      */
