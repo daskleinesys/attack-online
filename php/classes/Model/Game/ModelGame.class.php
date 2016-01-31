@@ -1,7 +1,9 @@
 <?php
 namespace AttOn\Model\Game;
 use AttOn\Model\DataBase\DataSource;
+use AttOn\Model\DataBase\SQLCommands;
 use AttOn\Exceptions;
+use AttOn\Model;
 
 class ModelGame {
 
@@ -101,7 +103,7 @@ class ModelGame {
             $games[] = self::$games[$id_game];
         }
 
-        return new ModelIterator($games);
+        return new Model\Iterator\ModelIterator($games);
     }
 
     /**
@@ -207,8 +209,8 @@ class ModelGame {
         $dict = array(':id_game' => $id_game);
         DataSource::Singleton()->epp('delete_game',$dict);
 
-        ModelIsInGameInfo::deleteIsInGameInfos($id_game);
-        ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_game);
+        Model\User\ModelIsInGameInfo::deleteIsInGameInfos($id_game);
+        Model\User\ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_game);
 
         unset(self::$games[$id_game]);
 
@@ -262,23 +264,27 @@ class ModelGame {
      * @return bool
      */
     public function startGame() {
-        if ($this->status != GAME_STATUS_NEW) throw new GameAdministrationException('Only new games can be started.');
+        if ($this->status !== GAME_STATUS_NEW) {
+            throw new Exceptions\GameAdministrationException('Only new games can be started.');
+        }
 
         // allocate starting sets to users
-        $iter_player = ModelIsInGameInfo::iterator(null,$this->id);
+        $iter_player = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
         $players = $iter_player->size();
-        $iter_sets = ModelStartingSet::iterator($players,true);
+        $iter_sets = Model\User\ModelStartingSet::iterator($players, true);
         while ($iter_player->hasNext()) {
-            if (!$iter_sets->hasNext()) throw new GameAdministrationException('Not enough starting sets found!');
+            if (!$iter_sets->hasNext()) {
+                throw new Exceptions\GameAdministrationException('Not enough starting sets found!');
+            }
             $iter_player->next()->setStartingSet($iter_sets->next()->getId());
         }
 
         // allocate resources
-        $iter_poor = ModelEconomy::iterator(ECONOMY_POOR);
-        $iter_weak = ModelEconomy::iterator(ECONOMY_WEAK);
-        $iter_normal = ModelEconomy::iterator(ECONOMY_NORMAL);
-        $iter_strong = ModelEconomy::iterator(ECONOMY_STRONG);
-        $iter_areas = ModelArea::iterator(TYPE_LAND);
+        $iter_poor = Model\Atton\ModelEconomy::iterator(ECONOMY_POOR);
+        $iter_weak = Model\Atton\ModelEconomy::iterator(ECONOMY_WEAK);
+        $iter_normal = Model\Atton\ModelEconomy::iterator(ECONOMY_NORMAL);
+        $iter_strong = Model\Atton\ModelEconomy::iterator(ECONOMY_STRONG);
+        $iter_areas = Model\Atton\ModelArea::iterator(TYPE_LAND);
         while ($iter_areas->hasNext()) {
             $_Area = $iter_areas->next();
             switch ($_Area->getEconomy()) {
@@ -295,14 +301,14 @@ class ModelGame {
                     $_Eco = $iter_strong->next();
                     break;
             }
-            ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
+            Model\Atton\ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
         }
 
         // create sea areas
-        $iter_sea = ModelArea::iterator(TYPE_SEA);
+        $iter_sea = Model\Atton\ModelArea::iterator(TYPE_SEA);
         while ($iter_sea->hasnext()) {
             $_Area = $iter_sea->next();
-            ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
+            Model\Atton\ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
         }
 
         // set game to started
@@ -313,6 +319,7 @@ class ModelGame {
 
     /**
      * sets the game password, set to no password if null given
+     *
      * @param string $password
      * @return void
      */
@@ -320,11 +327,10 @@ class ModelGame {
         $query = '';
         $dict = array();
         $dict[':id_game'] = $this->id;
-        if ($password == null) {
+        if ($password === null) {
             $this->pw_protected = false;
             $query = 'delete_game_password';
-        }
-        else {
+        } else {
             $this->pw_protected = true;
             $query = 'update_game_password';
             $dict[':password'] = $password;
@@ -334,11 +340,14 @@ class ModelGame {
 
     /**
      * sets the game status (and if necessary also changes the phase)
+     *
      * @param enum $status
      * @return void
      */
     public function setStatus($status) {
-        if ($this->status == $status) return;
+        if ($this->status === $status) {
+            return;
+        }
         $query = 'set_game_status';
         $dict = array();
         $dict[':id_game'] = $this->id;
@@ -346,30 +355,33 @@ class ModelGame {
         try {
             DataSource::Singleton()->epp($query,$dict);
             $this->status = $status;
-        } catch (DataSourceException $ex) {
+        } catch (Exceptions\DataSourceException $ex) {
             self::$_Logger->error($ex);
             return;
         }
 
-        if ($this->status == GAME_STATUS_NEW) {
+        if ($this->status === GAME_STATUS_NEW) {
             $this->setPhase(PHASE_GAME_START);
-        } else if ($this->status == GAME_STATUS_STARTED && $this->id_phase < PHASE_SELECTSTART) {
+        } else if ($this->status === GAME_STATUS_STARTED && $this->id_phase < PHASE_SELECTSTART) {
             $this->setPhase(PHASE_SELECTSTART);
-        } else if ($this->status == GAME_STATUS_RUNNING && $this->id_phase >= GAME_STATUS_STARTED) {
+        } else if ($this->status === GAME_STATUS_RUNNING && $this->id_phase >= GAME_STATUS_STARTED) {
             $this->setPhase(PHASE_LANDMOVE);
         }
     }
 
     /**
      * sets the game phase (and if necessary also changes the status)
+     *
      * @param int $id_phase
      * @throws NullPointerException
      * @return void
      */
     public function setPhase($id_phase) {
         $id_phase = intval($id_phase);
-        if ($this->id_phase == $id_phase) return;
-        ModelPhase::getPhase($id_phase);
+        if ($this->id_phase === $id_phase) {
+            return;
+        }
+        Model\Atton\ModelPhase::getPhase($id_phase);
 
         $query = 'set_game_phase';
         $dict = array();
@@ -378,10 +390,12 @@ class ModelGame {
         DataSource::Singleton()->epp($query,$dict);
         $this->id_phase = $id_phase;
 
-        if ($this->status == GAME_STATUS_DONE) return;
+        if ($this->status === GAME_STATUS_DONE) {
+            return;
+        }
         if ($this->id_phase < PHASE_GAME_START) {
             $this->setStatus(GAME_STATUS_RUNNING);
-        } else if ($this->id_phase == PHASE_GAME_START) {
+        } else if ($this->id_phase === PHASE_GAME_START) {
             $this->setStatus(GAME_STATUS_NEW);
         } else if ($this->id_phase > PHASE_GAME_START) {
             $this->setStatus(GAME_STATUS_STARTED);
@@ -390,30 +404,33 @@ class ModelGame {
 
     /**
      * moves the game in the next phase, updates phase and game_round and status if necessary
+     *
      * @return void
      */
     public function moveToNextPhase() {
         // get phases
-        $_ModelGameMode = ModelGameMode::getGameMode($this->id_game_mode);
+        $_ModelGameMode = Model\Atton\ModelGameMode::getGameMode($this->id_game_mode);
         $phases = $_ModelGameMode->getPhases();
 
         // check which phase is next
         $next_phase;
         $add_round = false;
-        $pos = array_search($this->id_phase,$phases);
+        $pos = array_search($this->id_phase, $phases);
 
-        if (!isset($phases[$pos+1])) {
+        if (!isset($phases[$pos + 1])) {
             $next_phase = $phases[0];
             $add_round = true;
-        } elseif ($this->status == GAME_STATUS_RUNNING && $phases[$pos+1] >= PHASE_GAME_START) {
+        } elseif ($this->status === GAME_STATUS_RUNNING && $phases[$pos+1] >= PHASE_GAME_START) {
             $next_phase = $phases[0];
             $add_round = true;
         } else {
-            $next_phase = $phases[$pos+1];
+            $next_phase = $phases[$pos + 1];
         }
 
         // add round and set phase
-        if ($add_round) $this->nextRound();
+        if ($add_round) {
+            $this->nextRound();
+        }
         $this->setPhase($next_phase);
     }
 
@@ -436,8 +453,10 @@ class ModelGame {
      * @return bool - true if password is correct
      */
     public function checkPassword($password) {
-        $result = DataSource::Singleton()->epp('check_game_password',array(':id_game' => $this->id, ':password' => $password));
-        if (empty($result)) return false;
+        $result = DataSource::Singleton()->epp('check_game_password', array(':id_game' => $this->id, ':password' => $password));
+        if (empty($result)) {
+            return false;
+        }
         return true;
     }
 
@@ -447,10 +466,12 @@ class ModelGame {
      */
     public function checkIfColorIsFree($id_color) {
         $id_color = intval($id_color);
-        ModelColor::getModelColor($id_color);
-        $iter = ModelIsInGameInfo::iterator(null,$this->id);
+        Model\Atton\ModelColor::getModelColor($id_color);
+        $iter = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
         while ($iter->hasNext()) {
-            if ($iter->next()->getIdColor() == $id_color) return false;
+            if ($iter->next()->getIdColor() == $id_color) {
+                return false;
+            }
         }
         return true;
     }
@@ -462,15 +483,17 @@ class ModelGame {
         $colors_taken = array();
         $output = array();
         // array with taken colors
-        $iter = ModelIsInGameInfo::iterator(null,$this->id);
+        $iter = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
         while ($iter->hasNext()) {
             $colors_taken[] = $iter->next()->getIdColor();
         }
 
-        $iter = ModelColor::iterator();
+        $iter = Model\Atton\ModelColor::iterator();
         while ($iter->hasNext()) {
             $_Color = $iter->next();
-            if (in_array($_Color->getId(),$colors_taken)) continue;
+            if (in_array($_Color->getId(), $colors_taken)) {
+                continue;
+            }
             $output[$_Color->getId()] = array('id' => $_Color->getId(), 'color' => $_Color->getName());
         }
         return $output;
@@ -522,7 +545,7 @@ class ModelGame {
      * @return ModelUser
      */
     public function getCreator() {
-        return ModelUser::getUser($this->id_creator);
+        return Model\User\ModelUser::getUser($this->id_creator);
     }
 
     /**
@@ -536,7 +559,7 @@ class ModelGame {
      * @return int
      */
     public function getNumberOfPlayers() {
-        $iter = ModelIsInGameInfo::iterator(null,$this->id);
+        $iter = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
         return $iter->size();
     }
 
@@ -560,8 +583,10 @@ class ModelGame {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = DataSource::Singleton()->epp('get_full_game_info',array(':id_game' => $this->id));
-        if (empty($result)) return false;
+        $result = DataSource::Singleton()->epp('get_full_game_info', array(':id_game' => $this->id));
+        if (empty($result)) {
+            return false;
+        }
 
         // fill in info
         $data = $result[0];
@@ -569,13 +594,19 @@ class ModelGame {
         $this->id_game_mode = intval($data['id_game_mode']);
         $this->playerslots = intval($data['players']);
         $this->id_creator = intval($data['id_creator']);
-        if ($data['password'] == null) $this->pw_protected = false;
-        else $this->pw_protected = true;
+        if ($data['password'] === null) {
+            $this->pw_protected = false;
+        } else {
+            $this->pw_protected = true;
+        }
         $this->status = $data['status'];
         $this->id_phase = intval($data['id_phase']);
         $this->round = intval($data['round']);
-        if ($data['processing'] == 1) $this->processing = true;
-        else $this->processing = false;
+        if ($data['processing'] === 1) {
+            $this->processing = true;
+        } else {
+            $this->processing = false;
+        }
 
         return true;
     }
@@ -585,9 +616,8 @@ class ModelGame {
         $dict = array();
         $dict[':id_game'] = $this->id;
         $dict[':round'] = $this->round+1;
-        DataSource::getInstance()->epp($query,$dict);
+        DataSource::getInstance()->epp($query, $dict);
         $this->round++;
-
     }
 
 }
