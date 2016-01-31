@@ -1,6 +1,7 @@
 <?php
 namespace AttOn\View\Content\Factories\Interfaces;
 use AttOn\Model;
+use AttOn\Exceptions\SessionException;
 
 abstract class ContentFactory {
 

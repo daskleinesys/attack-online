@@ -38,6 +38,7 @@ $app->get('/:content/', function($content) use ($app, $debug, $logger) {
                     'message' => $ex->getMessage()
                 );
                 $app->render('error.twig', $data);
+                return;
             }
         }
     }
