@@ -33,32 +33,41 @@ class ModelGame {
      * @return void
      */
     private function __construct($id_game) {
-        $id_game = intval($id_game);
         $this->id = intval($id_game);
 
-        if (!$this->fill_member_vars()) throw new NullPointerException('Game not found.');
-        if (!isset(self::$_Logger)) self::$_Logger = Logger::getLogger('ModelGame');
+        // fill game data
+        if (!$this->fill_member_vars()) {
+            throw new Exceptions\NullPointerException('Game not found.');
+        }
+        if (!isset(self::$_Logger)) {
+            self::$_Logger = \Logger::getLogger('ModelGame');
+        }
+
     }
 
     /**
      * returns game model for given id
+     *
      * @param int $id_game
      * @throws NullPointerException (if game not found)
      * @return ModelGame
      */
     public static function getGame($id_game) {
-        if (isset(self::$games[$id_game])) return self::$games[$id_game];
+        if (isset(self::$games[$id_game])) {
+            return self::$games[$id_game];
+        }
 
         return self::$games[$id_game] = new ModelGame($id_game);
     }
 
     /**
      * returns an iterator for games
+     *
      * @param $status - define for game status
      * @param int $id_user
      * @return iterator
      */
-    public static function iterator($status,$id_user = null) {
+    public static function iterator($status, $id_user = null) {
         $games = array();
 
         $dict = array();
@@ -96,8 +105,8 @@ class ModelGame {
     }
 
     /**
-     *
      * tries to create a new game - returns true on success
+     *
      * @param string $name
      * @param int $game_mode
      * @param int $players
@@ -107,29 +116,34 @@ class ModelGame {
      * @return ModelGame
      */
     public static function createGame($name, $game_mode, $players, $id_creator, $password) {
-        $result = DataSource::Singleton()->epp('check_game_name',array(':name' => $name));
-        if (!empty($result)) throw new GameCreationException('Spielname bereits vergeben!');
-        $result = DataSource::Singleton()->epp('check_game_mode',array(':id_game_mode' => $game_mode));
-        if (empty($result)) throw new GameCreationException('Ungültiger Spielmodus.');
+        $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
+        if (!empty($result)) {
+            throw new Exceptions\GameCreationException('Spielname bereits vergeben!');
+        }
+        $result = DataSource::Singleton()->epp('check_game_mode', array(':id_game_mode' => $game_mode));
+        if (empty($result)) {
+            throw new Exceptions\GameCreationException('Ungueltiger Spielmodus.');
+        }
         // :game_name, :id_game_mode, :players, :id_creator
         $dict = array();
         $dict[':game_name'] = $name;
         $dict[':id_game_mode'] = $game_mode;
         $dict[':players'] = $players;
         $dict[':id_creator'] = $id_creator;
-        if (empty($password)) $query = 'create_game_without_pw';
-        else {
+        if (empty($password)) {
+            $query = 'create_game_without_pw';
+        } else {
             $query = 'create_game_with_pw';
             $dict[':password'] = $password;
         }
 
         try {
-            DataSource::Singleton()->epp($query,$dict);
-        } catch (DataSourceException $ex) {
-            throw new GameCreationException('Unexpected error. Please try again.');
+            DataSource::Singleton()->epp($query, $dict);
+        } catch (Exceptions\DataSourceException $ex) {
+            throw new Exceptions\GameCreationException('Unexpected error. Please try again.');
         }
 
-        $result = DataSource::Singleton()->epp('check_game_name',array(':name' => $name));
+        $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
         $id_game = intval($result[0]['id']);
         self::setGameSpecificQueries($id_game);
 
@@ -546,4 +560,3 @@ class ModelGame {
     }
 
 }
-?>
