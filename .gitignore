@@ -12,3 +12,7 @@ php/defines/local_configuration.php
 # LOGGING
 logs/*
 logs
+
+# IDE
+.idea/
+.idea
