@@ -1,6 +1,7 @@
 <?php
 namespace AttOn\View\Content\Operations;
 use AttOn\Model;
+use AttOn\Controller\User\UserGameInteraction;
 
 class ContentGames extends Interfaces\ContentOperation {
 
