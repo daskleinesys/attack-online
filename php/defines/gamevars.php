@@ -1,4 +1,5 @@
 <?php
+namespace AttOn;
 
 // Define static values
 define('TYPE_LAND', 1);

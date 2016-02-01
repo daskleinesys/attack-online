@@ -1,4 +1,5 @@
 <?php
+namespace AttOn;
 
 // define error-codes
 define('DATABASE_ERROR', -1);
