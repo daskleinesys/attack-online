@@ -101,7 +101,7 @@ class ContentGames extends Interfaces\ContentOperation {
 			$game_info['free_slots'] = $game->getFreeSlots();
 			$game_info['creator'] = $game->getCreator()->getLogin();
             $game_info['password'] = $game->checkPasswordProtection();
-            $game_info['creator'] = ModelUser::getCurrentUser() === $game->getCreator();
+            $game_info['created'] = ModelUser::getCurrentUser() === $game->getCreator();
             $game_info['ingame'] = ModelIsInGameInfo::isUserInGame(ModelUser::getCurrentUser()->getId(), $game->getId());
             $data['games']['list'][] = $game_info;
 		}

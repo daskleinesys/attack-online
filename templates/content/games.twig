@@ -40,11 +40,11 @@
             {% for game in games.list %}
             <tr>
                 <td class="center">
-                    {% if game.creator and game.ingame %}
+                    {% if game.created and game.ingame %}
                     <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
                     {% elseif game.ingame %}
                     <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
-                    {% elseif game.creator %}
+                    {% elseif game.created %}
                     <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
                     {% else %}
                     <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
@@ -124,15 +124,17 @@
 
             {% for game in games.list %}
             <tr>
-                {% if game.creator and game.ingame %}
-                <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
-                {% elseif game.ingame %}
-                <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
-                {% elseif game.creator %}
-                <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
-                {% else %}
-                <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
-                {% endif %}
+                <td>
+                    {% if game.created and game.ingame %}
+                    <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
+                    {% elseif game.ingame %}
+                    <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
+                    {% elseif game.created %}
+                    <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
+                    {% else %}
+                    <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
+                    {% endif %}
+                </td>
                 <td>{{game.name}}</td>
                 <td>{{game.slots}}</td>
                 <td>{{game.creator}}</td>
@@ -168,15 +170,17 @@
 
             {% for game in games.list %}
             <tr>
-                {% if game.creator and game.ingame %}
-                <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
-                {% elseif game.ingame %}
-                <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
-                {% elseif game.creator %}
-                <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
-                {% else %}
-                <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
-                {% endif %}
+                <td>
+                    {% if game.created and game.ingame %}
+                    <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
+                    {% elseif game.ingame %}
+                    <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
+                    {% elseif game.created %}
+                    <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
+                    {% else %}
+                    <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
+                    {% endif %}
+                </td>
                 <td>{{game.name}}</td>
                 <td>{{game.slots}}</td>
                 <td>{{game.creator}}</td>
