@@ -1,6 +1,8 @@
 <?php
 namespace AttOn\View\Content\Operations;
 use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelUser;
+use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Controller\User\UserGameInteraction;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\NullPointerException;
@@ -19,8 +21,8 @@ class ContentGames extends Interfaces\ContentOperation {
         }
 
 		$this->setStatusBar($data);
-		//$iter_games = $this->loadGames();
-		//$this->parseGames($iter_games);
+		$iter_games = $this->loadGames();
+		$this->parseGames($data, $iter_games);
 
         $data['template'] = $this->getTemplate();
 		return $data;
@@ -87,36 +89,24 @@ class ContentGames extends Interfaces\ContentOperation {
 		}
 	}
 
-	private function parseGames($iter_games) {
-        // TODO : finish ContentGames
+	private function parseGames(array &$data, $iter_games) {
+        $data['games']['list'] = array();
 		while ($iter_games->hasNext()) {
-			$_Game = $iter_games->next();
+			$game = $iter_games->next();
 			$game_info = array();
-			$game_info['id'] = $_Game->getId();
-			$game_info['name'] = $_Game->getName();
-			$game_info['slots'] = $_Game->getPlayerSlots();
-			$game_info['free_slots'] = $_Game->getFreeSlots();
-			$game_info['creator'] = $_Game->getCreator()->getLogin();
-			$this->xtpl->assign('game',$game_info);
-			if ($_Game->checkPasswordProtection()) $this->xtpl->parse('main.' . $this->game_status . '.game.password');
-
-			// user is ingame/creator
-			$ingame = '';
-			if (ModelUser::getUser($this->id_user_logged_in) == $_Game->getCreator()) $ingame = 'creator_';
-			if (ModelIsInGameInfo::isUserInGame($this->id_user_logged_in,$_Game->getId())) {
-				$ingame .= 'ingame';
-				$this->xtpl->parse('main.' . $this->game_status . '.game.joined');
-			} else $ingame .= 'notingame';
-
-			$this->xtpl->assign('ingame',$ingame);
-
-
-			$this->xtpl->parse('main.' . $this->game_status . '.game');
-			$this->xtpl->parse('main.' . $this->game_status . '.gamelist');
-			if (($this->game_status == GAME_STATUS_NEW) && ($_Game->getFreeSlots() > 0)) {
-				$this->xtpl->parse('main.' . $this->game_status . '.join');
-			}
+			$game_info['id'] = $game->getId();
+			$game_info['name'] = $game->getName();
+			$game_info['status'] = $this->game_status();
+			$game_info['slots'] = $game->getPlayerSlots();
+			$game_info['free_slots'] = $game->getFreeSlots();
+			$game_info['creator'] = $game->getCreator()->getLogin();
+            $game_info['password'] = $game->checkPasswordProtection();
+            $game_info['creator'] = ModelUser::getCurrentUser() === $game->getCreator();
+            $game_info['ingame'] = ModelIsInGameInfo::isUserInGame(ModelUser::getCurrentUser()->getId(), $game->getId());
+            $data['games']['list'][] = $game_info;
 		}
+        var_dump($data);
+        die();
 	}
 
 }
