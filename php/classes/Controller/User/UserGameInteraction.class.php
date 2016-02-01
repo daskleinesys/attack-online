@@ -26,8 +26,6 @@ class UserGameInteraction extends ConstrictedController {
      * @return boolean
      */
     public function join($id_color = null, $id_game, $password = null) {
-        $id_color = intval($id_color);
-        $id_game = intval($id_game);
         $game = ModelGame::getGame($id_game);
 
         // check password
@@ -54,7 +52,6 @@ class UserGameInteraction extends ConstrictedController {
      * @return boolean
      */
     public function leaveGame($id_game) {
-        $id_game = intval($id_game);
         $game = ModelGame::getGame($id_game);
 
         if ($game->getStatus() !== GAME_STATUS_NEW) {
@@ -76,7 +73,6 @@ class UserGameInteraction extends ConstrictedController {
      * @return boolean
      */
     public function selectGame($id_game) {
-        $id_game = intval($id_game);
         if (!$this->checkInGame($id_game)) {
             throw new ControllerException('User is not in this game.');
         }

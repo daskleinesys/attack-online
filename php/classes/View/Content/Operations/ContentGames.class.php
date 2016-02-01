@@ -2,6 +2,8 @@
 namespace AttOn\View\Content\Operations;
 use AttOn\Model;
 use AttOn\Controller\User\UserGameInteraction;
+use AttOn\Exceptions\ControllerException;
+use AttOn\Exceptions\NullPointerException;
 
 class ContentGames extends Interfaces\ContentOperation {
 
@@ -12,12 +14,8 @@ class ContentGames extends Interfaces\ContentOperation {
     }
 
 	public function run(array &$data) {
-
-        // TODO : make ContentGames work
-        echo 'TODO : make ContentGames work';
-        /*
-		if (isset($_POST['leave'])) {
-            $this->leaveGame();
+		if (isset($_POST['games']) && is_array($_POST['games']) && isset($_POST['games']['leave'])) {
+            $this->leaveGame($data, $_POST['games']['leave']);
         }
 
 		$this->loadGames();
@@ -25,23 +23,31 @@ class ContentGames extends Interfaces\ContentOperation {
 
 		$this->showStatusBar();
 		$this->parseGames($iter_games);
-        */
 
         $data['template'] = $this->getTemplate();
 		return $data;
 	}
 
-	private function leaveGame() {
-		$_UserGameInteraction = new UserGameInteraction($this->id_user_logged_in);
+	private function leaveGame(array &$data, $id_game) {
+		$userGameInteraction = new UserGameInteraction();
 		try {
-			$_UserGameInteraction->leaveGame(intval($_POST['leave']));
-			$this->showContentInfo('Game successfully left.');
+			$userGameInteraction->leaveGame($data, intval($id_game));
+            $data['status'] = array(
+                'message' => 'Game joined.'
+            );
 		} catch (ControllerException $ex) {
-			$this->showContentError($ex->getMessage());
+            $data['errors'] = array(
+                'message' => $ex->getMessage()
+            );
+		} catch (NullPointerException $ex) {
+            $data['errors'] = array(
+                'message' => 'Game not found'
+            );
 		}
 	}
 
 	private function loadGames() {
+        // TODO : continue;
 		if (!isset($_GET['show'])) {
 			$this->game_status = GAME_STATUS_NEW;
 			return;
