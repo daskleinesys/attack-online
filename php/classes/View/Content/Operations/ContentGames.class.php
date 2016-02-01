@@ -1,28 +1,26 @@
 <?php
 namespace AttOn\View\Content\Operations;
-use AttOn\Model;
+use AttOn\Model\Game\ModelGame;
 use AttOn\Controller\User\UserGameInteraction;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\NullPointerException;
 
 class ContentGames extends Interfaces\ContentOperation {
 
-	private $game_status;
-
     public function getTemplate() {
         return 'games';
     }
 
 	public function run(array &$data) {
+        $data['games'] = array();
+
 		if (isset($_POST['games']) && is_array($_POST['games']) && isset($_POST['games']['leave'])) {
             $this->leaveGame($data, $_POST['games']['leave']);
         }
 
-		$this->loadGames();
-		$iter_games = Model\Game\ModelGame::iterator($this->game_status);
-
-		$this->showStatusBar();
-		$this->parseGames($iter_games);
+		$this->setStatusBar($data);
+		//$iter_games = $this->loadGames();
+		//$this->parseGames($iter_games);
 
         $data['template'] = $this->getTemplate();
 		return $data;
@@ -47,49 +45,50 @@ class ContentGames extends Interfaces\ContentOperation {
 	}
 
 	private function loadGames() {
-        // TODO : continue;
 		if (!isset($_GET['show'])) {
-			$this->game_status = GAME_STATUS_NEW;
-			return;
-		}
-		switch ($_GET['show']) {
-			case GAME_STATUS_NEW:
-				$this->game_status = GAME_STATUS_NEW;
-				break;
-			case GAME_STATUS_DONE:
-				$this->game_status = GAME_STATUS_DONE;
-				break;
-			case GAME_STATUS_RUNNING:
-				$this->game_status = GAME_STATUS_RUNNING;
-				break;
-			default:
-				$this->game_status = GAME_STATUS_NEW;
-				break;
-		}
+			$game_status = GAME_STATUS_NEW;
+		} else {
+            switch ($_GET['show']) {
+                case GAME_STATUS_NEW:
+                    $game_status = GAME_STATUS_NEW;
+                    break;
+                case GAME_STATUS_DONE:
+                    $game_status = GAME_STATUS_DONE;
+                    break;
+                case GAME_STATUS_RUNNING:
+                    $game_status = GAME_STATUS_RUNNING;
+                    break;
+                default:
+                    $game_status = GAME_STATUS_NEW;
+                    break;
+            }
+        }
+		$return = ModelGame::iterator($game_status);
 	}
 
-	private function showStatusBar() {
+	private function setStatusBar(array &$data) {
 		if (!isset($_GET['show'])) {
-			$this->xtpl->parse('main.status1');
+            $data['games']['show'] = GAME_STATUS_NEW;
 			return;
 		}
 		switch ($_GET['show']) {
 			case GAME_STATUS_NEW:
-				$this->xtpl->parse('main.status1');
+                $data['games']['show'] = GAME_STATUS_NEW;
 				break;
 			case GAME_STATUS_DONE:
-				$this->xtpl->parse('main.status3');
+                $data['games']['show'] = GAME_STATUS_DONE;
 				break;
 			case GAME_STATUS_RUNNING:
-				$this->xtpl->parse('main.status2');
+                $data['games']['show'] = GAME_STATUS_RUNNING;
 				break;
 			default:
-				$this->xtpl->parse('main.status1');
+                $data['games']['show'] = GAME_STATUS_NEW;
 				break;
 		}
 	}
 
 	private function parseGames($iter_games) {
+        // TODO : finish ContentGames
 		while ($iter_games->hasNext()) {
 			$_Game = $iter_games->next();
 			$game_info = array();
