@@ -65,7 +65,7 @@ class ContentGames extends Interfaces\ContentOperation {
                     break;
             }
         }
-		$return = ModelGame::iterator($game_status);
+		return ModelGame::iterator($game_status);
 	}
 
 	private function setStatusBar(array &$data) {
@@ -96,7 +96,7 @@ class ContentGames extends Interfaces\ContentOperation {
 			$game_info = array();
 			$game_info['id'] = $game->getId();
 			$game_info['name'] = $game->getName();
-			$game_info['status'] = $this->game_status();
+			$game_info['status'] = $game->getStatus();
 			$game_info['slots'] = $game->getPlayerSlots();
 			$game_info['free_slots'] = $game->getFreeSlots();
 			$game_info['creator'] = $game->getCreator()->getLogin();
@@ -105,8 +105,6 @@ class ContentGames extends Interfaces\ContentOperation {
             $game_info['ingame'] = ModelIsInGameInfo::isUserInGame(ModelUser::getCurrentUser()->getId(), $game->getId());
             $data['games']['list'][] = $game_info;
 		}
-        var_dump($data);
-        die();
 	}
 
 }

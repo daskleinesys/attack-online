@@ -1,190 +1,207 @@
 <div class="show">
-
-    {% if (games.show == 'running') %}
+    {% if (games.show == 'new') %}
+    offene / <a href="{{absRefPrefix}}games/?show=running">laufende</a> / <a href="{{absRefPrefix}}games/?show=done">beendete</a>
+    {% elseif (games.show == 'running') %}
     <a href="{{absRefPrefix}}games/?show=new">offene</a> / laufende / <a href="{{absRefPrefix}}games/?show=done">beendete</a>
     {% elseif (games.show == 'done') %}
     <a href="{{absRefPrefix}}games/?show=new">offene</a> / <a href="{{absRefPrefix}}games/?show=running">laufende</a> / beendete
-    {% else %}
-    offene / <a href="{{absRefPrefix}}games/?show=running">laufende</a> / <a href="{{absRefPrefix}}games/?show=done">beendete</a>
     {% endif %}
-
 </div>
 
 <h1>Partien-&Uuml;bersicht</h1>
 
-<p>W&auml;hlen Sie eines der offenen Spiele um beizutreten oder <a href="{PHP._SERVER.PHP_SELF}?content=newgame" class="linktext">erstellen</a> Sie ein neues.</p>
+<p>W&auml;hlen Sie eines der offenen Spiele um beizutreten oder <a href="{{absRefPrefix}}newgame/" class="linktext">erstellen</a> Sie ein neues.</p>
 
-<!-- BEGIN: new -->
-<h3>Offene Spiele:</h3>
-<p>Um an einem Spiel teilzunehmen, w&auml;hlen Sie es aus der Liste aus und dr&uuml;cken Sie auf "teilnehmen".<br />Mit dem Button rechts vom Ersteller k&ouml;nnen Sie ein Spiel, dem Sie bereits beigetreten sind, wieder verlassen.</p>
-<table width="589">
-    <colgroup>
-        <col width="25" />
-        <col width="40" />
-        <col width="185" />
-        <col width="100" span="3" />
-        <col width="39" />
-    </colgroup>
-    <tr>
-        <th></th>
-        <th>PW</th>
-        <th>Name</th>
-        <th>Max. Spieler</th>
-        <th>Freie Pl&auml;tze</th>
-        <th>Ersteller</th>
-    </tr>
 
-    <!-- BEGIN: game -->
-    <tr>
-        <td class="center"><img src="./images/{ingame}.gif" alt="{ingame}" /></td>
-        <td>
-        <!-- BEGIN: password -->
-        <img src="./images/password.gif" alt="password protected" />
-        <!-- END: password -->
-        </td>
-        <td>{game.name}</td>
-        <td class="center">{game.slots}</td>
-        <td class="center">{game.free_slots}</td>
-        <td>{game.creator}</td>
+{% if (games.list|length > 0) %}
 
-        <!-- BEGIN: joined -->
-        <td class="center">
-        <form method="post" action="{PHP._SERVER.PHP_SELF}?content=games">
-            <input type="image" value="{game.id}" name="leave" src="./images/leave.gif" alt="Spiel verlassen"/>
-            <input type="hidden" value="{game.id}" name="leave" />
+    {% if (games.show == 'new') %}
+
+        <h3>Offene Spiele:</h3>
+        <p>Um an einem Spiel teilzunehmen, w&auml;hlen Sie es aus der Liste aus und dr&uuml;cken Sie auf "teilnehmen".<br />Mit dem Button rechts vom Ersteller k&ouml;nnen Sie ein Spiel, dem Sie bereits beigetreten sind, wieder verlassen.</p>
+
+        <table width="589">
+            <colgroup>
+                <col width="25" />
+                <col width="40" />
+                <col width="185" />
+                <col width="100" span="3" />
+                <col width="39" />
+            </colgroup>
+            <tr>
+                <th></th>
+                <th>PW</th>
+                <th>Name</th>
+                <th>Max. Spieler</th>
+                <th>Freie Pl&auml;tze</th>
+                <th>Ersteller</th>
+            </tr>
+
+            {% for game in games.list %}
+            <tr>
+                <td class="center">
+                    {% if game.creator and game.ingame %}
+                    <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
+                    {% elseif game.ingame %}
+                    <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
+                    {% elseif game.creator %}
+                    <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
+                    {% else %}
+                    <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
+                    {% endif %}
+                </td>
+                <td>
+                    {% if game.password %}
+                    <img src="{{absRefPrefix}}dist/images/password.gif" alt="password protected" />
+                    {% endif %}
+                </td>
+                <td>
+                    {{game.name}}
+                </td>
+                <td class="center">
+                    {{game.slots}}
+                </td>
+                <td class="center">
+                    {{game.free_slots}}
+                </td>
+                <td>
+                    {{game.creator}}
+                </td>
+
+                {% if game.ingame %}
+                <td class="center">
+                    <form method="post" action="{{absRefPrefix}}games/?show={{games.show}}">
+                        <input type="image" value="{{game.id}}" name="leave" src="{{absRefPrefix}}dist/images/leave.gif" alt="Spiel verlassen"/>
+                        <input type="hidden" value="{{game.id}}" name="leave" />
+                    </form>
+                </td>
+                {% endif %}
+
+            </tr>
+            {% endfor %}
+        </table>
+        <table>
+            <tr>
+                <td>
+                    <form method="post" action="{{absRefPrefix}}joingame/">
+                        <select name="id_game">
+                            {% for game in games.list %}{% if game.free_slots > 0 %}
+                            <option value="{{game.id}}">{{game.name}} ({{game.free_slots}} / {{game.slots}} frei)</option>
+                            {% endif %}{% endfor %}
+                        </select>
+                        <input type="submit" value="Teilnehmen" name="games_join" />
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="{{absRefPrefix}}gameinfo/">
+                        <select name="games">
+                            {% for game in games.list %}
+                            <option value="{{game.id}}">{{game.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Ansehen" name="show" />
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <img src="{{absRefPrefix}}dist/images/creator.gif" alt="ingame" /> Sie haben dieses Spiel erstellt.<br />
+            <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame" /> Sie sind in diesem Spiel.<br />
+            <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame" /> Sie sind nicht in diesem Spiel.
+        </p>
+
+    {% elseif (games.show == 'running') %}
+
+        <h3>Laufende Spiele:</h3>
+        <p>An folgenden Spielen k&ouml;nnen Sie nicht mehr teilnehmen da diese bereits laufen. Sie k&ouml;nnen sich jedoch den Spielstand ansehen.</p>
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Anzahl der Spieler</th>
+                <th>Ersteller</th>
+            </tr>
+
+            {% for game in games.list %}
+            <tr>
+                {% if game.creator and game.ingame %}
+                <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
+                {% elseif game.ingame %}
+                <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
+                {% elseif game.creator %}
+                <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
+                {% else %}
+                <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
+                {% endif %}
+                <td>{{game.name}}</td>
+                <td>{{game.slots}}</td>
+                <td>{{game.creator}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+        <form method="post" action="{{absRefPrefix}}gameinfo/">
+            <select name="games">
+                {% for game in games.list %}
+                <option value="{{game.id}}">{{game.name}}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Ansehen" name="show" />
         </form>
-        </td>
-        <!-- END: joined -->
+        <p>
+            <img src="{{absRefPrefix}}dist/images/creator.gif" alt="ingame" /> You created this game.<br />
+            <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame" /> You are in this game.<br />
+            <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame" /> You are not in this game.
+        </p>
 
-    </tr>
-    <!-- END: game -->
+    {% elseif (games.show == 'done') %}
 
-</table>
-<table>
-    <tr>
-        <td>
-            <form method="post" action="{PHP._SERVER.PHP_SELF}?content=joingame">
-                <p>
-                <select name="id_game">
+        <h3>Gelaufene Spiele:</h3>
+        <p>An folgenden Spielen k&ouml;nnen Sie nicht mehr teilnehmen da diese bereits vorbei sind. Sie k&ouml;nnen sich jedoch den Spielstand ansehen.</p>
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Anzahl der Spieler</th>
+                <th>Ersteller</th>
+            </tr>
 
-                    <!-- BEGIN: join -->
-                    <option value="{game.id}">{game.name} ({game.free_slots} / {game.slots} frei)</option>
-                    <!-- END: join -->
+            {% for game in games.list %}
+            <tr>
+                {% if game.creator and game.ingame %}
+                <img src="{{absRefPrefix}}dist/images/creator_ingame.gif" alt="creator_ingame symbol" />
+                {% elseif game.ingame %}
+                <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame symbol" />
+                {% elseif game.creator %}
+                <img src="{{absRefPrefix}}dist/images/creator.gif" alt="creator symbol" />
+                {% else %}
+                <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame symbol" />
+                {% endif %}
+                <td>{{game.name}}</td>
+                <td>{{game.slots}}</td>
+                <td>{{game.creator}}</td>
+            </tr>
+            {% endfor %}
 
-                </select>
-                </p>
-                <input type="submit" value="Teilnehmen" name="games_join" />
-            </form>
-        </td>
-        <td>
-            <form method="post" action="{PHP._SERVER.PHP_SELF}?content=gameinfo">
-                <p>
-                <select name="games">
+        </table>
+        <form method="post" action="{{absRefPrefix}}gameinfo/">
+            <select name="games">
+                {% for game in games.list %}
+                <option value="{{game.id}}">{{game.name}}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Ansehen" name="show" />
+        </form>
+        <p>
+            <img src="{{absRefPrefix}}dist/images/creator.gif" alt="ingame" /> You created this game.<br />
+            <img src="{{absRefPrefix}}dist/images/ingame.gif" alt="ingame" /> You are in this game.<br />
+            <img src="{{absRefPrefix}}dist/images/notingame.gif" alt="notingame" /> You are not in this game.
+        </p>
 
-                    <!-- BEGIN: gamelist -->
-                    <option value="{game.id}">{game.name}</option>
-                    <!-- END: gamelist -->
+    {% endif %}
 
-                </select>
-                </p>
-                <input type="submit" value="Ansehen" name="show" />
-            </form>
-        </td>
-    </tr>
-</table>
-<p><img src="./images/creator.gif" alt="ingame" /> Sie haben dieses Spiel erstellt.<br />
-<img src="./images/ingame.gif" alt="ingame" /> Sie sind in diesem Spiel.<br />
-<img src="./images/notingame.gif" alt="notingame" /> Sie sind nicht in diesem Spiel.</p>
-<!-- END: new -->
+{% else %}
 
-<!-- BEGIN: running -->
-<h3>Laufende Spiele:</h3>
-<p>An folgenden Spielen k&ouml;nnen Sie nicht mehr teilnehmen da diese bereits laufen. Sie k&ouml;nnen sich jedoch den Spielstand ansehen.</p>
-<table>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Anzahl der Spieler</th>
-        <th>Ersteller</th>
-    </tr>
+    <p class="error">Sorry, no games found.</p>
 
-    <!-- BEGIN: game -->
-    <tr>
-        <td class="center"><img src="./images/{ingame}.gif" alt="{ingame}" /></td>
-        <td>{game.name}</td>
-        <td>{game.slots}</td>
-        <td>{game.creator}</td>
-
-        <!-- BEGIN: joined -->
-        <!-- END: joined -->
-
-    </tr>
-    <!-- END: game -->
-
-</table>
-<form method="post" action="{PHP._SERVER.PHP_SELF}?content=gameinfo">
-    <p>
-    <select name="games">
-
-        <!-- BEGIN: gamelist -->
-        <option value="{game.id}">{game.name}</option>
-        <!-- END: gamelist -->
-
-    </select>
-    </p>
-    <input type="submit" value="Ansehen" name="show" />
-</form>
-<p><img src="./images/creator.gif" alt="ingame" /> You created this game.<br />
-<img src="./images/ingame.gif" alt="ingame" /> You are in this game.<br />
-<img src="./images/notingame.gif" alt="notingame" /> You are not in this game.</p>
-
-<!-- END: running -->
-
-
-<!-- BEGIN: done -->
-<h3>Gelaufene Spiele:</h3>
-<p>An folgenden Spielen k&ouml;nnen Sie nicht mehr teilnehmen da diese bereits vorbei sind. Sie k&ouml;nnen sich jedoch den Spielstand ansehen.</p>
-<table>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Anzahl der Spieler</th>
-        <th>Ersteller</th>
-    </tr>
-
-    <!-- BEGIN: game -->
-    <tr>
-        <td class="center"><img src="./images/{ingame}.gif" alt="{ingame}" /></td>
-        <td>{game.name}</td>
-        <td>{game.slots}</td>
-        <td>{game.creator}</td>
-
-        <!-- BEGIN: joined -->
-        <!-- END:joined -->
-
-    </tr>
-    <!-- END: game -->
-
-</table>
-<form method="post" action="{PHP._SERVER.PHP_SELF}?content=gameinfo">
-    <p>
-    <select name="games">
-
-        <!-- BEGIN: gamelist -->
-        <option value="{game.id}">{game.name}</option>
-        <!-- END: gamelist -->
-
-    </select>
-    </p>
-    <input type="submit" value="Ansehen" name="show" />
-</form>
-<p><img src="./images/creator.gif" alt="ingame" /> You created this game.<br />
-<img src="./images/ingame.gif" alt="ingame" /> You played in this game.<br />
-<img src="./images/notingame.gif" alt="notingame" /> You didn't play in this game.</p>
-
-<!-- END: done -->
-
-
-<!-- BEGIN: no_game -->
-<p class="error">Sorry, no games found.</p>
-<!-- END: no_game -->
+{% endif %}
