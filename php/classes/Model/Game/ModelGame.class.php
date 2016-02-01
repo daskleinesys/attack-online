@@ -1,13 +1,27 @@
 <?php
 namespace AttOn\Model\Game;
+use AttOn\Model\Atton\ModelArea;
+use AttOn\Model\Atton\ModelColor;
+use AttOn\Model\Atton\ModelEconomy;
+use AttOn\Model\Atton\ModelGameArea;
+use AttOn\Model\Atton\ModelGameMode;
+use AttOn\Model\Atton\ModelPhase;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\DataBase\SQLCommands;
-use AttOn\Exceptions;
-use AttOn\Model;
+use AttOn\Model\Iterator\ModelIterator;
+use AttOn\Model\User\ModelIsInGameInfo;
+use AttOn\Model\User\ModelInGamePhaseInfo;
+use AttOn\Model\User\ModelStartingSet;
+use AttOn\Model\User\ModelUser;
+use AttOn\Exceptions\NullPointerException;
+use AttOn\Exceptions\GameCreationException;
+use AttOn\Exceptions\DataSourceException;
+use AttOn\Exceptions\GameAdministrationException;
+use Logger;
 
 class ModelGame {
 
-    private static $_Logger;
+    private static $logger;
 
     // currently (seleced) game model
     private static $current_game = null;
@@ -39,10 +53,10 @@ class ModelGame {
 
         // fill game data
         if (!$this->fill_member_vars()) {
-            throw new Exceptions\NullPointerException('Game not found.');
+            throw new NullPointerException('Game not found.');
         }
-        if (!isset(self::$_Logger)) {
-            self::$_Logger = \Logger::getLogger('ModelGame');
+        if (!isset(self::$logger)) {
+            self::$logger = Logger::getLogger('ModelGame');
         }
 
     }
@@ -103,7 +117,7 @@ class ModelGame {
             $games[] = self::$games[$id_game];
         }
 
-        return new Model\Iterator\ModelIterator($games);
+        return new ModelIterator($games);
     }
 
     /**
@@ -120,11 +134,11 @@ class ModelGame {
     public static function createGame($name, $game_mode, $players, $id_creator, $password) {
         $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
         if (!empty($result)) {
-            throw new Exceptions\GameCreationException('Spielname bereits vergeben!');
+            throw new GameCreationException('Spielname bereits vergeben!');
         }
         $result = DataSource::Singleton()->epp('check_game_mode', array(':id_game_mode' => $game_mode));
         if (empty($result)) {
-            throw new Exceptions\GameCreationException('Ungueltiger Spielmodus.');
+            throw new GameCreationException('Ungueltiger Spielmodus.');
         }
         // :game_name, :id_game_mode, :players, :id_creator
         $dict = array();
@@ -141,8 +155,8 @@ class ModelGame {
 
         try {
             DataSource::Singleton()->epp($query, $dict);
-        } catch (Exceptions\DataSourceException $ex) {
-            throw new Exceptions\GameCreationException('Unexpected error. Please try again.');
+        } catch (DataSourceException $ex) {
+            throw new GameCreationException('Unexpected error. Please try again.');
         }
 
         $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
@@ -176,11 +190,11 @@ class ModelGame {
     public static function deleteGame($id_game) {
         try {
             $_Game = self::getGame($id_game);
-        } catch (Exceptions\NullPointerException $ex) {
-            throw new Exceptions\GameAdministrationException('Game not found.');
+        } catch (NullPointerException $ex) {
+            throw new GameAdministrationException('Game not found.');
         }
         if ($_Game->getStatus() != GAME_STATUS_NEW) {
-            throw new Exceptions\GameAdministrationException('Only new games can be deleted.');
+            throw new GameAdministrationException('Only new games can be deleted.');
         }
 
         self::setGameSpecificQueries($id_game);
@@ -200,17 +214,17 @@ class ModelGame {
             DataSource::Singleton()->epp('drop_units_land_table', array());
             DataSource::Singleton()->epp('drop_units_sea_table', array());
             DataSource::Singleton()->epp('drop_units_in_harbor_table', array());
-        } catch (Exceptions\DataSourceException $ex) {
-            if (!isset(self::$_Logger)) {
-                self::$_Logger = Logger::getLogger('ModelGame');
+        } catch (DataSourceException $ex) {
+            if (!isset(self::$logger)) {
+                self::$logger = Logger::getLogger('ModelGame');
             }
-            self::$_Logger->error($ex);
+            self::$logger->error($ex);
         }
         $dict = array(':id_game' => $id_game);
         DataSource::Singleton()->epp('delete_game',$dict);
 
-        Model\User\ModelIsInGameInfo::deleteIsInGameInfos($id_game);
-        Model\User\ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_game);
+        ModelIsInGameInfo::deleteIsInGameInfos($id_game);
+        ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_game);
 
         unset(self::$games[$id_game]);
 
@@ -265,26 +279,26 @@ class ModelGame {
      */
     public function startGame() {
         if ($this->status !== GAME_STATUS_NEW) {
-            throw new Exceptions\GameAdministrationException('Only new games can be started.');
+            throw new GameAdministrationException('Only new games can be started.');
         }
 
         // allocate starting sets to users
-        $iter_player = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
+        $iter_player = ModelIsInGameInfo::iterator(null, $this->id);
         $players = $iter_player->size();
-        $iter_sets = Model\User\ModelStartingSet::iterator($players, true);
+        $iter_sets = ModelStartingSet::iterator($players, true);
         while ($iter_player->hasNext()) {
             if (!$iter_sets->hasNext()) {
-                throw new Exceptions\GameAdministrationException('Not enough starting sets found!');
+                throw new GameAdministrationException('Not enough starting sets found!');
             }
             $iter_player->next()->setStartingSet($iter_sets->next()->getId());
         }
 
         // allocate resources
-        $iter_poor = Model\Atton\ModelEconomy::iterator(ECONOMY_POOR);
-        $iter_weak = Model\Atton\ModelEconomy::iterator(ECONOMY_WEAK);
-        $iter_normal = Model\Atton\ModelEconomy::iterator(ECONOMY_NORMAL);
-        $iter_strong = Model\Atton\ModelEconomy::iterator(ECONOMY_STRONG);
-        $iter_areas = Model\Atton\ModelArea::iterator(TYPE_LAND);
+        $iter_poor = ModelEconomy::iterator(ECONOMY_POOR);
+        $iter_weak = ModelEconomy::iterator(ECONOMY_WEAK);
+        $iter_normal = ModelEconomy::iterator(ECONOMY_NORMAL);
+        $iter_strong = ModelEconomy::iterator(ECONOMY_STRONG);
+        $iter_areas = ModelArea::iterator(TYPE_LAND);
         while ($iter_areas->hasNext()) {
             $_Area = $iter_areas->next();
             switch ($_Area->getEconomy()) {
@@ -301,14 +315,14 @@ class ModelGame {
                     $_Eco = $iter_strong->next();
                     break;
             }
-            Model\Atton\ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
+            ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
         }
 
         // create sea areas
-        $iter_sea = Model\Atton\ModelArea::iterator(TYPE_SEA);
+        $iter_sea = ModelArea::iterator(TYPE_SEA);
         while ($iter_sea->hasnext()) {
             $_Area = $iter_sea->next();
-            Model\Atton\ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
+            ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
         }
 
         // set game to started
@@ -355,8 +369,8 @@ class ModelGame {
         try {
             DataSource::Singleton()->epp($query,$dict);
             $this->status = $status;
-        } catch (Exceptions\DataSourceException $ex) {
-            self::$_Logger->error($ex);
+        } catch (DataSourceException $ex) {
+            self::$logger->error($ex);
             return;
         }
 
@@ -381,7 +395,7 @@ class ModelGame {
         if ($this->id_phase === $id_phase) {
             return;
         }
-        Model\Atton\ModelPhase::getPhase($id_phase);
+        ModelPhase::getPhase($id_phase);
 
         $query = 'set_game_phase';
         $dict = array();
@@ -409,7 +423,7 @@ class ModelGame {
      */
     public function moveToNextPhase() {
         // get phases
-        $_ModelGameMode = Model\Atton\ModelGameMode::getGameMode($this->id_game_mode);
+        $_ModelGameMode = ModelGameMode::getGameMode($this->id_game_mode);
         $phases = $_ModelGameMode->getPhases();
 
         // check which phase is next
@@ -466,8 +480,8 @@ class ModelGame {
      */
     public function checkIfColorIsFree($id_color) {
         $id_color = intval($id_color);
-        Model\Atton\ModelColor::getModelColor($id_color);
-        $iter = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
+        ModelColor::getModelColor($id_color);
+        $iter = ModelIsInGameInfo::iterator(null, $this->id);
         while ($iter->hasNext()) {
             if ($iter->next()->getIdColor() == $id_color) {
                 return false;
@@ -483,12 +497,12 @@ class ModelGame {
         $colors_taken = array();
         $output = array();
         // array with taken colors
-        $iter = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
+        $iter = ModelIsInGameInfo::iterator(null, $this->id);
         while ($iter->hasNext()) {
             $colors_taken[] = $iter->next()->getIdColor();
         }
 
-        $iter = Model\Atton\ModelColor::iterator();
+        $iter = ModelColor::iterator();
         while ($iter->hasNext()) {
             $_Color = $iter->next();
             if (in_array($_Color->getId(), $colors_taken)) {
@@ -545,7 +559,7 @@ class ModelGame {
      * @return ModelUser
      */
     public function getCreator() {
-        return Model\User\ModelUser::getUser($this->id_creator);
+        return ModelUser::getUser($this->id_creator);
     }
 
     /**
@@ -559,7 +573,7 @@ class ModelGame {
      * @return int
      */
     public function getNumberOfPlayers() {
-        $iter = Model\User\ModelIsInGameInfo::iterator(null, $this->id);
+        $iter = ModelIsInGameInfo::iterator(null, $this->id);
         return $iter->size();
     }
 
