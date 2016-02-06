@@ -3,10 +3,10 @@
 <!-- BEGIN: game -->
 
 	<div class="showmoves">
-		<p><strong>{game.name}</strong><br /><small>({game.mode})</small></p>
+		<p><strong>{{game.name}}</strong><br /><small>({{game.mode}})</small></p>
 	</div>
-	
-	<h1>{game.name}</h1>
+
+	<h1>{{game.name}}</h1>
 	<!-- BEGIN: delete -->
 		<p>Wollen Sie wirklich dieses Spiel löschen?</p>
 	<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
@@ -18,7 +18,7 @@
 		</p>
 	</form>
 	<!-- END: delete -->
-	
+
 	<table>
 		<tr>
 			<td>Ersteller:</td>
@@ -28,7 +28,7 @@
 			<th>kick</th>
 			<!-- END: creator_kick -->
 		</tr>
-		
+
 		<!-- BEGIN: player -->
 		<tr>
 			<td>Mitspieler:</td>
@@ -97,149 +97,9 @@
 		</form>
 </table>
 
-	<!-- END: creator_new_game -->
-		
-<!-- END: game -->
+<!-- END: creator_new_game -->
 
-<!-- BEGIN: landmove -->
-		<table width="589">
-		<colgroup>
-			<col width="" span="2"/>
-			<col width="45" span="4"/>
-			<col width="100" />
-		</colgroup>
-			<tr>
-				<th>Startfeld</th>
-				<th>Zielfeld</th>
-				<th>Inf</th>
-				<th>Art</th>
-				<th>Pan</th>
-				<th>Flug</th>
-				<th>User</th>
-			</tr>
-			
-			<!-- BEGIN: moves -->
-			<tr>
-				<td>{move.start}</td>
-				<td>{move.destination}</td>
-				<td class="center">{move.Infanterie}</td>
-				<td class="center">{move.Artillerie}</td>
-				<td class="center">{move.Panzer}</td>
-				<td class="center">{move.Flieger}</td>
-				<td class="center">{move.login}</td>
-			</tr>
-			<!-- END: moves -->
-			</form>
-			
-		</table>
-<!-- END: landmove -->
-
-<!-- BEGIN: seamove -->
-		<table width="589">
-		<colgroup>
-			<col width="" span="2"/>
-			<col width="120" />
-			<col width="100" />
-		</colgroup>
-			<tr>
-				<th>Startfeld<br />Landfeld optional</th>
-				<th>Zielfeld<br />Landfeld optional</th>
-				<th>Schiffe<br />(multiple)</th>
-				<th> </th>
-			</tr>
-
-			<!-- BEGIN: moves -->
-			<tr>
-				<td class="center">{move.start}<br /><small>..{move.startcoast}</small></td>
-				<td class="center">{move.destination}<br /><small>..{move.destinationcoast}</small></td>
-				<td>
-				<!-- BEGIN: ships -->
-					<!-- BEGIN: names -->
-					<strong>{move.index.0}</strong>-{move.name}<br />
-					<!-- END: names -->
-				<small>{move.shipCount}..{move.ship}</small><br />
-				<!-- END: ships -->
-				</td>
-				<td class="center">{move.login}</td>
-			</tr>
-			<!-- END: moves -->
-		</table>
-<!-- END: seamove -->
-
-<!-- BEGIN: traderoute -->
-		<table width="448">
-		<colgroup>
-			<col width="174" span="2"/>
-			<col width="100" />
-		</colgroup>
-			<tr>
-				<th>Startfeld</th>
-				<th>Zielfeld</th>
-				<th>User</th>
-			</tr>
-
-			<!-- BEGIN: traderoutes -->
-			<tr>
-				<td>{tr.start}</td>
-				<td>{tr.destination}</td>
-				<td>{tr.login}</td>
-			</tr>
-			<!-- END: traderoutes -->
-		</table>
-<!-- END: traderoute -->
-
-<!-- BEGIN: troopsmove -->
-		<table width="589">
-		<colgroup>
-			<col width="" span="2"/>
-			<col width="45" span="4"/>
-			<col width="100" />
-		</colgroup>
-			<tr>
-				<th>Startfeld</th>
-				<th>Zielfeld</th>
-				<th>Inf</th>
-				<th>Art</th>
-				<th>Pan</th>
-				<th>Flug</th>
-				<th>User</th>
-			</tr>
-
-			<!-- BEGIN: moves -->
-			<tr>
-				<td>{move.start}</td>
-				<td>{move.destination}</td>
-				<td class="center">{move.Infanterie}</td>
-				<td class="center">{move.Artillerie}</td>
-				<td class="center">{move.Panzer}</td>
-				<td class="center">{move.Flieger}</td>
-				<td class="center">{move.login}</td>
-			</tr>
-			<!-- END: moves -->
-		</table>
-<!-- END: troopsmove -->
-
-<!-- BEGIN: production -->
-		<table>
-			<tr>
-				<th>Land</th>
-				<th>Einheit</th>
-				<th>Anzahl/Name</th>
-				<th>Küste<br />(Schiffe)</th>
-				<th>User</th>
-			</tr>
-
-			<!-- BEGIN: moves -->
-			<tr>
-				<td>{production.area}</td>
-				<td>{production.unit}</td>
-				<td>{production.name}{production.numberof}</td>
-				<td>{production.coast}</td>
-				<td>{production.login}</td>
-			</tr>
-			<!-- END: moves -->
-		</table>
-<!-- END: production -->
-		
-	<p><br/><a href="{PHP._SERVER.PHP_SELF}?content=games">Zurück</a></p>
-<!-- END: main -->
+<br>
+<p>
+    <a href="{{absRefPrefix}}games/">Zurück</a>
+</p>

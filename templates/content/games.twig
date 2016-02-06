@@ -94,7 +94,7 @@
                 </td>
                 <td>
                     <form method="post" action="{{absRefPrefix}}gameinfo/">
-                        <select name="games">
+                        <select name="id_game">
                             {% for game in games.list %}
                             <option value="{{game.id}}">{{game.name}}</option>
                             {% endfor %}
@@ -143,7 +143,7 @@
 
         </table>
         <form method="post" action="{{absRefPrefix}}gameinfo/">
-            <select name="games">
+            <select name="id_game">
                 {% for game in games.list %}
                 <option value="{{game.id}}">{{game.name}}</option>
                 {% endfor %}
@@ -189,7 +189,7 @@
 
         </table>
         <form method="post" action="{{absRefPrefix}}gameinfo/">
-            <select name="games">
+            <select name="id_game">
                 {% for game in games.list %}
                 <option value="{{game.id}}">{{game.name}}</option>
                 {% endfor %}
