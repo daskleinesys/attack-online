@@ -1,6 +1,7 @@
 <?php
 namespace AttOn\Model\User;
 use AttOn\Model\DataBase\DataSource;
+use AttOn\Model\Iterator\ModelIterator;
 use AttOn\Exceptions;
 
 class ModelUser {

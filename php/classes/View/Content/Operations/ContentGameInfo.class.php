@@ -57,23 +57,23 @@ class ContentGameInfo extends Interfaces\ContentOperation {
 		$gameInfo['mode'] = ModelGameMode::getGameMode($this->game->getIdGameMode())->getName();
 		$gameInfo['creator'] = $this->game->getCreator()->getLogin();
 		$gameInfo['id'] = $this->game->getId();
-        $gameInfo['status'] = $game->getStatus();
+        $gameInfo['status'] = $this->game->getStatus();
         $data['game'] = $gameInfo;
 
 		if (isset($_POST['delete'])) {
             $data['delete'] = true;
         }
 
-		if (ModelUser::getCurrentUser() === $game->getCreator()) {
+		if (ModelUser::getCurrentUser() === $this->game->getCreator()) {
             $data['isCreator'] = true;
 		}
 
         $player = array();
-		$iter = ModelUser::iterator(STATUS_USER_ALL, $game->getId());
+		$iter = ModelUser::iterator(STATUS_USER_ALL, $this->game->getId());
 		while ($iter->hasNext()) {
 			$user = $iter->next();
-			$player['login'] = $user>getLogin();
-			$player['color'] = ModelIsInGameInfo::getIsInGameInfo($user->getId(), $game->getId())->getColor()->getName();
+			$player['login'] = $user->getLogin();
+			$player['color'] = ModelIsInGameInfo::getIsInGameInfo($user->getId(), $this->game->getId())->getColor()->getName();
 			$player['id'] = $user->getUserId();
 		}
 	}
