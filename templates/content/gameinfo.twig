@@ -1,103 +1,101 @@
-<!-- BEGIN: main -->
+<div class="showmoves">
+    <p><strong>{{game.name}}</strong><br /><small>({{game.mode}})</small></p>
+</div>
 
-<!-- BEGIN: game -->
+<h1>{{game.name}}</h1>
 
-	<div class="showmoves">
-		<p><strong>{{game.name}}</strong><br /><small>({{game.mode}})</small></p>
-	</div>
+{% if delete %}
+<p>Wollen Sie wirklich dieses Spiel l&ouml;schen?</p>
+<form method="post" action="{{absRefPrefix}}gameinfo/">
+    <p>
+        <input type="submit" value="L&ouml;schen" name="delete_affirmed" />
+        <input type="submit" value="Abbrechen" name="abort" />
+        <input type="hidden" value="{{game.id}}" name="games" />
+        <input type="hidden" name="creator_action" value="creator_action" />
+    </p>
+</form>
+{% endif %}
 
-	<h1>{{game.name}}</h1>
-	<!-- BEGIN: delete -->
-		<p>Wollen Sie wirklich dieses Spiel löschen?</p>
-	<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
-		<p>
-			<input type="submit" value="L&ouml;schen" name="delete_affirmed" />
-			<input type="submit" value="Abbrechen" name="abort" />
-			<input type="hidden" value="{game.id}" name="games" />
-			<input type="hidden" name="creator_action" value="creator_action" />
-		</p>
-	</form>
-	<!-- END: delete -->
+<table>
+    <tr>
+        <td>Ersteller:</td>
+        <td>{{game.creator}}</td>
+        <th>Farbe</th>
+        {% if isCreator and game.status == 'new' %}
+        <th>kick</th>
+        {% endif %}
+    </tr>
 
-	<table>
-		<tr>
-			<td>Ersteller:</td>
-			<td>{game.creator}</td>
-			<th>Farbe</th>
-			<!-- BEGIN: creator_kick -->
-			<th>kick</th>
-			<!-- END: creator_kick -->
-		</tr>
-
-		<!-- BEGIN: player -->
-		<tr>
-			<td>Mitspieler:</td>
-			<td>{player.login}</td>
-			<td>{player.color}</td>
-			<!-- BEGIN: creator_kick -->
-			<td class="center">
-			<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
-				<input type="image" value="{player.id}" name="kick" src="./images/leave.gif" alt="Spiel verlassen"/>
-				<input type="hidden" value="{player.id}" name="kick" />
-				<input type="hidden" name="games" value="{game.id}" />
-				<input type="hidden" name="creator_action" value="creator_action" />
-			</form>
-			</td>
-			<!-- END: creator_kick -->
-		</tr>
-		<!-- END: player -->
-	</table>
-	<!-- BEGIN: creator_new_game -->
-	<br/>
-	<table>
+    {% for player in game.player %}
     <tr>
-        <td>start game
+        <td>Mitspieler:</td>
+        <td>{{player.login}}</td>
+        <td>{{player.color}}</td>
+        {% if isCreator and game.status == 'new' %}
+        <td class="center">
+        <form method="post" action="{{absRefPrefix}}gameinfo/">
+            <input type="image" value="{{player.id}}" name="kick" src="{{absRefPrefix}}/dist/images/leave.gif" alt="Spiel verlassen"/>
+            <input type="hidden" value="{{player.id}}" name="kick" />
+            <input type="hidden" name="games" value="{game.id}" />
+            <input type="hidden" name="creator_action" value="creator_action" />
+        </form>
         </td>
-        <td>
-			<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
-				<input type="submit" name="start" value="start" />
-				<input type="hidden" name="games" value="{game.id}" />
-				<input type="hidden" name="creator_action" value="creator_action" />
-			</form>
-        </td>
+        {% endif %}
     </tr>
-    <tr>
-        <td>delete game
-        </td>
-        <td>
-			<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
-				<input type="submit" name="delete" value="delete" />
-				<input type="hidden" name="games" value="{game.id}" />
-				<input type="hidden" name="creator_action" value="creator_action" />
-			</form>
-        </td>
-    </tr>
-		<form method="post" action="{PHP._SERVER.PHP_SELF}?content={content}">
-    <tr>
-        <td>new password<br/>(leave empty to set game without password)
-        </td>
-        <td><input type="password" id="password1" name="password1" maxlength="40"/>
-        </td>
-    </tr>
-    <tr>
-        <td>retype password
-        </td>
-        <td><input type="password" id="password2" name="password2" maxlength="40"/>
-        </td>
-    </tr>
-    <tr>
-        <td>change password
-        </td>
-        <td>
-			<input type="submit" name="change_pw" value="change" />
-			<input type="hidden" name="games" value="{game.id}" />
-			<input type="hidden" name="creator_action" value="creator_action" />
-        </td>
-    </tr>
-		</form>
+    {% endfor %}
 </table>
 
-<!-- END: creator_new_game -->
+{% if isCreator and game.status == 'new' %}
+<hr>
+<h3>new game actions</h3>
+<table>
+<tr>
+    <td>start game
+    </td>
+    <td>
+        <form method="post" action="{{absRefPrefix}}gameinfo/">
+            <input type="submit" name="start" value="start" />
+            <input type="hidden" name="games" value="{{game.id}}" />
+            <input type="hidden" name="creator_action" value="creator_action" />
+        </form>
+    </td>
+</tr>
+<tr>
+    <td>delete game
+    </td>
+    <td>
+        <form method="post" action="{{absRefPrefix}}gameinfo/">
+            <input type="submit" name="delete" value="delete" />
+            <input type="hidden" name="games" value="{{game.id}}" />
+            <input type="hidden" name="creator_action" value="creator_action" />
+        </form>
+    </td>
+</tr>
+    <form method="post" action="{{absRefPrefix}}gameinfo/">
+<tr>
+    <td>new password<br/>(leave empty to set game without password)
+    </td>
+    <td><input type="password" id="password1" name="password1" maxlength="40"/>
+    </td>
+</tr>
+<tr>
+    <td>retype password
+    </td>
+    <td><input type="password" id="password2" name="password2" maxlength="40"/>
+    </td>
+</tr>
+<tr>
+    <td>change password
+    </td>
+    <td>
+        <input type="submit" name="change_pw" value="change" />
+        <input type="hidden" name="games" value="{{game.id}}" />
+        <input type="hidden" name="creator_action" value="creator_action" />
+    </td>
+</tr>
+    </form>
+</table>
+{% endif %}
 
 <br>
 <p>

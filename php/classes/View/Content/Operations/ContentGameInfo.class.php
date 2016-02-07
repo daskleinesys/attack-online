@@ -68,14 +68,17 @@ class ContentGameInfo extends Interfaces\ContentOperation {
             $data['isCreator'] = true;
 		}
 
-        $player = array();
+        $players = array();
 		$iter = ModelUser::iterator(STATUS_USER_ALL, $this->game->getId());
 		while ($iter->hasNext()) {
 			$user = $iter->next();
+            $player = array();
 			$player['login'] = $user->getLogin();
 			$player['color'] = ModelIsInGameInfo::getIsInGameInfo($user->getId(), $this->game->getId())->getColor()->getName();
 			$player['id'] = $user->getUserId();
+            $players[] = $player;
 		}
+        $data['game']['player'] = $players;
 	}
 
 	private function do_creator_action(array &$data) {
