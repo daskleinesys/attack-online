@@ -14,6 +14,7 @@ class ContentGames extends Interfaces\ContentOperation {
     }
 
 	public function run(array &$data) {
+        $data['template'] = $this->getTemplate();
         $data['games'] = array();
 
 		if (isset($_POST['games']) && is_array($_POST['games']) && isset($_POST['games']['leave'])) {
@@ -21,10 +22,15 @@ class ContentGames extends Interfaces\ContentOperation {
         }
 
 		$this->setStatusBar($data);
-		$iter_games = $this->loadGames();
-		$this->parseGames($data, $iter_games);
+        try {
+            $iter_games = $this->loadGames($data);
+            $this->parseGames($data, $iter_games);
+        } catch (NullPointerException $ex) {
+            $data['errors'] = array(
+                'message' => $ex->getMessage()
+            );
+        }
 
-        $data['template'] = $this->getTemplate();
 		return $data;
 	}
 
@@ -46,34 +52,26 @@ class ContentGames extends Interfaces\ContentOperation {
 		}
 	}
 
-	private function loadGames() {
-		if (!isset($_GET['show'])) {
-			$game_status = GAME_STATUS_NEW;
-		} else {
-            switch ($_GET['show']) {
-                case GAME_STATUS_NEW:
-                    $game_status = GAME_STATUS_NEW;
-                    break;
-                case GAME_STATUS_DONE:
-                    $game_status = GAME_STATUS_DONE;
-                    break;
-                case GAME_STATUS_RUNNING:
-                    $game_status = GAME_STATUS_RUNNING;
-                    break;
-                default:
-                    $game_status = GAME_STATUS_NEW;
-                    break;
-            }
+	private function loadGames($data) {
+        switch ($data['type']) {
+            case GAME_STATUS_NEW:
+                $game_status = GAME_STATUS_NEW;
+                break;
+            case GAME_STATUS_DONE:
+                $game_status = GAME_STATUS_DONE;
+                break;
+            case GAME_STATUS_RUNNING:
+                $game_status = GAME_STATUS_RUNNING;
+                break;
+            default:
+                throw new NullPointerException('Invalid Game-Type');
+                break;
         }
 		return ModelGame::iterator($game_status);
 	}
 
 	private function setStatusBar(array &$data) {
-		if (!isset($_GET['show'])) {
-            $data['games']['show'] = GAME_STATUS_NEW;
-			return;
-		}
-		switch ($_GET['show']) {
+        switch ($data['type']) {
 			case GAME_STATUS_NEW:
                 $data['games']['show'] = GAME_STATUS_NEW;
 				break;

@@ -1,21 +1,40 @@
 <?php
 namespace AttOn;
+use AttOn\Model\User\ModelUser;
+use AttOn\Tools\Autoloader;
+use AttOn\View\Content\Factories\GamesFactory;
+use AttOn\Exceptions\SessionException;
+
+$app->get('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger) {
+    if ($type === null || empty($type)) {
+        $type = 'new';
+    }
+
+    $data = array(
+        'type' => $type
+    );
+    $factory = new GamesFactory();
+    $view = $factory->getOperation();
+    $view->run($data);
+    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    $app->render('main.twig', $data);
+});
 
 $app->map('/:content/', function($content) use ($app, $debug, $logger) {
     $data = array();
 
     // factory pattern
     $env = $app->environment();
-    $factories = Tools\Autoloader::loadFactories($env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Content' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR, '\\AttOn\\View\\Content\\Factories\\');
+    $factories = Autoloader::loadFactories($env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Content' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR, '\\AttOn\\View\\Content\\Factories\\');
 
     // get operation
     foreach ($factories as $factory) {
         if ($factory->getName() === $content) {
             try {
                 $content_object = $factory->getOperation();
-            } catch (Exceptions\SessionException $ex) {
+            } catch (SessionException $ex) {
                 $logger->error($ex);
-                $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+                $data['user'] = ModelUser::getCurrentUser()->getViewData();
                 $data['errors'] = array(
                     'message' => $ex->getMessage()
                 );
@@ -32,6 +51,6 @@ $app->map('/:content/', function($content) use ($app, $debug, $logger) {
 
     // run operation
     $content_object->run($data);
-    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    $data['user'] = ModelUser::getCurrentUser()->getViewData();
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('content');

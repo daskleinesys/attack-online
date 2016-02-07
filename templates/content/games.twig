@@ -1,10 +1,10 @@
 <div class="show">
     {% if (games.show == 'new') %}
-    offene / <a href="{{absRefPrefix}}games/?show=running">laufende</a> / <a href="{{absRefPrefix}}games/?show=done">beendete</a>
+    offene / <a href="{{absRefPrefix}}games/running/">laufende</a> / <a href="{{absRefPrefix}}games/done/">beendete</a>
     {% elseif (games.show == 'running') %}
-    <a href="{{absRefPrefix}}games/?show=new">offene</a> / laufende / <a href="{{absRefPrefix}}games/?show=done">beendete</a>
+    <a href="{{absRefPrefix}}games/new/">offene</a> / laufende / <a href="{{absRefPrefix}}games/done/">beendete</a>
     {% elseif (games.show == 'done') %}
-    <a href="{{absRefPrefix}}games/?show=new">offene</a> / <a href="{{absRefPrefix}}games/?show=running">laufende</a> / beendete
+    <a href="{{absRefPrefix}}games/new/">offene</a> / <a href="{{absRefPrefix}}games/running/">laufende</a> / beendete
     {% endif %}
 </div>
 
@@ -70,7 +70,7 @@
 
                 {% if game.ingame %}
                 <td class="center">
-                    <form method="post" action="{{absRefPrefix}}games/?show={{games.show}}">
+                    <form method="post" action="{{absRefPrefix}}games/{{games.show}}/">
                         <input type="image" value="{{game.id}}" name="leave" src="{{absRefPrefix}}dist/images/leave.gif" alt="Spiel verlassen"/>
                         <input type="hidden" value="{{game.id}}" name="leave" />
                     </form>
