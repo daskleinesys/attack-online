@@ -7,7 +7,7 @@ abstract class ContentOperation {
 
 	public abstract function run(array &$ata);
 
-	protected function addGameInfo(array &$data) {
+	protected function addCurrentGameInfo(array &$data) {
 		// parse game
 		$_Game = ModelGame::getCurrentGame();
 		$game = array();

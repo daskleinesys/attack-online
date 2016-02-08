@@ -4,6 +4,7 @@ use AttOn\Model\User\ModelUser;
 use AttOn\Tools\Autoloader;
 use AttOn\View\Content\Factories\GamesFactory;
 use AttOn\View\Content\Factories\GameInfoFactory;
+use AttOn\View\Content\Factories\NewGameFactory;
 use AttOn\Exceptions\SessionException;
 
 $app->get('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger) {
@@ -40,6 +41,15 @@ $app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug
     $data['user'] = ModelUser::getCurrentUser()->getViewData();
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('gameinfo');
+
+$app->get('/newgame(/)', function() use ($app, $debug, $logger) {
+    $data = array();
+    $factory = new NewGameFactory();
+    $view = $factory->getOperation();
+    $view->run($data);
+    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    $app->render('main.twig', $data);
+});
 
 $app->map('/:content/', function($content) use ($app, $debug, $logger) {
     $data = array();

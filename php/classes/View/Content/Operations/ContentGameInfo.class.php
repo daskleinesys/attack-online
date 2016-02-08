@@ -9,28 +9,28 @@ use AttOn\Exceptions\GameAdministrationException;
 
 class ContentGameInfo extends Interfaces\ContentOperation {
 
-	private $id_game;
-	private $game;
+    private $id_game;
+    private $game;
 
     public function getTemplate() {
         return 'gameinfo';
     }
 
-	public function run(array &$data) {
+    public function run(array &$data) {
         $data['template'] = $this->getTemplate();
 
-		$this->id_game = intval($data['id_game']);
+        $this->id_game = intval($data['id_game']);
 
-		try {
-			$this->game = ModelGame::getGame($this->id_game);
-		} catch (NullPointerException $ex) {
+        try {
+            $this->game = ModelGame::getGame($this->id_game);
+        } catch (NullPointerException $ex) {
             $data['errors'] = array(
                 'message' => 'Game not found!'
             );
-			return true;
-		}
+            return true;
+        }
 
-		if (isset($_POST['creator_action'])) {
+        if (isset($_POST['creator_action'])) {
             try {
                 $this->do_creator_action($data);
             } catch (GameAdministrationException $ex) {
@@ -41,70 +41,70 @@ class ContentGameInfo extends Interfaces\ContentOperation {
             }
         }
 
-		$this->showGame($data);
-	}
+        $this->showGame($data);
+    }
 
-	private function showGame(array &$data) {
-		$gameInfo = array();
-		$gameInfo['name'] = $this->game->getName();
-		$gameInfo['mode'] = ModelGameMode::getGameMode($this->game->getIdGameMode())->getName();
-		$gameInfo['creator'] = $this->game->getCreator()->getLogin();
-		$gameInfo['id'] = $this->game->getId();
+    private function showGame(array &$data) {
+        $gameInfo = array();
+        $gameInfo['name'] = $this->game->getName();
+        $gameInfo['mode'] = ModelGameMode::getGameMode($this->game->getIdGameMode())->getName();
+        $gameInfo['creator'] = $this->game->getCreator()->getLogin();
+        $gameInfo['id'] = $this->game->getId();
         $gameInfo['status'] = $this->game->getStatus();
         $data['game'] = $gameInfo;
 
-		if (isset($_POST['delete'])) {
+        if (isset($_POST['delete'])) {
             $data['delete'] = true;
         }
 
-		if (ModelUser::getCurrentUser() === $this->game->getCreator()) {
+        if (ModelUser::getCurrentUser() === $this->game->getCreator()) {
             $data['isCreator'] = true;
-		}
+        }
 
         $players = array();
-		$iter = ModelUser::iterator(STATUS_USER_ALL, $this->game->getId());
-		while ($iter->hasNext()) {
-			$user = $iter->next();
+        $iter = ModelUser::iterator(STATUS_USER_ALL, $this->game->getId());
+        while ($iter->hasNext()) {
+            $user = $iter->next();
             $player = array();
-			$player['login'] = $user->getLogin();
-			$player['color'] = ModelIsInGameInfo::getIsInGameInfo($user->getId(), $this->game->getId())->getColor()->getName();
-			$player['id'] = $user->getUserId();
+            $player['login'] = $user->getLogin();
+            $player['color'] = ModelIsInGameInfo::getIsInGameInfo($user->getId(), $this->game->getId())->getColor()->getName();
+            $player['id'] = $user->getUserId();
             $players[] = $player;
-		}
+        }
         $data['game']['player'] = $players;
-	}
+    }
 
-	private function do_creator_action(array &$data) {
-		$gamesModeration = new GamesModeration(ModelUser::getCurrentUser()->getId());
+    private function do_creator_action(array &$data) {
+        $gamesModeration = new GamesModeration(ModelUser::getCurrentUser()->getId());
 
-		if (isset($_POST['kick'])) {
-			$gamesModeration->kickUser(intval($_POST['kick']), $this->id_game);
+        if (isset($_POST['kick'])) {
+            $gamesModeration->kickUser(intval($_POST['kick']), $this->id_game);
             $data['status'] = array(
                 'message' => 'User successfully kicked.'
             );
-			return true;
-		}
-		if (isset($_POST['change_pw'])) {
-			$gamesModeration->changePassword($_POST['password1'], $_POST['password2'], $this->id_game);
+            return true;
+        }
+        if (isset($_POST['change_pw'])) {
+            $gamesModeration->changePassword($_POST['password1'], $_POST['password2'], $this->id_game);
             $data['status'] = array(
                 'message' => 'Password successfully changed.'
             );
-			return true;
-		}
-		if (isset($_POST['start'])) {
-			$gamesModeration->startGame($this->id_game);
+            return true;
+        }
+        if (isset($_POST['start'])) {
+            $gamesModeration->startGame($this->id_game);
             $data['status'] = array(
                 'message' => 'Game successfully started.'
             );
-			return true;
-		}
-		if (isset($_POST['delete_affirmed'])) {
-			$gamesModeration->deleteGame($this->id_game);
+            return true;
+        }
+        if (isset($_POST['delete_affirmed'])) {
+            $gamesModeration->deleteGame($this->id_game);
             $data['status'] = array(
                 'message' => 'Game successfully deleted.'
             );
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
 }

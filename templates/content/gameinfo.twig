@@ -33,7 +33,7 @@
         {% if isCreator and game.status == 'new' %}
         <td class="center">
         <form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
-            <input type="image" value="{{player.id}}" name="kick" src="{{absRefPrefix}}/dist/images/leave.gif" alt="Spiel verlassen"/>
+            <input type="image" value="{{player.id}}" name="kick" src="{{absRefPrefix}}dist/images/leave.gif" alt="Spiel verlassen"/>
             <input type="hidden" value="{{player.id}}" name="kick" />
             <input type="hidden" name="creator_action" value="creator_action" />
         </form>
