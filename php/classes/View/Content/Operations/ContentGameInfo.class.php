@@ -19,14 +19,7 @@ class ContentGameInfo extends Interfaces\ContentOperation {
 	public function run(array &$data) {
         $data['template'] = $this->getTemplate();
 
-		if (!isset($_POST['id_game'])) {
-            $data['errors'] = array(
-                'message' => 'No game selected!'
-            );
-			return true;
-		}
-
-		$this->id_game = intval($_POST['id_game']);
+		$this->id_game = intval($data['id_game']);
 
 		try {
 			$this->game = ModelGame::getGame($this->id_game);

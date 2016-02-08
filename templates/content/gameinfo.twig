@@ -6,11 +6,10 @@
 
 {% if delete %}
 <p>Wollen Sie wirklich dieses Spiel l&ouml;schen?</p>
-<form method="post" action="{{absRefPrefix}}gameinfo/">
+<form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
     <p>
         <input type="submit" value="L&ouml;schen" name="delete_affirmed" />
         <input type="submit" value="Abbrechen" name="abort" />
-        <input type="hidden" value="{{game.id}}" name="games" />
         <input type="hidden" name="creator_action" value="creator_action" />
     </p>
 </form>
@@ -33,10 +32,9 @@
         <td>{{player.color}}</td>
         {% if isCreator and game.status == 'new' %}
         <td class="center">
-        <form method="post" action="{{absRefPrefix}}gameinfo/">
+        <form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
             <input type="image" value="{{player.id}}" name="kick" src="{{absRefPrefix}}/dist/images/leave.gif" alt="Spiel verlassen"/>
             <input type="hidden" value="{{player.id}}" name="kick" />
-            <input type="hidden" name="games" value="{game.id}" />
             <input type="hidden" name="creator_action" value="creator_action" />
         </form>
         </td>
@@ -47,57 +45,57 @@
 
 {% if isCreator and game.status == 'new' %}
 <hr>
+
 <h3>new game actions</h3>
+
 <table>
-<tr>
-    <td>start game
-    </td>
-    <td>
-        <form method="post" action="{{absRefPrefix}}gameinfo/">
-            <input type="submit" name="start" value="start" />
-            <input type="hidden" name="games" value="{{game.id}}" />
-            <input type="hidden" name="creator_action" value="creator_action" />
-        </form>
-    </td>
-</tr>
-<tr>
-    <td>delete game
-    </td>
-    <td>
-        <form method="post" action="{{absRefPrefix}}gameinfo/">
-            <input type="submit" name="delete" value="delete" />
-            <input type="hidden" name="games" value="{{game.id}}" />
-            <input type="hidden" name="creator_action" value="creator_action" />
-        </form>
-    </td>
-</tr>
-    <form method="post" action="{{absRefPrefix}}gameinfo/">
-<tr>
-    <td>new password<br/>(leave empty to set game without password)
-    </td>
-    <td><input type="password" id="password1" name="password1" maxlength="40"/>
-    </td>
-</tr>
-<tr>
-    <td>retype password
-    </td>
-    <td><input type="password" id="password2" name="password2" maxlength="40"/>
-    </td>
-</tr>
-<tr>
-    <td>change password
-    </td>
-    <td>
-        <input type="submit" name="change_pw" value="change" />
-        <input type="hidden" name="games" value="{{game.id}}" />
-        <input type="hidden" name="creator_action" value="creator_action" />
-    </td>
-</tr>
+    <tr>
+        <td>start game
+        </td>
+        <td>
+            <form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
+                <input type="submit" name="start" value="start" />
+                <input type="hidden" name="creator_action" value="creator_action" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>delete game
+        </td>
+        <td>
+            <form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
+                <input type="submit" name="delete" value="delete" />
+                <input type="hidden" name="creator_action" value="creator_action" />
+            </form>
+        </td>
+    </tr>
+    <form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
+        <tr>
+            <td>new password<br/>(leave empty to set game without password)
+            </td>
+            <td><input type="password" id="password1" name="password1" maxlength="40"/>
+            </td>
+        </tr>
+        <tr>
+            <td>retype password
+            </td>
+            <td><input type="password" id="password2" name="password2" maxlength="40"/>
+            </td>
+        </tr>
+        <tr>
+            <td>change password
+            </td>
+            <td>
+                <input type="submit" name="change_pw" value="change" />
+                <input type="hidden" name="creator_action" value="creator_action" />
+            </td>
+        </tr>
     </form>
 </table>
 {% endif %}
 
 <br>
+
 <p>
     <a href="{{absRefPrefix}}games/">Zurück</a>
 </p>
