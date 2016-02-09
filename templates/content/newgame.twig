@@ -1,3 +1,4 @@
+{% if game_modes %}
 <h1>Neue Partie erstellen</h1>
 <form method="post" action="{{absRefPrefix}}newgame/">
     <table>
@@ -74,6 +75,7 @@
         </tr>
     </table>
 </form>
+{% endif %}
 
 {% if errors %}
 <br>

@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Operations;
+use AttOn\Controller\Game\GamesModeration;
 use AttOn\Model\Atton\ModelColor;
 use AttOn\Model\Atton\ModelGameMode;
 use AttOn\Exceptions\GameCreationException;
@@ -24,6 +25,11 @@ class ContentNewGame extends Interfaces\ContentOperation {
                 $data['errors'] = array(
                     'message' => $ex->getMessage()
                 );
+            } catch (JoinUserException $ex) {
+                $data['errors'] = array(
+                    'message' => 'Game created but unable to join game.'
+                );
+                return true;
             }
         }
 
