@@ -2,6 +2,7 @@
 namespace AttOn;
 use AttOn\Model\User\ModelUser;
 use AttOn\Tools\Autoloader;
+use AttOn\Tools\HeaderViewHelper;
 use AttOn\View\Content\Factories\GamesFactory;
 use AttOn\View\Content\Factories\GameInfoFactory;
 use AttOn\View\Content\Factories\JoinGameFactory;
@@ -19,7 +20,7 @@ $app->map('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger
     $factory = new GamesFactory();
     $view = $factory->getOperation();
     $view->run($data);
-    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('games');
 
@@ -39,7 +40,7 @@ $app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug
     $factory = new GameInfoFactory();
     $view = $factory->getOperation();
     $view->run($data);
-    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('gameinfo');
 
@@ -59,7 +60,7 @@ $app->map('/joingame(/:id_game)(/)', function($id_game = null) use ($app, $debug
     $factory = new JoinGameFactory();
     $view = $factory->getOperation();
     $view->run($data);
-    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('joingame');
 
@@ -68,7 +69,7 @@ $app->get('/newgame(/)', function() use ($app, $debug, $logger) {
     $factory = new NewGameFactory();
     $view = $factory->getOperation();
     $view->run($data);
-    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 });
 
@@ -103,6 +104,6 @@ $app->map('/:content/', function($content) use ($app, $debug, $logger) {
 
     // run operation
     $content_object->run($data);
-    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('content');

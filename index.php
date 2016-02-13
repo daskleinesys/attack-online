@@ -67,4 +67,5 @@ include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'rout
 // SET GLOBAL VARS
 $app->view->setData(array('debug' => $debug, 'nomerge' => $nomerge, 'absRefPrefix' => ABS_REF_PREFIX));
 Tools\CheckSessions::checkCookies();
+Tools\CheckSessions::checkCurrentGame();
 $app->run();

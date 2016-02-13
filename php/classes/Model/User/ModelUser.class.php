@@ -247,7 +247,9 @@ class ModelUser {
 	 */
 	public function checkPassword($password) {
 		$result = DataSource::Singleton()->epp('check_user_password', array(':id_user' => $this->id, ':password' => $password));
-		if (empty($result)) return false;
+		if (empty($result)) {
+            return false;
+        }
 		return true;
 	}
 

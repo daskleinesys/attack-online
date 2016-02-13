@@ -107,7 +107,7 @@ class UserActions {
 	}
 
 	/**
-	 * logs the user in (setting $_SESSION['user_id']), throws exception if anything happens
+	 * logs the user in (setting $_SESSION['id_user']), throws exception if anything happens
      *
 	 * @param string username
 	 * @param string password
@@ -139,7 +139,7 @@ class UserActions {
 		}
 
 		// The log-in is OK so set the user ID and username cookies, and redirect to the home page
-		$_SESSION['user_id'] = $_User->getUserId();
+		$_SESSION['id_user'] = $_User->getUserId();
 
 		// set cookie
 		if ($remember) {

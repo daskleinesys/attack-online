@@ -85,7 +85,7 @@ class UserGameInteraction extends ConstrictedController {
             throw new ControllerException('Unable to select game as it is already done.');
         }
 
-        $_SESSION['game_id'] = $id_game;
+        $_SESSION['id_game'] = $id_game;
         return true;
     }
 

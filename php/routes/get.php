@@ -1,21 +1,23 @@
 <?php
 namespace AttOn;
+use AttOn\Controller\User\UserActions;
+use AttOn\Tools\HeaderViewHelper;
 
 $app->get('/', function() use ($app, $debug) {
     $data = array();
-    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $data['template'] = 'home';
     $app->render('main.twig', $data);
 });
 
 $app->get('/login/', function() use ($app, $debug) {
-    Controller\User\UserActions::logout();
+    UserActions::logout();
     $data['template'] = 'login';
     $app->render('main.twig', $data);
 });
 
 $app->get('/logout/', function() use ($app, $debug) {
-    Controller\User\UserActions::logout();
+    UserActions::logout();
     $app->redirect(ABS_REF_PREFIX);
 });
 

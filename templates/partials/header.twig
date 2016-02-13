@@ -3,7 +3,7 @@
     <div class="login">
         {% if (user.loggedIn) %}
         {# --- START --- logout-form --- #}
-        <form method="post" action="{{absRefPrefix}}game/">
+        <form method="post" action="{{absRefPrefix}}overview/">
             <table class="logout">
                 <tr>
                     <td>
@@ -24,16 +24,19 @@
                 </tr>
                 {% endif %}
 
+                {% if user.games|length > 0 %}
                 <tr>
                     <td>
                         <select name="select_game" size="1" onchange="submit()">
-                            <option value="" class="game" disabled="disabled" selected="selected">Select game</option>
+                            <option value="" class="game" disabled="disabled"{% if user.noGameSelected %} selected {% endif %}>Select game</option>
                             {% for game in user.games %}
-                            <option value="{{game.id}}" class="game">{{game.name}}</option>
+                            <option value="{{game.id}}" class="game"{% if game.selected %} selected {% endif %}>{{game.name}}</option>
                             {% endfor %}
                         </select>
                     </td>
                 </tr>
+                {% endif %}
+
             </table>
         </form>
         {# --- END --- logout-form --- #}
