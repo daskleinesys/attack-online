@@ -1,9 +1,9 @@
 <?php
 namespace AttOn\View\Content\Operations;
+use AttOn\Controller\User\UserGameInteraction;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelUser;
 use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Controller\User\UserGameInteraction;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\NullPointerException;
 
