@@ -101,6 +101,11 @@
 
 <br>
 
+{% if errors %}
+<p class="error">{{errors.message}}</p>
+<br>
+{% endif %}
+
 <p>
     <a href="{{absRefPrefix}}games/">Zurück</a>
 </p>
