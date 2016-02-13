@@ -1,34 +1,35 @@
 <?php
 namespace AttOn\View\Content\Operations;
-use AttOn\Controller\Game\GamesModeration;
-use AttOn\Model\Atton\ModelColor;
-use AttOn\Model\Atton\ModelGameMode;
-use AttOn\Exceptions\GameCreationException;
+use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelIsInGameInfo;
+use AttOn\Model\User\ModelUser;
 
 class ContentOverview extends Interfaces\ContentOperation {
 
-    public function run() {
-        $this->showGameInfo();
-
-        // parse user infos
-        $iter = ModelIsInGameInfo::iterator(null,$this->id_game_logged_in);
-        while ($iter->hasNext()) {
-            $_IIG = $iter->next();
-            $user = $this->getUserInfo($_IIG);
-            $this->xtpl->assign('user',$user);
-            $this->xtpl->parse('main.user');
-        }
-
-        $this->xtpl->parse('main');
-        $this->xtpl->out('main');
-        return true;
+    public function getTemplate() {
+        return 'overview';
     }
 
-    public function getUserInfo($_IIG) {
-        $_User = ModelUser::getUser($_IIG->getIdUser());
+    public function run(array &$data) {
+        $data['template'] = $this->getTemplate();
+
+        // parse user infos
+        $users = array();
+        $iter = ModelIsInGameInfo::iterator(null, ModelGame::getCurrentGame()->getId());
+        while ($iter->hasNext()) {
+            $ingame = $iter->next();
+            $user = $this->getUserInfo($ingame);
+            $users[] = $user;
+        }
+        $data['users'] = $users;
+    }
+
+    public function getUserInfo($ingame) {
+        $user = ModelUser::getUser($ingame->getIdUser());
 
         // money on bank
-        $money = $_IIG->getMoney();
+        $money = $ingame->getMoney();
 
         // money from resources
         $resproduction = 0;
@@ -38,11 +39,11 @@ class ContentOverview extends Interfaces\ContentOperation {
         $combos[RESOURCE_INDUSTRY] = 0;
         $combos[RESOURCE_MINERALS] = 0;
         $combos[RESOURCE_POPULATION] = 0;
-        $iter = ModelGameArea::iterator($this->id_game_logged_in,$_User->getId());
+        $iter = ModelGameArea::iterator($user->getId(), ModelGame::getCurrentGame()->getId());
         while ($iter->hasNext()) {
-            $_GameArea = $iter->next();
-            $resproduction += $_GameArea->getProductivity();
-            $combos[$_GameArea->getIdResource()]++;
+            $area = $iter->next();
+            $resproduction += $area->getProductivity();
+            $combos[$area->getIdResource()]++;
         }
 
         // money from traderoutes
@@ -51,21 +52,23 @@ class ContentOverview extends Interfaces\ContentOperation {
         // money from combos
         $combo_count = $combos[RESOURCE_OIL];
         foreach ($combos as $res) {
-            if ($res < $combo_count) $combo_count = $res;
+            if ($res < $combo_count) {
+                $combo_count = $res;
+            }
         }
-        $combo_money = $combo_count*4;
+        $combo_money = $combo_count * 4;
 
         // sum
-        $sum = $money+$resproduction+$traderoutes+$combo_money;
+        $sum = $money + $resproduction + $traderoutes + $combo_money;
 
-        $user = array();
-        $user['login'] = $_User->getLogin();
-        $user['money'] = $money;
-        $user['resproduction'] = $resproduction;
-        $user['trproduction'] = $traderoutes;
-        $user['comboproduction'] = $combo_money;
-        $user['sum'] = $sum;
-        return $user;
+        $userData = array();
+        $userData['login'] = $user->getLogin();
+        $userData['money'] = $money;
+        $userData['resproduction'] = $resproduction;
+        $userData['trproduction'] = $traderoutes;
+        $userData['comboproduction'] = $combo_money;
+        $userData['sum'] = $sum;
+        return $userData;
     }
 
 }

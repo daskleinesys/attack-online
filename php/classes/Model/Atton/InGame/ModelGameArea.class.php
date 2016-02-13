@@ -93,7 +93,7 @@ class ModelGameArea {
      * @throws DataSourceException
      * @return ModelIterator
      */
-    public static function iterator($id_game, $id_user = null) {
+    public static function iterator($id_user = null, $id_game) {
         $id_game = intval($id_game);
         SQLCommands::init($id_game);
 

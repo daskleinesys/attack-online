@@ -13,12 +13,14 @@
         <th>Kombos</th>
         <th>Summe</th>
     </tr>
+    {% for user in users %}
     <tr>
-        <td>{user.login}</td>
-        <td align="right">{user.money}</td>
-        <td align="right">{user.resproduction}</td>
-        <td align="right">{user.trproduction}</td>
-        <td align="right">{user.comboproduction}</td>
-        <td align="right">{user.sum}</td>
+        <td>{{user.login}}</td>
+        <td align="right">{{user.money}}</td>
+        <td align="right">{{user.resproduction}}</td>
+        <td align="right">{{user.trproduction}}</td>
+        <td align="right">{{user.comboproduction}}</td>
+        <td align="right">{{user.sum}}</td>
     </tr>
+    {% endfor %}
 </table>
