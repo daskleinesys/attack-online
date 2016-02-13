@@ -221,38 +221,48 @@ class SQLCommands {
 	private static function LoadGameSpecificQueries($id_game) {
 
 		// create tables
-		self::$DataSource->load_query('create_areas_table',"CREATE TABLE z" . $id_game . "_areas LIKE z_areas",true);
-		self::$DataSource->load_query('create_battle_reports_table',"CREATE TABLE z" . $id_game . "_battle_reports LIKE z_battle_reports",true);
-		self::$DataSource->load_query('create_br_units_table',"CREATE TABLE z" . $id_game . "_battle_reports_units LIKE z_battle_reports_units",true);
-		self::$DataSource->load_query('create_br_user_table',"CREATE TABLE z" . $id_game . "_battle_reports_user LIKE z_battle_reports_user",true);
-		self::$DataSource->load_query('create_moves_table',"CREATE TABLE z" . $id_game . "_moves LIKE z_moves",true);
+		self::$DataSource->load_query('create_areas_table', "CREATE TABLE z" . $id_game . "_areas LIKE z_areas", true);
+		self::$DataSource->load_query('create_battle_reports_table', "CREATE TABLE z" . $id_game . "_battle_reports LIKE z_battle_reports", true);
+		self::$DataSource->load_query('create_battle_reports_units_table', "CREATE TABLE z" . $id_game . "_battle_reports_units LIKE z_battle_reports_units", true);
+		self::$DataSource->load_query('create_battle_reports_user_table', "CREATE TABLE z" . $id_game . "_battle_reports_user LIKE z_battle_reports_user", true);
+		self::$DataSource->load_query('create_moves_table', "CREATE TABLE z" . $id_game . "_moves LIKE z_moves", true);
+		self::$DataSource->load_query('create_route_table', "CREATE TABLE z" . $id_game . "_route LIKE z_route", true);
+		self::$DataSource->load_query('create_techs_table', "CREATE TABLE z" . $id_game . "_techs LIKE z_techs", true);
+		self::$DataSource->load_query('create_traderoutes_table', "CREATE TABLE z" . $id_game . "_traderoutes LIKE z_traderoutes", true);
+		self::$DataSource->load_query('create_units_table', "CREATE TABLE z" . $id_game . "_units LIKE z_units", true);
+		self::$DataSource->load_query('create_unit_moves_table', "CREATE TABLE z" . $id_game . "_unit_moves LIKE z_unit_moves", true);
+        /*
 		self::$DataSource->load_query('create_moves_new_ships_table',"CREATE TABLE z" . $id_game . "_moves_new_ships LIKE z_moves_new_ships",true);
 		self::$DataSource->load_query('create_moves_ships_table',"CREATE TABLE z" . $id_game . "_moves_ships LIKE z_moves_ships",true);
 		self::$DataSource->load_query('create_moves_units_table',"CREATE TABLE z" . $id_game . "_moves_units LIKE z_moves_units",true);
 		self::$DataSource->load_query('create_moves_steps_table',"CREATE TABLE z" . $id_game . "_moves_steps LIKE z_moves_steps",true);
 		self::$DataSource->load_query('create_moves_steps_zareas_table',"CREATE TABLE z" . $id_game . "_moves_steps_zareas LIKE z_moves_steps_zareas",true);
-		self::$DataSource->load_query('create_traderoutes_table',"CREATE TABLE z" . $id_game . "_traderoutes LIKE z_traderoutes",true);
-		self::$DataSource->load_query('create_units_table',"CREATE TABLE z" . $id_game . "_units LIKE z_units",true);
 		self::$DataSource->load_query('create_units_land_table',"CREATE TABLE z" . $id_game . "_units_land LIKE z_units_land",true);
 		self::$DataSource->load_query('create_units_sea_table',"CREATE TABLE z" . $id_game . "_units_sea LIKE z_units_sea",true);
 		self::$DataSource->load_query('create_units_in_harbor_table',"CREATE TABLE z" . $id_game . "_units_in_harbor LIKE z_units_in_harbor",true);
+        */
 
 		// drop tables
-		self::$DataSource->load_query('drop_areas_table',"DROP TABLE z" . $id_game . "_areas",true);
-		self::$DataSource->load_query('drop_battle_reports_table',"DROP TABLE z" . $id_game . "_battle_reports",true);
-		self::$DataSource->load_query('drop_br_units_table',"DROP TABLE z" . $id_game . "_battle_reports_units",true);
-		self::$DataSource->load_query('drop_br_user_table',"DROP TABLE z" . $id_game . "_battle_reports_user",true);
-		self::$DataSource->load_query('drop_moves_table',"DROP TABLE z" . $id_game . "_moves",true);
+		self::$DataSource->load_query('drop_areas_table', "DROP TABLE z" . $id_game . "_areas", true);
+		self::$DataSource->load_query('drop_battle_reports_table', "DROP TABLE z" . $id_game . "_battle_reports", true);
+		self::$DataSource->load_query('drop_battle_reports_units_table', "DROP TABLE z" . $id_game . "_battle_reports_units", true);
+		self::$DataSource->load_query('drop_battle_reports_user_table', "DROP TABLE z" . $id_game . "_battle_reports_user", true);
+		self::$DataSource->load_query('drop_moves_table', "DROP TABLE z" . $id_game . "_moves", true);
+		self::$DataSource->load_query('drop_route_table', "DROP TABLE z" . $id_game . "_route", true);
+		self::$DataSource->load_query('drop_techs_table', "DROP TABLE z" . $id_game . "_techs", true);
+		self::$DataSource->load_query('drop_traderoutes_table', "DROP TABLE z" . $id_game . "_traderoutes", true);
+		self::$DataSource->load_query('drop_units_table', "DROP TABLE z" . $id_game . "_units", true);
+		self::$DataSource->load_query('drop_unit_moves_table', "DROP TABLE z" . $id_game . "_unit_moves", true);
+        /*
 		self::$DataSource->load_query('drop_moves_new_ships_table',"DROP TABLE z" . $id_game . "_moves_new_ships",true);
 		self::$DataSource->load_query('drop_moves_ships_table',"DROP TABLE z" . $id_game . "_moves_ships",true);
 		self::$DataSource->load_query('drop_moves_units_table',"DROP TABLE z" . $id_game . "_moves_units",true);
 		self::$DataSource->load_query('drop_moves_steps_table',"DROP TABLE z" . $id_game . "_moves_steps",true);
 		self::$DataSource->load_query('drop_moves_steps_zareas_table',"DROP TABLE z" . $id_game . "_moves_steps_zareas",true);
-		self::$DataSource->load_query('drop_traderoutes_table',"DROP TABLE z" . $id_game . "_traderoutes",true);
-		self::$DataSource->load_query('drop_units_table',"DROP TABLE z" . $id_game . "_units",true);
 		self::$DataSource->load_query('drop_units_land_table',"DROP TABLE z" . $id_game . "_units_land",true);
 		self::$DataSource->load_query('drop_units_sea_table',"DROP TABLE z" . $id_game . "_units_sea",true);
 		self::$DataSource->load_query('drop_units_in_harbor_table',"DROP TABLE z" . $id_game . "_units_in_harbor",true);
+        */
 
 		// moves
 			$moves_table = "z" . $id_game . "_moves";

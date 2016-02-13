@@ -165,19 +165,14 @@ class ModelGame {
 
         DataSource::Singleton()->epp('create_areas_table', array());
         DataSource::Singleton()->epp('create_battle_reports_table', array());
-        DataSource::Singleton()->epp('create_br_units_table', array());
-        DataSource::Singleton()->epp('create_br_user_table', array());
+        DataSource::Singleton()->epp('create_battle_reports_units_table', array());
+        DataSource::Singleton()->epp('create_battle_reports_user_table', array());
         DataSource::Singleton()->epp('create_moves_table', array());
-        DataSource::Singleton()->epp('create_moves_new_ships_table', array());
-        DataSource::Singleton()->epp('create_moves_ships_table', array());
-        DataSource::Singleton()->epp('create_moves_units_table', array());
-        DataSource::Singleton()->epp('create_moves_steps_table', array());
-        DataSource::Singleton()->epp('create_moves_steps_zareas_table', array());
+        DataSource::Singleton()->epp('create_route_table', array());
+        DataSource::Singleton()->epp('create_techs_table', array());
         DataSource::Singleton()->epp('create_traderoutes_table', array());
         DataSource::Singleton()->epp('create_units_table', array());
-        DataSource::Singleton()->epp('create_units_land_table', array());
-        DataSource::Singleton()->epp('create_units_sea_table', array());
-        DataSource::Singleton()->epp('create_units_in_harbor_table', array());
+        DataSource::Singleton()->epp('create_unit_moves_table', array());
         return self::getGame($id_game);
     }
 
@@ -201,19 +196,14 @@ class ModelGame {
         try {
             DataSource::Singleton()->epp('drop_areas_table', array());
             DataSource::Singleton()->epp('drop_battle_reports_table', array());
-            DataSource::Singleton()->epp('drop_br_units_table', array());
-            DataSource::Singleton()->epp('drop_br_user_table', array());
+            DataSource::Singleton()->epp('drop_battle_reports_units_table', array());
+            DataSource::Singleton()->epp('drop_battle_reports_user_table', array());
             DataSource::Singleton()->epp('drop_moves_table', array());
-            DataSource::Singleton()->epp('drop_moves_new_ships_table', array());
-            DataSource::Singleton()->epp('drop_moves_ships_table', array());
-            DataSource::Singleton()->epp('drop_moves_units_table', array());
-            DataSource::Singleton()->epp('drop_moves_steps_table', array());
-            DataSource::Singleton()->epp('drop_moves_steps_zareas_table', array());
+            DataSource::Singleton()->epp('drop_route_table', array());
+            DataSource::Singleton()->epp('drop_techs_table', array());
             DataSource::Singleton()->epp('drop_traderoutes_table', array());
             DataSource::Singleton()->epp('drop_units_table', array());
-            DataSource::Singleton()->epp('drop_units_land_table', array());
-            DataSource::Singleton()->epp('drop_units_sea_table', array());
-            DataSource::Singleton()->epp('drop_units_in_harbor_table', array());
+            DataSource::Singleton()->epp('drop_unit_moves_table', array());
         } catch (DataSourceException $ex) {
             if (!isset(self::$logger)) {
                 self::$logger = Logger::getLogger('ModelGame');

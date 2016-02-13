@@ -2,6 +2,7 @@
 namespace AttOn\Controller\Game;
 use AttOn\Controller\Interfaces\ConstrictedController;
 use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelUser;
 use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Exceptions\GameAdministrationException;
 use AttOn\Exceptions\GameCreationException;
@@ -47,7 +48,7 @@ class GamesModeration extends ConstrictedController {
 
         // join user
         if ($creator_joins) {
-            ModelIsInGameInfo::joinGame(ModelUser::getCurrentUser()->getId(), $game->geId(), $id_color);
+            ModelIsInGameInfo::joinGame(ModelUser::getCurrentUser()->getId(), $game->getId(), $id_color);
         }
 
         return $game;

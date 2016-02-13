@@ -94,7 +94,7 @@ class ContentNewGame extends Interfaces\ContentOperation {
         if (!isset($_POST['color'])) {
             throw new GameCreationException('Missing color.');
         }
-        $creater_joins = (isset($_POST['play']));
+        $creator_joins = (isset($_POST['play']));
 
         $gamesModeration = new GamesModeration(ModelUser::getCurrentUser()->getId());
         $gamesModeration->create($_POST['name'], $_POST['players'], $_POST['password1'], $_POST['password2'], $_POST['game_mode'], $creator_joins, $_POST['color']);

@@ -2,7 +2,9 @@
 namespace AttOn\Model\User;
 use AttOn\Model\Atton\ModelColor;
 use AttOn\Model\DataBase\DataSource;
+use AttOn\Model\Game\ModelGame;
 use AttOn\Model\Iterator\ModelIterator;
+use AttOn\Model\User\ModelUser;
 use AttOn\Exceptions\JoinUserException;
 use AttOn\Exceptions\GameAdministrationException;
 use AttOn\Exceptions\NullPointerException;
