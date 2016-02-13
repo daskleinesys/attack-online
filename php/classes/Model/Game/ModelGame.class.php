@@ -188,7 +188,7 @@ class ModelGame {
         } catch (NullPointerException $ex) {
             throw new GameAdministrationException('Game not found.');
         }
-        if ($_Game->getStatus() != GAME_STATUS_NEW) {
+        if ($_Game->getStatus() !== GAME_STATUS_NEW) {
             throw new GameAdministrationException('Only new games can be deleted.');
         }
 
@@ -213,8 +213,8 @@ class ModelGame {
         $dict = array(':id_game' => $id_game);
         DataSource::Singleton()->epp('delete_game',$dict);
 
-        ModelIsInGameInfo::deleteIsInGameInfos($id_game);
-        ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_game);
+        ModelIsInGameInfo::deleteIsInGameInfos(null, $id_game);
+        ModelInGamePhaseInfo::deleteInGamePhaseInfos(null, $id_game);
 
         unset(self::$games[$id_game]);
 

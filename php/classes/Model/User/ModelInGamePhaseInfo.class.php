@@ -86,11 +86,11 @@ class ModelInGamePhaseInfo {
     /**
      * deletes all models and corresponding database infos
      *
-     * @param $id_game int
      * @param $id_user int (if null all models for this game are deleted)
+     * @param $id_game int
      * @return void
      */
-    public static function deleteInGamePhaseInfos($id_game, $id_user = null) {
+    public static function deleteInGamePhaseInfos($id_user = null, $id_game) {
         $query = ($id_user == null) ? 'delete_game_phase_info_for_game' : 'delete_game_phase_info_for_user';
         $dict = array(':id_game' => intval($id_game));
         if ($id_user != null) {
