@@ -4,6 +4,7 @@ use AttOn\Model\User\ModelUser;
 use AttOn\Tools\Autoloader;
 use AttOn\View\Content\Factories\GamesFactory;
 use AttOn\View\Content\Factories\GameInfoFactory;
+use AttOn\View\Content\Factories\JoinGameFactory;
 use AttOn\View\Content\Factories\NewGameFactory;
 use AttOn\Exceptions\SessionException;
 
@@ -41,6 +42,26 @@ $app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug
     $data['user'] = ModelUser::getCurrentUser()->getViewData();
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('gameinfo');
+
+$app->map('/joingame(/:id_game)(/)', function($id_game = null) use ($app, $debug, $logger) {
+    if ($id_game === null || empty($id_game)) {
+        if (isset($_POST['id_game'])) {
+            $app->redirect(ABS_REF_PREFIX . 'joingame/' . $_POST['id_game'] . '/', 200);
+        } else {
+            $app->redirect(ABS_REF_PREFIX . 'games/', 200);
+        }
+    }
+    $id_game = (int) $id_game;
+
+    $data = array(
+        'id_game' => $id_game
+    );
+    $factory = new JoinGameFactory();
+    $view = $factory->getOperation();
+    $view->run($data);
+    $data['user'] = ModelUser::getCurrentUser()->getViewData();
+    $app->render('main.twig', $data);
+})->via('GET', 'POST')->name('joingame');
 
 $app->get('/newgame(/)', function() use ($app, $debug, $logger) {
     $data = array();

@@ -1,7 +1,7 @@
 <?php
 namespace AttOn\View\Content\Operations;
 
-class ContentJoinGame extends ContentOperation {
+class ContentJoinGame extends Interfaces\ContentOperation {
 
     public function run() {
         $showgame = true;
