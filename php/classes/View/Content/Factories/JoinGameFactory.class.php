@@ -4,14 +4,14 @@ use AttOn\View\Content\Operations;
 
 class JoinGameFactory extends Interfaces\ContentFactory {
 
-	public function getName() {
-		return 'joingame';
-	}
+    public function getName() {
+        return 'joingame';
+    }
 
-	public function getOperation() {
+    public function getOperation() {
         $this->checkAuth(CHECK_SESSION_USER);
-		$return = new Operations\ContentJoinGame();
-		return $return;
-	}
+        $return = new Operations\ContentJoinGame();
+        return $return;
+    }
 
 }
