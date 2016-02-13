@@ -1,49 +1,66 @@
-<!-- BEGIN: main -->
+{% if game %}
+    <p>Wollen Sie wirklich folgendem Spiel beitreten?</p>
 
-	<!-- BEGIN: game -->
-		<p>Wollen Sie wirklich folgendem Spiel beitreten?</p>
-		
-		<table>
-			<tr><td>Name:</td><td>{gameinfo.name}</td></tr>
-			<tr><td>Ersteller:</td><td>{gameinfo.creator}</td></tr>
-			
-			<!-- BEGIN: player -->
-			<tr><td>Mitspieler:</td><td>{player_login}</td></tr>
-			<!-- END: player -->
-			<form method="post" action="{PHP._SERVER.PHP_SELF}?content=joingame">
-			<tr>
-				<td>Farbe wählen:</td>
-				<td>
-					<select name="color" size="1">
-					<!-- BEGIN: color -->
-						<option value="{color.id}" name="color">{color.color}</option>
-					<!-- END: color -->
-					</select>
-				</td>
-			</tr>
-			<!-- BEGIN: password -->
-			<tr>
-				<td>Passwort:</td>
-				<td>
-					<input type="password" value="" name="password" />
-				</td>
-			</tr>
-			<!-- END: password -->
-			<tr>
-			<td>
-				
-				<input type="submit" value="Beitreten" name="join" />
-				<input type="hidden" value="{gameinfo.id}" name="id_game">
-			</td>
-			</form>
-			<td>
-				<form method="post" action="{PHP._SERVER.PHP_SELF}?content=games">
-				<input type="submit" value="Abbrechen" name="abort" />
-				</form>
-			</td>
-			</tr>
-		</table>
-		
-	<!-- END: game -->
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>{{game.name}}</td>
+        </tr>
+        <tr>
+            <td>Ersteller:</td>
+            <td>{{game.creator}}</td>
+        </tr>
 
-<!-- END: main -->
+        {% for player in game.players %}
+        <tr>
+            <td>Mitspieler:</td>
+            <td>{{player}}</td>
+        </tr>
+        {% endfor %}
+
+        <form method="post" action="{{absRefPrefix}}joingame/{{game.id}}/">
+        <tr>
+            <td>Farbe wählen:</td>
+            <td>
+                <select name="color" size="1">
+                    {% for color in game.availColors %}
+                    <option value="{{color.id}}" name="color">{{color.color}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+
+        {% if game.passwordProtected %}
+        <tr>
+            <td>Passwort:</td>
+            <td>
+                <input type="password" value="" name="password" />
+            </td>
+        </tr>
+        {% endif %}
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="submit" value="Beitreten" name="join" />
+                <input type="hidden" value="{{game.id}}" name="id_game">
+            </td>
+        </tr>
+        </form>
+    </table>
+    <br>
+    <a href="{{absRefPrefix}}games/">zur&uuml;ck</a>
+{% endif %}
+
+{% if errors %}
+<br>
+<hr>
+<p class="error">{{errors.message}}</p>
+{% endif %}
+
+{% if status %}
+<br>
+<hr>
+<p class="status">{{status.message}}</p>
+{% endif %}
