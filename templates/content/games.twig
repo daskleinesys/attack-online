@@ -71,8 +71,9 @@
                 {% if game.ingame %}
                 <td class="center">
                     <form method="post" action="{{absRefPrefix}}games/{{games.show}}/">
-                        <input type="image" value="{{game.id}}" name="leave" src="{{absRefPrefix}}dist/images/leave.gif" alt="Spiel verlassen"/>
+                        <input type="image" value="{{game.id}}" name="leave_img" src="{{absRefPrefix}}dist/images/leave.gif" alt="Spiel verlassen"/>
                         <input type="hidden" value="{{game.id}}" name="id_game" />
+                        <input type="hidden" value="{{game.id}}" name="leave" />
                     </form>
                 </td>
                 {% endif %}

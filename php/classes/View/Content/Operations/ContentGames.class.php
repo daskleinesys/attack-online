@@ -35,9 +35,9 @@ class ContentGames extends Interfaces\ContentOperation {
 	}
 
 	private function leaveGame(array &$data, $id_game) {
-		$userGameInteraction = new UserGameInteraction();
+		$interaction = new UserGameInteraction();
 		try {
-			$userGameInteraction->leaveGame($id_game);
+			$interaction->leaveGame($id_game);
             $data['status'] = array(
                 'message' => 'Game left.'
             );
