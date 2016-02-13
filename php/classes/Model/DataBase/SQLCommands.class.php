@@ -13,14 +13,14 @@ class SQLCommands {
 	// @param int $id_game
 	public static function init($id_game = null) {
 
-		if (self::$DataSource == null) {
+		if (self::$DataSource === null) {
 			self::$DataSource = DataSource::getInstance();
 			self::LoadUserQueries();
 			self::LoadGameQueries();
 		}
 
-		// clear all prepared statements (reset PDO object) if a game_id is given
-		if ($id_game != null && $id_game != self::$id_game && is_int($id_game)) {
+		// clear all prepared statements (reset PDO object) if a new game_id is given
+		if ($id_game !== null && $id_game !== self::$id_game && is_int($id_game)) {
 			DataSource::getInstance()->reset_game_specific_queries();
 			self::$id_game = $id_game;
 			self::LoadGameSpecificQueries(self::$id_game);

@@ -1,17 +1,17 @@
 <?php
 namespace AttOn\Model\Game;
+use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelColor;
 use AttOn\Model\Atton\ModelEconomy;
-use AttOn\Model\Atton\ModelGameArea;
 use AttOn\Model\Atton\ModelGameMode;
 use AttOn\Model\Atton\ModelPhase;
+use AttOn\Model\Atton\ModelStartingSet;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\DataBase\SQLCommands;
 use AttOn\Model\Iterator\ModelIterator;
 use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Model\User\ModelInGamePhaseInfo;
-use AttOn\Model\User\ModelStartingSet;
 use AttOn\Model\User\ModelUser;
 use AttOn\Exceptions\NullPointerException;
 use AttOn\Exceptions\GameCreationException;
