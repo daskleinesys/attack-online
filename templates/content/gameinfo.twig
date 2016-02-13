@@ -5,6 +5,7 @@
 <h1>{{game.name}}</h1>
 
 {% if delete %}
+<h3>delete game</h3>
 <p>Wollen Sie wirklich dieses Spiel l&ouml;schen?</p>
 <form method="post" action="{{absRefPrefix}}gameinfo/{{game.id}}/">
     <p>
@@ -13,8 +14,11 @@
         <input type="hidden" name="creator_action" value="creator_action" />
     </p>
 </form>
+<br>
+<hr>
 {% endif %}
 
+<h3>players</h3>
 <table>
     <tr>
         <td>Ersteller:</td>
@@ -44,6 +48,7 @@
 </table>
 
 {% if isCreator and game.status == 'new' %}
+<br>
 <hr>
 
 <h3>new game actions</h3>
