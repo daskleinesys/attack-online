@@ -17,8 +17,8 @@ class ContentGames extends Interfaces\ContentOperation {
         $data['template'] = $this->getTemplate();
         $data['games'] = array();
 
-		if (isset($_POST['games']) && is_array($_POST['games']) && isset($_POST['games']['leave'])) {
-            $this->leaveGame($data, $_POST['games']['leave']);
+		if (isset($_POST['leave']) && isset($_POST['id_game'])) {
+            $this->leaveGame($data, intval($_POST['id_game']));
         }
 
 		$this->setStatusBar($data);
@@ -37,9 +37,9 @@ class ContentGames extends Interfaces\ContentOperation {
 	private function leaveGame(array &$data, $id_game) {
 		$userGameInteraction = new UserGameInteraction();
 		try {
-			$userGameInteraction->leaveGame($data, intval($id_game));
+			$userGameInteraction->leaveGame($id_game);
             $data['status'] = array(
-                'message' => 'Game joined.'
+                'message' => 'Game left.'
             );
 		} catch (ControllerException $ex) {
             $data['errors'] = array(

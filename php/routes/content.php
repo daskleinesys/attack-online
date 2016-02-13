@@ -7,7 +7,7 @@ use AttOn\View\Content\Factories\GameInfoFactory;
 use AttOn\View\Content\Factories\NewGameFactory;
 use AttOn\Exceptions\SessionException;
 
-$app->get('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger) {
+$app->map('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger) {
     if ($type === null || empty($type)) {
         $type = 'new';
     }
@@ -20,7 +20,7 @@ $app->get('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger
     $view->run($data);
     $data['user'] = ModelUser::getCurrentUser()->getViewData();
     $app->render('main.twig', $data);
-});
+})->via('GET', 'POST')->name('games');
 
 $app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug, $logger) {
     if ($id_game === null || empty($id_game)) {

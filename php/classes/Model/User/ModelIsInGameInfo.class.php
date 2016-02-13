@@ -176,8 +176,8 @@ class ModelIsInGameInfo {
      * @return void
      */
     public static function leaveGame($id_user, $id_game) {
-        self::deleteIsInGameInfos($id_game, $id_user);
-        ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_game, $id_user);
+        self::deleteIsInGameInfos($id_user, $id_game);
+        ModelInGamePhaseInfo::deleteInGamePhaseInfos($id_user, $id_game);
     }
 
     /**
