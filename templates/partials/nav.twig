@@ -25,7 +25,7 @@
 				</ul>
 			</li>
 
-            {% if (user.inActiveGame) %}
+            {% if user.currGame and user.currGame.status == 'running' %}
             {# --- START --- user-selected-active-game --- #}
 			<li>
 				<ul class="nav_game">
@@ -35,6 +35,7 @@
 					<li>
 						<a href="{{absRefPrefix}}landmove/" class="turns">Landzug</a><br />
 					</li>
+                    {% if user.currGame.id_game_mode == 3 %}
 					<li>
 						<a href="{{absRefPrefix}}seamove/" class="turns">Seezug</a><br />
 					</li>
@@ -44,18 +45,23 @@
 					<li>
 						<a href="{{absRefPrefix}}troopsmove/" class="turns">Verlegen</a><br />
 					</li>
+                    {% endif %}
+                    {% if user.currGame.id_game_mode == 2 or user.currGame.id_game_mode == 3 %}
 					<li>
 						<a href="{{absRefPrefix}}production/" class="turns">Produktion</a><br />
 					</li>
+                    {% endif %}
+                    {% if user.currGame.id_game_mode == 3 %}
 					<li>
 						<a href="{{absRefPrefix}}techtree/" class="turns">Tech-Tree</a><br />
 					</li>
+                    {% endif %}
 				</ul>
 			</li>
             {# --- END --- user-selected-active-game --- #}
             {% endif %}
 
-            {% if (user.inNewGame) %}
+            {% if user.currGame and user.currGame.status == 'started' %}
             {# --- START --- user-selected-new-game --- #}
 			<li>
 				<ul class="nav_game">
@@ -65,9 +71,11 @@
 					<li>
 						<a href="{{absRefPrefix}}selectstart/" class="turns">Startfelder</a><br />
 					</li>
+                    {% if user.currGame.id_game_mode == 3 %}
 					<li>
 						<a href="{{absRefPrefix}}setships/" class="turns">Schiffe</a><br />
 					</li>
+                    {% endif %}
 				</ul>
 			</li>
             {# --- END --- user-selected-new-game --- #}

@@ -262,6 +262,25 @@ class ModelGame {
     }
 
     /**
+     * @brief returns all view-relevant game-data as associative array
+     *
+     * @return dictionary
+     */
+    public function getViewData() {
+        $data = array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'id_game_mode' => $this->id_game_mode,
+            'status' => $this->status,
+            'id_phase' => $this->id_phase,
+            'round' => $this->round,
+            'processing' => $this->processing
+        );
+
+        return $data;
+    }
+
+    /**
      * sets game status of a new game to GAME_STATUS_STARTED
      *
      * @throws GameAdministrationException

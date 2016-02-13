@@ -28,8 +28,9 @@ class HeaderViewHelper {
         }
         if ($currGame === null) {
             $user['noGameSelected'] = true;
+        } else {
+            $user['currGame'] = $currGame->getViewData();
         }
-
         $data['user'] = $user;
     }
 
