@@ -3,6 +3,8 @@ require.config({
 });
 require(['config'], function() {
     require(['jquery'], function($) {
+
+        window.AttOn = window.AttOn || {};
         
         var currentHighlights = new Array();
         var currentHighlightHomeCountry = "";
@@ -204,6 +206,10 @@ require(['config'], function() {
                 dragobjekt.style.top = (posy - dragy) + "px";
             }
         }
+
+        window.AttOn.HighlightSingleCountry = HighlightSingleCountry;
+        window.AttOn.ClearHighlightSingleCountry = ClearHighlightSingleCountry;
+        window.AttOn.HighlightMultipleCountries = HighlightMultipleCountries;
 
     });
 });

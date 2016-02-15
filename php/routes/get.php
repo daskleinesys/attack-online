@@ -1,7 +1,10 @@
 <?php
 namespace AttOn;
 use AttOn\Controller\User\UserActions;
+use AttOn\Exceptions\MapException;
+use AttOn\Model\Game\ModelGame;
 use AttOn\Tools\HeaderViewHelper;
+use AttOn\View\Map;
 
 $app->get('/', function() use ($app, $debug) {
     $data = array();
@@ -23,14 +26,26 @@ $app->get('/logout/', function() use ($app, $debug) {
 
 $app->get('/map/', function() use($app, $debug) {
     $data = array();
-    HeaderViewHelper::parseCurrentUser($data);
-    if (!isset($data['user']['currGame'])) {
+    if (ModelGame::getCurrentGame() === null) {
         $data['errors'] = array(
             'message' => 'select a game first'
         );
         $app->render('error.twig', $data);
         return;
     }
+    try {
+        $map = new Map();
+        $map->run($data);
+    } catch (MapException $ex) {
+        $data['errors'] = array(
+            'message' => $ex->getMessage()
+        );
+        $app->render('error.twig', $data);
+        return;
+    }
+
+    HeaderViewHelper::parseCurrentUser($data);
+
     $app->render('map.twig', $data);
 });
 

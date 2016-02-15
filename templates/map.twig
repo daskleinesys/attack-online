@@ -9,6 +9,125 @@
         {% include 'partials/head.twig' %}
     </head>
     <body id="top" class="layout_1">
+        <div class="map" id="small_map">
 
+            <div class="imagemap">
+                {% for country in countryData %}
+
+                    {# COUNTRY IMAGE #}
+                    <div class="{{country.area_type}}" style="top:{{country.postop}}px; left:{{country.posleft}}px; height:{{country.height}}px; width:{{country.width}}px; background-image:url({{absRefPrefix}}dist/images/countries/{{(country.color) ? country.color : 'empty'}}/{{country.ctrnr}}.gif)" id="{{country.ctrnr}}" >
+                    </div>
+
+                    {# HOVER INFO BOX #}
+                    <div class="infobox" id="infobox_{{country.ctrnr}}" style="top:{{country.postop}}px; left:{{(country.posleft < 500) ? country.posleft + 100 : country.posleft - 150}}px;">
+                        <table>
+
+                            <tr>
+                                <th>{{country.country}}</th><th>{{country.ctrnr}}</th>
+                            </tr>
+
+                            {% if country.user %}
+                                <tr>
+                                    <td>{{country.user}}</td>
+                                </tr>
+                                {% for unit in country.units %}
+                                <tr>
+                                    <td>{{unit.name}}:</td><td>{{unit.count}}</td>
+                                </tr>
+                                {% endfor %}
+                                {# ship
+                                <tr>
+                                    <td>{{country.unit}}</td><td>{{howmanyships}}</td>
+                                </tr>
+                                ship #}
+                                {# shipatsea
+                                <tr>
+                                    <td>{{country.shipclass_atsea}}</td><td>{{howmanyships_atsea}}
+                                        <!-- BEGIN: otheruser -->
+                                        ({{howmanyships_atsea_otheruser}})
+                                        <!-- END: otheruser -->
+                                    </td>
+                                </tr>
+                                shipatsea #}
+                            {% endif %}
+
+                            {% if country.resource %}
+                            <tr>
+                                <th>{{country.resource}}</th><th>{{country.prod}}</th>
+                            </tr>
+                            {% endif %}
+
+                            <tr><th colspan="2"></th></tr>
+
+                            <!-- BEGIN: options -->
+                            <tr>
+                                <td>Einheiten je Typ</td><td>{{units}}</td>
+                            </tr>
+                            <tr>
+                                <td>Option</td><td>{{options}}</td>
+                            </tr>
+                            <tr>
+                                <td>L&auml;nder</td><td>{{countries}}</td>
+                            </tr>
+                            <!-- END: options -->
+
+                            {% if country.traderoute %}
+                            <tr>
+                                <th>Handelsroute</th>
+                            </tr>
+                            <tr>
+                                <td>{{country.traderoute.area1.id}}</td><td>{{country.traderoute.area1.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{country.traderoute.area2.id}}</td><td>{{country.traderoute.area2.name}}</td>
+                            </tr>
+                            {% endif %}
+
+                        </table>
+                    </div>
+
+                    {# COUNTRY STATUS INFO #}
+                    {% if country.resource %}
+                    <div class="resource" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="resource_{{country.ctrnr}}">
+                        <img src="{{absRefPrefix}}dist/images/resources/{{country.res_label}}{{country.prod}}.gif" class="resource" alt="" />
+                    </div>
+                    {% endif %}
+                    {% if country.tank %}
+                    <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.ctrnr}}">
+                        <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
+                    </div>
+                    {% endif %}
+                    {% if country.traderoute %}
+                    <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.ctrnr}}">
+                        <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
+                    </div>
+                    {% endif %}
+
+                    {# COUNTRY UNIT INFO #}
+                    {% if country.user %}
+                    <div class="units" style="top:{{country.yres}}px; left:{{country.xres}}px;" >
+                        <div class="landunits" id="landunit_{{country.ctrnr}}">
+                            <img src="{{absRefPrefix}}dist/images/units/land/{{(country.unitCount) ? country.unitCount : '0'}}.gif" class="landunits" alt="" />
+                        </div>
+                        <div class="seaunits" id="seaunit_{{country.ctrnr}}">
+                            <img src="{{absRefPrefix}}dist/images/units/sea/{{(country.shipCount) ? country.shipCount : '0'}}.gif" class="seaunits" alt="" />
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="transparent">
+                    <img src="{{absRefPrefix}}dist/images/transparent.gif" width="1000" height="400" border="0" alt="map" usemap="#imagemap" class="imagemap" />
+                    <map name="imagemap">
+                        {% for country in countryData %}
+                        <area shape="poly" coords="{{country.coords}}" href="#" alt="{{country.country}}" title="{{country.country}}" onmouseover="javascript:AttOn.HighlightSingleCountry({{country.ctrnr}})" onmouseout="javascript:AttOn.ClearHighlightSingleCountry({{country.ctrnr}})" onClick="AttOn.HighlightMultipleCountries({{country.ctrnr}}, new Array({{country.adjacentCountries}}))" />
+                        {% endfor %}
+                    </map>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="{{absRefPrefix}}vendor/requirejs/require.js" data-main="{{absRefPrefix}}dist/js/main"></script>
     </body>
 </html>
