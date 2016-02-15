@@ -13,11 +13,12 @@ class Map {
 
         $error_msg = NULL;
 
-        $query = "SELECT g.status, p.label FROM games g JOIN phases p ON (g.id_phase = p.id) WHERE g.id = $id_game";
+        $query = "SELECT status, id_phase FROM games WHERE id = $id_game";
         $gameinfo = mysqli_fetch_array(mysqli_query($dbc, $query));
 
         // running game (or newly started but countries are already picked)
-        if (($gameinfo['status']=='running') || (($gameinfo['status']=='started') && ($gameinfo['label']=='setships'))) {
+        if (($gameinfo['status'] === GAME_STATUS_RUNNING) || (($gameinfo['status'] === GAME_STATUS_STARTED) && ((int) $gameinfo['id_phase'] === PHASE_SETSHIPS))) {
+            die('todo: adapt this to map.twig');
             $query = "SELECT areas.id AS ctrnr, areas.name AS country, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, user.login AS user, user.id AS id_area_user, " .
             "resources.name AS resource, zareas.productivity AS prod, zareas.tank AS tank, units.name AS unit, zunits_land.count AS unr, zunits_sea.name AS shipname, zunits_harbor.id_zarea AS coastnr, " .
             "coasts.name AS coast, colors.name AS color, units.id_type AS unit_type, iig.id_game AS id_game, units.id AS id_unit, areas.id_type AS areas_type, " .
@@ -45,19 +46,22 @@ class Map {
             "ORDER BY areas.id, coasts.name, zunits.id_unit ASC, zunits_sea.id_zunit ASC, zunits.id_user ASC";
         }
         // newly started game countries have to be picked
-        else if (($gameinfo['status']=='started') && ($gameinfo['label']=='selectstart')) {
-            $query = "SELECT areas.id AS ctrnr, areas.name AS country, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, user.login AS user, " .
-            "resources.name AS resource, zareas.productivity AS prod, colors.name AS color, iig.id_game, areas.id_type AS areas_type, resources.label AS res_label, " .
-            "startreg.options AS options, optypes.countries AS countries, optypes.units AS units, areas.xres AS xres, areas.yres AS yres " .
-            "FROM z" . $id_game . "_areas AS zareas " .
-            "LEFT JOIN resources AS resources ON (zareas.id_resource=resources.id) " .
-            "LEFT JOIN areas AS areas ON (zareas.id_area=areas.id) " .
-            "LEFT JOIN startregions AS startreg ON (areas.id=startreg.id_area) " .
-            "LEFT JOIN is_in_game AS iig ON (startreg.id_set=iig.id_set) " .
-            "LEFT JOIN user AS user ON (iig.id_user=user.id) " .
-            "LEFT JOIN colors AS colors ON (colors.id=iig.id_color) " .
-            "LEFT JOIN optiontypes AS optypes ON (optypes.id=startreg.id_optiontype) " .
-            "ORDER BY areas.id ASC";
+        else if (($gameinfo['status'] === GAME_STATUS_STARTED) && ((int) $gameinfo['id_phase'] === PHASE_SELECTSTART)) {
+            $query = "SELECT areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
+                "resources.name AS resource, resources.label AS res_label, zareas.productivity AS prod, " .
+                "start.*" .
+                "FROM z" . $id_game . "_areas AS zareas " .
+                "LEFT JOIN resources AS resources ON (zareas.id_resource = resources.id) " .
+                "LEFT JOIN areas AS areas ON (zareas.id_area = areas.id) " .
+                "LEFT JOIN (" .
+                    "SELECT user.login AS user, colors.color AS color, startreg.id_area, startreg.options AS countrySelectOption, optypes.units AS countrySelectUnitCount, optypes.countries AS countrySelectCount " .
+                    "FROM is_in_game AS iig " .
+                    "LEFT JOIN user AS user ON (iig.id_user = user.id) " .
+                    "LEFT JOIN colors AS colors ON (colors.id = iig.id_color) " .
+                    "INNER JOIN startregions AS startreg ON (startreg.id_set = iig.id_set) " .
+                    "LEFT JOIN optiontypes AS optypes ON (optypes.id = startreg.id_optiontype) " .
+                    "WHERE iig.id_game = $id_game" .
+                ") AS start ON (zareas.id_area = start.id_area)";
         }
         // game not in valid phase
         else {
@@ -65,20 +69,6 @@ class Map {
         }
 
         $result = mysqli_query($dbc, $query);
-        $actualCountryId = 0;
-        $actualUnitType = 0;
-        $actualShipID_atSea = NULL;
-        $actualOption = 0;
-        $actualId_game = 0;
-        $shipTypeCount = 0;
-        $shipTypeCount_atSea = 0;
-        $shipTypeCount_atSea_otherUser = 0;
-        $shipCount = 0;
-        $unitCount = 0;
-        $actualTank = 0;
-        $traderouteIDs = array();
-        $parsedShips = array();
-        $parsedAdjacentCountries = array();
         $countryData = array();
         while ($country = mysqli_fetch_array($result)) {
             $countryData[] = $country;

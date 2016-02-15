@@ -15,15 +15,15 @@
                 {% for country in countryData %}
 
                     {# COUNTRY IMAGE #}
-                    <div class="{{country.area_type}}" style="top:{{country.postop}}px; left:{{country.posleft}}px; height:{{country.height}}px; width:{{country.width}}px; background-image:url({{absRefPrefix}}dist/images/countries/{{(country.color) ? country.color : 'empty'}}/{{country.ctrnr}}.gif)" id="{{country.ctrnr}}" >
+                    <div class="type-{{country.area_type}} {{ (country.user) ? '' : 'is-empty' }}" style="top:{{country.postop}}px; left:{{country.posleft}}px; height:{{country.height}}px; width:{{country.width}}px; background-image:url({{absRefPrefix}}dist/images/countries/{{(country.color) ? country.color : 'empty'}}/{{country.number}}.gif)" id="{{country.number}}" >
                     </div>
 
                     {# HOVER INFO BOX #}
-                    <div class="infobox" id="infobox_{{country.ctrnr}}" style="top:{{country.postop}}px; left:{{(country.posleft < 500) ? country.posleft + 100 : country.posleft - 150}}px;">
+                    <div class="infobox" id="infobox_{{country.number}}" style="top:{{country.postop}}px; left:{{(country.posleft < 500) ? country.posleft + 100 : country.posleft - 150}}px;">
                         <table>
 
                             <tr>
-                                <th>{{country.country}}</th><th>{{country.ctrnr}}</th>
+                                <th>{{country.name}}</th><th>{{country.number}}</th>
                             </tr>
 
                             {% if country.user %}
@@ -59,17 +59,17 @@
 
                             <tr><th colspan="2"></th></tr>
 
-                            <!-- BEGIN: options -->
-                            <tr>
-                                <td>Einheiten je Typ</td><td>{{units}}</td>
-                            </tr>
-                            <tr>
-                                <td>Option</td><td>{{options}}</td>
-                            </tr>
-                            <tr>
-                                <td>L&auml;nder</td><td>{{countries}}</td>
-                            </tr>
-                            <!-- END: options -->
+                            {% if country.countrySelectOption %}
+                                <tr>
+                                    <td>Option</td><td>{{country.countrySelectOption}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Anzahl L&auml;nder</td><td>{{country.countrySelectCount}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Einheiten je Typ</td><td>{{country.countrySelectUnitCount}}</td>
+                                </tr>
+                            {% endif %}
 
                             {% if country.traderoute %}
                             <tr>
@@ -88,28 +88,28 @@
 
                     {# COUNTRY STATUS INFO #}
                     {% if country.resource %}
-                    <div class="resource" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="resource_{{country.ctrnr}}">
+                    <div class="resource" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="resource_{{country.number}}">
                         <img src="{{absRefPrefix}}dist/images/resources/{{country.res_label}}{{country.prod}}.gif" class="resource" alt="" />
                     </div>
                     {% endif %}
                     {% if country.tank %}
-                    <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.ctrnr}}">
+                    <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.number}}">
                         <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
                     </div>
                     {% endif %}
                     {% if country.traderoute %}
-                    <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.ctrnr}}">
+                    <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.number}}">
                         <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
                     </div>
                     {% endif %}
 
                     {# COUNTRY UNIT INFO #}
-                    {% if country.user %}
+                    {% if country.units %}
                     <div class="units" style="top:{{country.yres}}px; left:{{country.xres}}px;" >
-                        <div class="landunits" id="landunit_{{country.ctrnr}}">
+                        <div class="landunits" id="landunit_{{country.number}}">
                             <img src="{{absRefPrefix}}dist/images/units/land/{{(country.unitCount) ? country.unitCount : '0'}}.gif" class="landunits" alt="" />
                         </div>
-                        <div class="seaunits" id="seaunit_{{country.ctrnr}}">
+                        <div class="seaunits" id="seaunit_{{country.number}}">
                             <img src="{{absRefPrefix}}dist/images/units/sea/{{(country.shipCount) ? country.shipCount : '0'}}.gif" class="seaunits" alt="" />
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                     <img src="{{absRefPrefix}}dist/images/transparent.gif" width="1000" height="400" border="0" alt="map" usemap="#imagemap" class="imagemap" />
                     <map name="imagemap">
                         {% for country in countryData %}
-                        <area shape="poly" coords="{{country.coords}}" href="#" alt="{{country.country}}" title="{{country.country}}" onmouseover="javascript:AttOn.HighlightSingleCountry({{country.ctrnr}})" onmouseout="javascript:AttOn.ClearHighlightSingleCountry({{country.ctrnr}})" onClick="AttOn.HighlightMultipleCountries({{country.ctrnr}}, new Array({{country.adjacentCountries}}))" />
+                        <area shape="poly" coords="{{country.coords}}" href="#" alt="{{country.name}}" title="{{country.name}}" onmouseover="javascript:AttOn.HighlightSingleCountry({{country.number}})" onmouseout="javascript:AttOn.ClearHighlightSingleCountry({{country.number}})" onClick="AttOn.HighlightMultipleCountries({{country.number}}, new Array({{country.adjacentCountries}}))" />
                         {% endfor %}
                     </map>
                 </div>
