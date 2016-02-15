@@ -13,6 +13,7 @@ class ContentOverview extends Interfaces\ContentOperation {
 
     public function run(array &$data) {
         $data['template'] = $this->getTemplate();
+        $this->addCurrentGameInfo($data);
 
         // parse user infos
         $users = array();

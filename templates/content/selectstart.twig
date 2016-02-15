@@ -1,0 +1,37 @@
+{% include 'content/partials/currentgame.twig' %}
+
+<h1>Startfelder wählen</h1>
+
+<p>Hier k&ouml;nnen die Startfelder ausgw&auml;hlt werden. Je nach Gruppe kann eine unterschiedliche Anzahl an L&auml;ndern gew&auml;hlt werden.</p>
+
+<form method="post" action="{{ absRefPrefix }}selectstart/">
+
+    <ul>
+        {% for option in options %}
+        <li>
+            <strong>{{ option.countrySelectCount }} Land/L&auml;nder w&auml;hlen // {{ option.countrySelectUnitCount }} Einheiten pro Typ und Land</strong>
+                <ul>
+                    {% for area in option.areas %}
+                    <li>
+                        <label>
+                            <input type="checkbox" value="{{ area.id_area }}" id="area_{{ area.id_area }}" name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (area.disabled) ? 'disabled' : '' }}>{{ area.number }} {{ area.name }}
+                        </label>
+                    </li>
+                    <li>---</li>
+                    {% endfor %}
+                </ul>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <input type="submit" name="selectstart" value="Best&auml;tigen" />
+
+    <hr>
+
+    <h2>Zug beenden</h2>
+    <p>
+        Achtung, wenn du den folgenden Knopf dr&uuml;ckst werden die Startfelder fixiert und du kannst sie nicht mehr &auml;ndern. Erst wenn alle Spieler mit diesem Zug fertig sind startet das Spiel.
+    </p>
+    <input type="submit" name="fixate_start" value="Fertig" />
+
+</form>

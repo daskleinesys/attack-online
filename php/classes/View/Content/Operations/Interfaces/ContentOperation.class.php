@@ -1,5 +1,7 @@
 <?php
 namespace AttOn\View\Content\Operations\Interfaces;
+use AttOn\Model\Atton\ModelPhase;
+use AttOn\Model\Game\ModelGame;
 
 abstract class ContentOperation {
 
@@ -9,12 +11,12 @@ abstract class ContentOperation {
 
 	protected function addCurrentGameInfo(array &$data) {
 		// parse game
-		$_Game = ModelGame::getCurrentGame();
+		$gameModel = ModelGame::getCurrentGame();
 		$game = array();
-		$game['name'] = $_Game->getName();
-		$game['round'] = $_Game->getRound();
-		$game['phase'] = AttOn\Model\Game\ModelPhase::getPhase($_Game->getIdPhase())->getName();
-        $data['game'] = $game;
+		$game['name'] = $gameModel->getName();
+		$game['round'] = $gameModel->getRound();
+		$game['phase'] = ModelPhase::getPhase($gameModel->getIdPhase())->getName();
+        $data['currentGame'] = $game;
 	}
 
 }

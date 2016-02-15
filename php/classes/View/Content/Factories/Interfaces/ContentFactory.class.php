@@ -54,7 +54,7 @@ abstract class ContentFactory {
 				if ($current_game === null) {
                     throw new SessionException('Choose game first');
                 }
-				if ($current_game>getStatus() !== GAME_STATUS_STARTED) {
+				if ($current_game->getStatus() !== GAME_STATUS_STARTED) {
                     throw new SessionException('Game is not in the starting phase.');
                 }
 				break;
@@ -62,7 +62,7 @@ abstract class ContentFactory {
 				if ($current_game === null) {
                     throw new SessionException('Choose game first');
                 }
-				if ($current_game>getStatus() !== GAME_STATUS_RUNNING) {
+				if ($current_game->getStatus() !== GAME_STATUS_RUNNING) {
                     throw new SessionException('Game is not running.');
                 }
 				break;
