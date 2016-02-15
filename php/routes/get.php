@@ -21,6 +21,19 @@ $app->get('/logout/', function() use ($app, $debug) {
     $app->redirect(ABS_REF_PREFIX);
 });
 
+$app->get('/map/', function() use($app, $debug) {
+    $data = array();
+    HeaderViewHelper::parseCurrentUser($data);
+    if (!isset($data['user']['currGame'])) {
+        $data['errors'] = array(
+            'message' => 'select a game first'
+        );
+        $app->render('error.twig', $data);
+        return;
+    }
+    $app->render('map.twig', $data);
+});
+
 /*
 TODO Werner? concept + proposol for the following:
 $app->get('/:content/')function($content) {
