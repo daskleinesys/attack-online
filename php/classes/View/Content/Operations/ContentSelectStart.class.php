@@ -10,7 +10,7 @@ use AttOn\Model\User\ModelUser;
 class ContentSelectStart extends Interfaces\ContentOperation {
 
     private $id_set;
-    private $regions;
+    private $possibleStartRegions;
 
     public function getTemplate() {
         return 'selectstart';
@@ -19,13 +19,12 @@ class ContentSelectStart extends Interfaces\ContentOperation {
     public function run(array &$data) {
         $data['template'] = $this->getTemplate();
         $this->addCurrentGameInfo($data);
-        return;
 
         // get Model Data
         /** @var $iig ModelIsInGameInfo */
         $iig = ModelIsInGameInfo::getIsInGameInfo(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
         $this->id_set = $iig->getIdStartingSet();
-        $this->regions = ModelStartRegion::getRegionsForSet($this->id_set); // array(int id_opttype => array(int option_number => array(int id_area => ModelStartRegion)))
+        $this->possibleStartRegions = ModelStartRegion::getRegionsForSet($this->id_set); // array(int id_opttype => array(int option_number => array(int id_area => ModelStartRegion)))
 
         // update moves
         if (isset($_POST['selectstart'])) {
@@ -36,13 +35,13 @@ class ContentSelectStart extends Interfaces\ContentOperation {
 
         // parse moves
         $this->checkFixate($data);
-        $this->parseOptions();
+        $this->parseOptions($data);
     }
 
     private function selectOption(array &$data, $fixate) {
         $moveController = new SelectStartController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
 
-        foreach ($this->regions as $option_types) {
+        foreach ($this->possibleStartRegions as $option_types) {
             foreach ($option_types as $option_number => $options) {
                 if (isset($_POST['countries_' . $option_number])) {
                     try {
@@ -68,8 +67,8 @@ class ContentSelectStart extends Interfaces\ContentOperation {
         }
     }
 
-    private function parseOptions() {
-        foreach ($this->regions as $id_option_type => $option_types) {
+    private function parseOptions(array &$data) {
+        foreach ($this->possibleStartRegions as $id_option_type => $option_types) {
             $optionType = ModelOptionType::getOptionType($id_option_type);
             $opttype = array();
             $opttype['units'] = $optionType->getUnits();
