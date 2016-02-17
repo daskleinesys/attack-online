@@ -9,17 +9,21 @@
     <ul>
         {% for option in options %}
         <li>
-            <strong>{{ option.countrySelectCount }} Land/L&auml;nder w&auml;hlen // {{ option.countrySelectUnitCount }} Einheiten pro Typ und Land</strong>
+            <strong>{{ option.countrySelectCount }} {{ (option.countrySelectCount == 1) ? 'Land' : 'L&auml;nder' }} w&auml;hlen // {{ option.countrySelectUnitCount }} Einheiten pro Einheiten-Typ und Land</strong>
                 <ul>
                     {% for area in option.areas %}
+                    <li><br></li>
                     <li>
                         <label>
-                            <input type="checkbox" value="{{ area.id_area }}" id="area_{{ area.id_area }}" name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (area.disabled) ? 'disabled' : '' }}>{{ area.number }} {{ area.name }}
+                            <input type="checkbox" value="{{ area.id_area }}" id="area_{{ area.id_area }}" name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (area.disabled) ? 'disabled' : '' }}> {{ area.number }} {{ area.name }}
                         </label>
                     </li>
-                    <li>---</li>
+                    <li><br></li>
                     {% endfor %}
                 </ul>
+        </li>
+        <li>
+            <hr>
         </li>
         {% endfor %}
     </ul>

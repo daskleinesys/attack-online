@@ -3,6 +3,8 @@ namespace AttOn\View\Content\Operations;
 
 use AttOn\Exceptions\ControllerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\ModelArea;
+use AttOn\Model\Atton\ModelOptionType;
 use AttOn\Model\Atton\ModelStartRegion;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelInGamePhaseInfo;
@@ -70,32 +72,40 @@ class ContentSelectStart extends Interfaces\ContentOperation {
     }
 
     private function parseOptions(array &$data) {
+        $viewData = array();
+
         foreach ($this->possibleStartRegions as $id_option_type => $option_types) {
             $optionType = ModelOptionType::getOptionType($id_option_type);
-            $opttype = array();
-            $opttype['units'] = $optionType->getUnits();
-            $opttype['countries'] = $optionType->getCountries();
 
             foreach ($option_types as $option_number => $options) {
-                $count = 0;
-                foreach ($options as $id_area => $_StartRegion) {
-                    $count++;
+                $optionViewData = array();
+                $optionViewData['countrySelectUnitCount'] = $optionType->getUnits();
+                $optionViewData['countrySelectCount'] = $optionType->getCountries();
+                $optionViewData['areas'] = array();
+
+                foreach ($options as $id_area => $startRegion) {
 
                     // get area infos
-                    $area = ModelArea::getArea($id_area);
-                    $country = array();
-                    $country['id_area'] = $id_area;
-                    $country['nr'] = $area->getNumber();
-                    $country['name'] = $area->getName();
+                    $areaModel = ModelArea::getArea($id_area);
+                    $area = array();
+                    $area['id_area'] = $id_area;
+                    $area['number'] = $areaModel->getNumber();
+                    $area['name'] = $areaModel->getName();
 
                     // check if country already selected
+                    // TODO : make it happen:
+                    /*
                     $gameArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $id_area);
                     $id_zarea = $gameArea->getId();
                     $modelMove = ModelSelectStartMove::getSelectStartMoveForUser(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
                     $checked = ($modelMove->checkIfAreaIsSelected($option_number, $id_zarea)) ? 'checked' : '';
+                    */
+                    $optionViewData['areas'][] = $area;
                 }
+                $viewData[] = $optionViewData;
             }
         }
+        $data['options'] = $viewData;
     }
 
     private function checkFixate(array &$data) {

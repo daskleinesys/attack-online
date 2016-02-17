@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Model\Atton;
+
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\Iterator\ModelIterator;
 use AttOn\Exceptions\NullPointerException;
@@ -138,7 +139,7 @@ class ModelArea {
         // load a2a
         $query = 'get_a2a';
         $dict = array(':id_area' => $this->id);
-        $result = DataSource::getInstance()->epp($query,$dict);
+        $result = DataSource::getInstance()->epp($query, $dict);
         foreach ($result as $line) {
             $this->adjecents[] = $line['id_adjacent_area'];
         }
