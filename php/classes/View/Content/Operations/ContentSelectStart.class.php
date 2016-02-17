@@ -1,7 +1,9 @@
 <?php
 namespace AttOn\View\Content\Operations;
+
 use AttOn\Exceptions\ControllerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\ModelStartRegion;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelInGamePhaseInfo;
 use AttOn\Model\User\ModelIsInGameInfo;
