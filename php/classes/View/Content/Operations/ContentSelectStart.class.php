@@ -1,8 +1,10 @@
 <?php
 namespace AttOn\View\Content\Operations;
 
+use AttOn\Controller\Game\InGame\SelectStartController;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\InGame\Moves\ModelSelectStartMove;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelOptionType;
 use AttOn\Model\Atton\ModelStartRegion;
@@ -32,9 +34,10 @@ class ContentSelectStart extends Interfaces\ContentOperation {
 
         // update moves
         if (isset($_POST['selectstart'])) {
-            $this->selectOption($data, false);
-        } elseif (isset($_POST['fixate_start'])) {
-            $this->selectOption($data, true);
+            $this->selectOption($data);
+        }
+        if (isset($_POST['fixate_start'])) {
+            $this->fixateMove($data);
         }
 
         // parse moves
@@ -42,7 +45,7 @@ class ContentSelectStart extends Interfaces\ContentOperation {
         $this->parseOptions($data);
     }
 
-    private function selectOption(array &$data, $fixate) {
+    private function selectOption(array &$data) {
         $moveController = new SelectStartController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
 
         foreach ($this->possibleStartRegions as $option_types) {
@@ -59,15 +62,17 @@ class ContentSelectStart extends Interfaces\ContentOperation {
                 }
             }
         }
+    }
 
-        if ($fixate) {
-            try {
-                $moveController->finishMove();
-            } catch (ControllerException $ex) {
-                $data['errors'] = array(
-                    'message' => $ex->getMessage()
-                );
-            }
+    private function fixateMove(array &$data) {
+        $moveController = new SelectStartController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+
+        try {
+            $moveController->finishMove();
+        } catch (ControllerException $ex) {
+            $data['errors'] = array(
+                'message' => $ex->getMessage()
+            );
         }
     }
 
@@ -79,6 +84,7 @@ class ContentSelectStart extends Interfaces\ContentOperation {
 
             foreach ($option_types as $option_number => $options) {
                 $optionViewData = array();
+                $optionViewData['number'] = $option_number;
                 $optionViewData['countrySelectUnitCount'] = $optionType->getUnits();
                 $optionViewData['countrySelectCount'] = $optionType->getCountries();
                 $optionViewData['areas'] = array();
@@ -93,13 +99,13 @@ class ContentSelectStart extends Interfaces\ContentOperation {
                     $area['name'] = $areaModel->getName();
 
                     // check if country already selected
-                    // TODO : make it happen:
-                    /*
                     $gameArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $id_area);
                     $id_zarea = $gameArea->getId();
                     $modelMove = ModelSelectStartMove::getSelectStartMoveForUser(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
-                    $checked = ($modelMove->checkIfAreaIsSelected($option_number, $id_zarea)) ? 'checked' : '';
-                    */
+                    if ($modelMove->checkIfAreaIsSelected($option_number, $id_zarea)) {
+                        $area['checked'] = true;
+                    }
+
                     $optionViewData['areas'][] = $area;
                 }
                 $viewData[] = $optionViewData;

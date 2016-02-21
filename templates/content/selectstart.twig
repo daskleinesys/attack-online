@@ -15,7 +15,7 @@
                     <li><br></li>
                     <li>
                         <label>
-                            <input type="checkbox" value="{{ area.id_area }}" id="area_{{ area.id_area }}" name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (area.disabled) ? 'disabled' : '' }}> {{ area.number }} {{ area.name }}
+                            <input type="checkbox" value="{{ area.id_area }}" id="area_{{ area.id_area }}" name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (turnFixated) ? 'disabled' : '' }}> {{ area.number }} {{ area.name }}
                         </label>
                     </li>
                     <li><br></li>
