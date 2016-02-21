@@ -48,8 +48,6 @@ class ModelSelectStartMove extends ModelMove {
         $query = 'get_start_move';
         $dict = array();
         $dict[':id_move'] = intval($id_move);
-        $dict[':id_phase'] = PHASE_SELECTSTART;
-        $dict[':round'] = 0;
         $result = DataSource::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Move not found');
@@ -169,19 +167,10 @@ class ModelSelectStartMove extends ModelMove {
             unset($this->regions[$option_number]);
             $query = 'delete_move_areas_for_step';
             DataSource::Singleton()->epp($query, $dict);
-        } else {
-            $query = 'create_step_for_move';
-            DataSource::Singleton()->epp($query, $dict);
         }
 
         // insert areas
-        $query = 'get_id_for_step_and_move';
-        $result = DataSource::getInstance()->epp($query, $dict);
-        $id_route = $result[0]['id'];
-
-        $query = 'insert_move_area_for_step';
-        $dict = array();
-        $dict[':id_step'] = $id_route;
+        $query = 'insert_area_for_move';
         foreach ($zareas as $id_zarea) {
             $dict[':id_zarea'] = $id_zarea;
             DataSource::getInstance()->epp($query, $dict);

@@ -61,7 +61,7 @@ class SelectStartController extends PhaseController {
         }
 
         // insert
-        $move = ModelSelectStartMove::getSelectStartMoveForUser($this->id_game, $this->id_user);
+        $move = ModelSelectStartMove::getSelectStartMoveForUser($this->id_user, $this->id_game);
         $zareas = array();
         foreach ($areas as $id_area) {
             $gameArea = ModelGameArea::getGameAreaForArea($this->id_game, $id_area);
@@ -81,7 +81,7 @@ class SelectStartController extends PhaseController {
             return;
         }
         // check if every option has taken countries
-        $move = ModelSelectStartMove::getSelectStartMoveForUser($this->id_game, $this->id_user);
+        $move = ModelSelectStartMove::getSelectStartMoveForUser($this->id_user, $this->id_game);
         $regions_selected = $move->getRegions(); // array(int option_number => array(int id_zarea))
 
         // get Model Data
