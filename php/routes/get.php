@@ -1,5 +1,6 @@
 <?php
 namespace AttOn;
+use AttOn\Controller\CronMain;
 use AttOn\Controller\User\UserActions;
 use AttOn\Exceptions\MapException;
 use AttOn\Model\Game\ModelGame;
@@ -47,6 +48,18 @@ $app->get('/map/', function() use($app, $debug) {
     HeaderViewHelper::parseCurrentUser($data);
 
     $app->render('map.twig', $data);
+});
+
+$app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug) {
+    if (empty($id_game)) {
+        $id_game = null;
+    } else if ($id_game !== null) {
+        $id_game = (int) $id_game;
+    }
+    $cron = new CronMain();
+    $cron->execute($id_game);
+    // TODO : make prettier output
+    echo 'cron sucess';
 });
 
 /*

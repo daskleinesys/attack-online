@@ -1,70 +1,98 @@
 <?php
+namespace AttOn\Controller;
+
+use AttOn\Controller\Logic\Factories\LogicFactoryInterface;
+use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
+use AttOn\Exceptions\ControllerException;
+use AttOn\Exceptions\LogicException;
+use AttOn\Model\Game\ModelGame;
+use AttOn\Tools\Autoloader;
+
 class CronMain {
+
+    private $logger;
 	private $factories;
-	private $_Logger;
 	private $errors = array(); // array(int id_game => string error_msg)
-	
+
 	public function __construct() {
+        $this->logger = \Logger::getLogger('CronMain');
+
 		// factory pattern
-		$this->factories = AttonToolKit::loadFactories('./classes/Controller/Logic/Factories/');
-		$this->_Logger = Logger::getLogger('CronMain');
+        global $env;
+		$this->factories = Autoloader::loadFactories($env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Controller' . DIRECTORY_SEPARATOR . 'Logic' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR, 'AttOn\\Controller\\Logic\\Factories\\');
 	}
-	
+
 	/**
 	 * run cronjob
+	 *
+     * @param $id_game int
 	 * @return void
 	 */
-	public function execute() {
-		if (isset($_REQUEST['id_game'])) {
-			$id_game = intval($_REQUEST['id_game']);
-			$this->run_game($id_game);
-		} else $this->check_games();
-		
+	public function execute($id_game = null) {
+		if ($id_game !== null) {
+            try {
+                $this->run_game((int) $id_game);
+            } catch (ControllerException $ex) {
+                $this->logger->fatal($ex);
+                $this->errors[$id_game] = $ex->getMessage();
+            } catch (LogicException $ex) {
+                $this->logger->fatal($ex);
+                $this->errors[$id_game] = $ex->getMessage();
+            }
+		} else {
+			$this->check_games();
+		}
+
 	}
-	
+
 	/**
 	 * have there been errors?
+	 *
 	 * @return boolean - true if errors occured
 	 */
 	public function hasErrors() {
 		return (!empty($this->errors));
 	}
-	
+
 	/**
 	 * returns errors if any
+	 *
 	 * @return array(int id_game => string error_msg)
 	 */
 	public function getErrors() {
 		return $this->errors;
 	}
-	
+
 	private function check_games() {
 		foreach (ModelGame::getGamesForProcessing() as $id_game) {
 			try {
-				$this->run_game($id_game);
+				$this->run_game((int) $id_game);
 			} catch (ControllerException $ex) {
-				$this->_Logger->fatal($ex);
-				$this->errors[$id_game] = $ex;
+				$this->logger->fatal($ex);
+				$this->errors[$id_game] = $ex->getMessage();
 			} catch (LogicException $ex) {
-				$this->_Logger->fatal($ex);
-				$this->errors[$id_game] = $ex;
+				$this->logger->fatal($ex);
+				$this->errors[$id_game] = $ex->getMessage();
 			}
 		}
 	}
-	
+
 	private function run_game($id_game) {
-		$_ModelGame = ModelGame::getGame($id_game);
+		$game = ModelGame::getGame($id_game);
 
 		foreach ($this->factories as $factory) {
-			if ($factory->getPhase() == $_ModelGame->getIdPhase()) {
-				$_Logic = $factory->getOperation($id_game);
+            /* @var $factory LogicFactoryInterface */
+			if ($factory->getPhase() === $game->getIdPhase()) {
+				$phaseLogic = $factory->getOperation($id_game);
 			}
 		}
-		
-		if (!isset($_Logic)) throw new ControllerException('No operation loaded.');
-		
-		$_Logic->run();
-		
+
+		if (!isset($phaseLogic)) {
+            throw new ControllerException('No operation loaded.');
+        }
+
+        /* @var $phaseLogic PhaseLogic */
+		$phaseLogic->run();
 	}
+
 }
-?>
