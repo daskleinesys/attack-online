@@ -28,14 +28,35 @@
         {% endfor %}
     </ul>
 
-    <input type="submit" name="selectstart" value="Best&auml;tigen" />
+    {% if turnFixated %}
 
-    <hr>
+        <p>
+            Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Startfelder gew&auml;hlt haben und das Spiel beginnt.
+        </p>
+        <br><br>
 
-    <h2>Zug beenden</h2>
-    <p>
-        Achtung, wenn du den folgenden Knopf dr&uuml;ckst werden die Startfelder fixiert und du kannst sie nicht mehr &auml;ndern. Erst wenn alle Spieler mit diesem Zug fertig sind startet das Spiel.
-    </p>
-    <input type="submit" name="fixate_start" value="Fertig" />
+    {% else %}
+
+        <input type="submit" name="selectstart" value="Best&auml;tigen" />
+
+        <hr>
+
+        <h2>Zug beenden</h2>
+        <p>
+            Achtung, wenn du den folgenden Knopf dr&uuml;ckst werden die Startfelder fixiert und du kannst sie nicht mehr &auml;ndern. Erst wenn alle Spieler mit diesem Zug fertig sind startet das Spiel.
+        </p>
+        <input type="submit" name="fixate_start" value="Fertig" />
+
+    {% endif %}
 
 </form>
+
+{% if errors %}
+    <br>
+    <p class="error">{{errors.message}}</p>
+{% endif %}
+
+{% if status %}
+    <br>
+    <p class="status">{{status.message}}</p>
+{% endif %}

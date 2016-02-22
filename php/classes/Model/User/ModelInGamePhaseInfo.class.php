@@ -192,6 +192,7 @@ class ModelInGamePhaseInfo {
     /**
      * returns the info if user is ready for specific phase
      *
+     * @param $id_phase int
      * @throws NullPointerException
      * @return boolean
      */
@@ -221,7 +222,7 @@ class ModelInGamePhaseInfo {
         while ($iter->hasNext()) {
             $id_phase = $iter->next()->getId();
             $dict[':id_phase'] = $id_phase;
-            $result = DataSource::getInstance()->epp($query,$dict);
+            $result = DataSource::getInstance()->epp($query, $dict);
             if (empty($result)) {
                 $this->create_info($id_phase);
             } else {

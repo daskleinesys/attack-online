@@ -27,7 +27,7 @@ abstract class PhaseController extends ConstrictedController {
      */
     protected function checkIfDone() {
         $igpi = ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user, $this->id_game);
-        if ($igpi->getIsReadyForPhase($this->id_phase) === 1) {
+        if ($igpi->getIsReadyForPhase($this->id_phase)) {
             return true;
         }
         return false;

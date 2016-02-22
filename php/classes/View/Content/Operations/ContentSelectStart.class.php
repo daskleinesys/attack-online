@@ -116,7 +116,7 @@ class ContentSelectStart extends Interfaces\ContentOperation {
 
     private function checkFixate(array &$data) {
         $igpi = ModelInGamePhaseInfo::getInGamePhaseInfo(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
-        $data['turnFixated'] = ($igpi->getIsReadyForPhase(PHASE_SELECTSTART) === 1) ? true : false;
+        $data['turnFixated'] = ($igpi->getIsReadyForPhase(PHASE_SELECTSTART)) ? true : false;
     }
 
 }
