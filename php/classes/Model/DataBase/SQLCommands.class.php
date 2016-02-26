@@ -215,10 +215,10 @@ class SQLCommands {
         self::$DataSource->load_query('get_option_types', "SELECT id,units,countries FROM optiontypes");
 
         // unit info
-        self::$DataSource->load_query('get_land_unit', "SELECT id,name,abbreviation,price,speed,id_type,killing_sequence,kill_sequence_offset,ship_takeover FROM units_land ul JOIN units u ON (ul.id_unit = u.id) WHERE u.id = :id_unit");
-        self::$DataSource->load_query('get_all_land_units', "SELECT id_unit FROM units_land");
-        self::$DataSource->load_query('get_ship', "SELECT id,name,abbreviation,price,speed,id_type,tanksize,hitpoints FROM units_sea us JOIN units u ON (us.id_unit = u.id) WHERE u.id = :id_unit");
-        self::$DataSource->load_query('get_all_ships', "SELECT id_unit FROM units_sea");
+        self::$DataSource->load_query('get_land_unit', "SELECT id, name, abbreviation, price, speed, killing_sequence, kill_sequence_offset, ship_takeover, id_type FROM units WHERE id = :id_unit");
+        self::$DataSource->load_query('get_all_land_units', "SELECT id FROM units WHERE id_type = " . TYPE_LAND);
+        self::$DataSource->load_query('get_ship', "SELECT id, name, abbreviation, price, speed, tanksize, hitpoints, id_type FROM units WHERE id = :id_unit");
+        self::$DataSource->load_query('get_all_ships', "SELECT id FROM units WHERE id_type = " . TYPE_SEA);
     }
 
     private static function LoadGameSpecificQueries($id_game) {
@@ -305,14 +305,12 @@ class SQLCommands {
 
         // units info
         $units_table = "z" . $id_game . "_units";
-        $units_land_table = "z" . $id_game . "_units_land";
         //query
-        self::$DataSource->load_query('get_land_units_for_zarea_user_unit', "SELECT id,id_unit,id_user,id_zarea,count FROM $units_table zu JOIN $units_land_table zul ON (zu.id = zul.id_zunit) WHERE zu.id_zarea = :id_zarea AND zu.id_user = :id_user AND zu.id_unit = :id_unit");
+        self::$DataSource->load_query('get_land_units_for_zarea_user_unit', "SELECT id, id_unit, id_user, id_zarea, count FROM $units_table WHERE id_zarea = :id_zarea AND id_user = :id_user AND id_unit = :id_unit");
         //update
-        self::$DataSource->load_query('set_land_unit_count', "UPDATE $units_land_table SET count = :count WHERE id_zunit = :id_zunit");
+        self::$DataSource->load_query('set_land_unit_count', "UPDATE $units_table SET count = :count WHERE id = :id_zunit");
         //create
-        self::$DataSource->load_query('create_unit_for_zarea_user', "INSERT INTO $units_table (id_unit,id_user,id_zarea) VALUES (:id_unit,:id_user,:id_zarea)");
-        self::$DataSource->load_query('create_land_unit_count', "INSERT INTO $units_land_table (id_zunit,count) VALUES (:id_zunit,:count)");
+        self::$DataSource->load_query('create_unit_for_zarea_user', "INSERT INTO $units_table (id_unit, id_user, id_zarea, count) VALUES (:id_unit, :id_user, :id_zarea, :count)");
 
     }
 

@@ -37,16 +37,16 @@ define('BATTLE_LINE_SIZE', 4);
 
 define('MAX_MONEY_SPENDABLE', 10);
 
-define('GAME_STATUS_NEW','new');
-define('GAME_STATUS_STARTED','started');
-define('GAME_STATUS_RUNNING','running');
-define('GAME_STATUS_DONE','done');
-define('GAME_STATUS_ALL','all');
+define('GAME_STATUS_NEW', 'new');
+define('GAME_STATUS_STARTED', 'started');
+define('GAME_STATUS_RUNNING', 'running');
+define('GAME_STATUS_DONE', 'done');
+define('GAME_STATUS_ALL', 'all');
 
-define('ECONOMY_POOR','poor');
-define('ECONOMY_WEAK','weak');
-define('ECONOMY_NORMAL','normal');
-define('ECONOMY_STRONG','strong');
+define('ECONOMY_POOR', 'poor');
+define('ECONOMY_WEAK', 'weak');
+define('ECONOMY_NORMAL', 'normal');
+define('ECONOMY_STRONG', 'strong');
 
 define('RESOURCE_NONE', 0);
 define('RESOURCE_OIL', 1);

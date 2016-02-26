@@ -84,9 +84,11 @@ class ModelIsInGameInfo {
     /**
      * joins the user in given game
      *
-     * @param int $id_user
-     * @param int $id_game
-     * @throws NullPointerException, JoinUserException
+     * @param $id_user int
+     * @param $id_game int
+     * @param $id_color int
+     * @throws NullPointerException
+     * @throws JoinUserException
      * @return ModelIsInGameInfo
      */
     public static function joinGame($id_user, $id_game, $id_color = null) {
@@ -205,7 +207,8 @@ class ModelIsInGameInfo {
      * changes the color if it is free
      *
      * @param $id_color int
-     * @throws NullPointerException, GameAdministrationException
+     * @throws NullPointerException
+     * @throws GameAdministrationException
      * @return void
      */
     public function setColor($id_color) {

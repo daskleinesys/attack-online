@@ -1,4 +1,4 @@
 <?php
-namespace Atton\Exceptions;
+namespace AttOn\Exceptions;
 
 class LogicException extends \Exception {}

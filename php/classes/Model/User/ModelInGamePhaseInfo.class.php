@@ -3,6 +3,7 @@ namespace AttOn\Model\User;
 use AttOn\Model\Atton\ModelPhase;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\Iterator\ModelIterator;
+use AttOn\Exceptions\DataSourceException;
 use AttOn\Exceptions\NullPointerException;
 
 class ModelInGamePhaseInfo {
@@ -110,8 +111,8 @@ class ModelInGamePhaseInfo {
     /**
      * sets the notification rule for specific phase
      *
-     * @param id_phase int
-     * @param rule boolean
+     * @param $id_phase int
+     * @param $rule bool
      * @throws NullPointerException
      * @return void
      */

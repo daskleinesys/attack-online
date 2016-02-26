@@ -21,6 +21,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defi
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'local_configuration.php';
 
 // INIT ERROR-HANDLING && LOGGING
+global $log4php_config;
 \Logger::configure($log4php_config);
 $logger = \Logger::getLogger('index.php');
 

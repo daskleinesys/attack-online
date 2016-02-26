@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Model\Game;
+
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelColor;
@@ -108,7 +109,7 @@ class ModelGame {
             $query .= '_for_user';
             $dict[':id_user'] = intval($id_user);
         }
-        $result = DataSource::Singleton()->epp($query,$dict);
+        $result = DataSource::Singleton()->epp($query, $dict);
         foreach ($result as $game) {
             $id_game = $game['id'];
             if (!isset(self::$games[$id_game])) {
@@ -211,7 +212,7 @@ class ModelGame {
             self::$logger->error($ex);
         }
         $dict = array(':id_game' => $id_game);
-        DataSource::Singleton()->epp('delete_game',$dict);
+        DataSource::Singleton()->epp('delete_game', $dict);
 
         ModelIsInGameInfo::deleteIsInGameInfos(null, $id_game);
         ModelInGamePhaseInfo::deleteInGamePhaseInfos(null, $id_game);
@@ -244,7 +245,7 @@ class ModelGame {
      * @return ModelGame
      */
     public static function setCurrentGame($id_game) {
-		$id = intval($id_game);
+        $id = intval($id_game);
 
         // set game model
         self::$current_game = self::getGame($id);
@@ -258,7 +259,7 @@ class ModelGame {
      * @return ModelGame/null
      */
     public static function getCurrentGame() {
-		return self::$current_game;
+        return self::$current_game;
     }
 
     /**
@@ -358,7 +359,7 @@ class ModelGame {
             $query = 'update_game_password';
             $dict[':password'] = $password;
         }
-        DataSource::Singleton()->epp($query,$dict);
+        DataSource::Singleton()->epp($query, $dict);
     }
 
     /**
@@ -376,7 +377,7 @@ class ModelGame {
         $dict[':id_game'] = $this->id;
         $dict[':status'] = $status;
         try {
-            DataSource::Singleton()->epp($query,$dict);
+            DataSource::Singleton()->epp($query, $dict);
             $this->status = $status;
         } catch (DataSourceException $ex) {
             self::$logger->error($ex);
@@ -410,7 +411,7 @@ class ModelGame {
         $dict = array();
         $dict[':id_game'] = $this->id;
         $dict[':id_phase'] = $id_phase;
-        DataSource::Singleton()->epp($query,$dict);
+        DataSource::Singleton()->epp($query, $dict);
         $this->id_phase = $id_phase;
 
         if ($this->status === GAME_STATUS_DONE) {
@@ -436,14 +437,13 @@ class ModelGame {
         $phases = $_ModelGameMode->getPhases();
 
         // check which phase is next
-        $next_phase;
         $add_round = false;
         $pos = array_search($this->id_phase, $phases);
 
         if (!isset($phases[$pos + 1])) {
             $next_phase = $phases[0];
             $add_round = true;
-        } elseif ($this->status === GAME_STATUS_RUNNING && $phases[$pos+1] >= PHASE_GAME_START) {
+        } elseif ($this->status === GAME_STATUS_RUNNING && $phases[$pos + 1] >= PHASE_GAME_START) {
             $next_phase = $phases[0];
             $add_round = true;
         } else {
@@ -455,6 +455,28 @@ class ModelGame {
             $this->nextRound();
         }
         $this->setPhase($next_phase);
+    }
+
+    /**
+     * set to processing to block further action while calculating logic
+     *
+     * @param $processing bool
+     * @return void
+     */
+    public function setProcessing($processing) {
+        if ($processing === true) {
+            // set game to processing
+            $query = 'set_game_processing';
+            $dict = array(':id_game' => $this->id);
+            DataSource::getInstance()->epp($query, $dict);
+            $this->processing = true;
+        } else if ($processing === false) {
+            // set game to processing done
+            $query = 'set_game_processing_done';
+            $dict = array(':id_game' => $this->id);
+            DataSource::getInstance()->epp($query, $dict);
+            $this->processing = false;
+        }
     }
 
     /**
@@ -500,7 +522,7 @@ class ModelGame {
     }
 
     /**
-     * @return dict(int id => dict(id = int, color = string))
+     * @return array(int id => dict(id = int, color = string))
      */
     public function getFreeColors() {
         $colors_taken = array();
@@ -625,7 +647,7 @@ class ModelGame {
         $this->status = $data['status'];
         $this->id_phase = intval($data['id_phase']);
         $this->round = intval($data['round']);
-        if ($data['processing'] === 1) {
+        if ((int)$data['processing'] === 1) {
             $this->processing = true;
         } else {
             $this->processing = false;
@@ -635,12 +657,13 @@ class ModelGame {
     }
 
     private function nextRound() {
+        ++$this->round;
+
         $query = 'set_game_round';
         $dict = array();
         $dict[':id_game'] = $this->id;
-        $dict[':round'] = $this->round+1;
+        $dict[':round'] = $this->round;
         DataSource::getInstance()->epp($query, $dict);
-        $this->round++;
     }
 
 }

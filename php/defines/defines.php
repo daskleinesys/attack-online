@@ -5,7 +5,7 @@ namespace AttOn;
 define('DATABASE_ERROR', -1);
 define('GAMEVARS_NOT_INTEGER', -2);
 define('MULTIPLE_USER_LEFT', -3);
-define('OBJECT_NOT_SET',-7);
+define('OBJECT_NOT_SET', -7);
 
 // writeBattleReport Errors
 define('NO_BATTLE_REPORT_OPEN', -4);
@@ -57,17 +57,17 @@ define('STATUS_USER_DELETED', 'deleted');
 define('STATUS_USER_ALL', 'all');
 
 // sort options user: id,name,lastname,login,email,status
-define('SORT_BY_ID','id');
-define('SORT_BY_NAME','name');
-define('SORT_BY_LASTNAME','lastname');
-define('SORT_BY_LOGIN','login');
-define('SORT_BY_EMAIL','email');
-define('SORT_BY_STATUS','status');
+define('SORT_BY_ID', 'id');
+define('SORT_BY_NAME', 'name');
+define('SORT_BY_LASTNAME', 'lastname');
+define('SORT_BY_LOGIN', 'login');
+define('SORT_BY_EMAIL', 'email');
+define('SORT_BY_STATUS', 'status');
 
 // information rules:
-define('RULE_START',1);
-define('RULE_SELECT_AREAS',2);
-define('RULE_SET_SHIPS',3);
+define('RULE_START', 1);
+define('RULE_SELECT_AREAS', 2);
+define('RULE_SET_SHIPS', 3);
 
 // general
 define('PAGE_TITLE', 'Attack Online');

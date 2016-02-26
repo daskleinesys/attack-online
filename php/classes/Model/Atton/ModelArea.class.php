@@ -158,17 +158,17 @@ class ModelArea {
         $this->name = $data['name'];
         $this->number = $data['number'];
         $this->coords_small = $data['coords_small'];
-        $this->x = $data['x'];
-        $this->y = $data['y'];
-        $this->x2 = $data['x2'];
-        $this->y2 = $data['y2'];
-        $this->xres = $data['xres'];
-        $this->yres = $data['yres'];
-        $this->height = $data['height'];
-        $this->width = $data['width'];
-        $this->tanksize = $data['tanksize'];
-        $this->id_type = $data['id_type'];
-        $this->zone = $data['zone'];
+        $this->x = (int) $data['x'];
+        $this->y = (int) $data['y'];
+        $this->x2 = (int) $data['x2'];
+        $this->y2 = (int) $data['y2'];
+        $this->xres = (int) $data['xres'];
+        $this->yres = (int) $data['yres'];
+        $this->height = (int) $data['height'];
+        $this->width = (int) $data['width'];
+        $this->tanksize = (int) $data['tanksize'];
+        $this->id_type = (int) $data['id_type'];
+        $this->zone = (int) $data['zone'];
         $this->economy = $data['economy'];
         return true;
     }

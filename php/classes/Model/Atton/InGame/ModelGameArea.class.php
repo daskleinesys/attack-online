@@ -24,7 +24,8 @@ class ModelGameArea {
     /**
      * returns the game area model
      *
-     * @param $id_area int
+     * @param $id_game int
+     * @param $id_game_area int
      * @throws NullPointerException
      * @return ModelGameArea
      */
@@ -40,7 +41,7 @@ class ModelGameArea {
     /**
      * returns the specific model
      *
-     * @param $id-game int
+     * @param $id_game int
      * @param $id_game_area int
      * @throws NullPointerException
      * @return ModelGameArea
@@ -90,6 +91,7 @@ class ModelGameArea {
      * returns an iterator for game areas
      *
      * @param $id_user int
+     * @param $id_game int
      * @throws DataSourceException
      * @return ModelIterator
      */
@@ -341,11 +343,11 @@ class ModelGameArea {
         }
         $data = $result[0];
 
-        $this->tank = $data['tank'];
-        $this->id_user = $data['id_user'];
-        $this->id_area = $data['id_area'];
-        $this->id_resource = $data['id_resource'];
-        $this->productivity = $data['productivity'];
+        $this->tank = (int) $data['tank'];
+        $this->id_user = (int) $data['id_user'];
+        $this->id_area = (int) $data['id_area'];
+        $this->id_resource = (int) $data['id_resource'];
+        $this->productivity = (int) $data['productivity'];
         return true;
     }
 

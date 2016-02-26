@@ -6,7 +6,9 @@ use AttOn\Exceptions\MapException;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Tools\HeaderViewHelper;
 use AttOn\View\Map;
+use Slim\Slim;
 
+/* @var $app Slim */
 $app->get('/', function() use ($app, $debug) {
     $data = array();
     HeaderViewHelper::parseCurrentUser($data);
@@ -56,10 +58,22 @@ $app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug) {
     } else if ($id_game !== null) {
         $id_game = (int) $id_game;
     }
+
+    if ($debug && $id_game !== null) {
+        $game = ModelGame::getGame($id_game);
+        $game->setProcessing(false);
+    }
+
     $cron = new CronMain();
     $cron->execute($id_game);
+
     // TODO : make prettier output
-    echo 'cron sucess';
+    if ($cron->hasErrors()) {
+        echo 'cron failed <pre>';
+        var_dump($cron->getErrors());
+    } else {
+        echo 'cron sucess';
+    }
 });
 
 /*
