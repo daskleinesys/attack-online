@@ -1,7 +1,7 @@
 <div class="showmoves">
     <strong>{{ currentGame.name }}</strong><br>
     <small>
-        ({% if currentGame.round > 0 %} }}Runde {{ currentGame.round }} / {% endif %}{{ currentGame.phase }})<br>
+        ({% if currentGame.round > 0 %}Runde {{ currentGame.round }} / {% endif %}{{ currentGame.phase }})<br>
         <a class="linktext" href="{{absRefPrefix}}map/" target="_blank">Karte</a>
     </small>
 </div>
