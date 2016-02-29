@@ -31,8 +31,7 @@ class Map {
                     "LEFT JOIN user AS user ON (iig.id_user = user.id) " .
                     "LEFT JOIN colors AS colors ON (colors.id = iig.id_color) " .
                     "WHERE iig.id_game = $id_game" .
-                ") AS user ON (zareas.id_user = user.id)"
-            ;
+                ") AS user ON (zareas.id_user = user.id)";
         }
         // newly started game countries have to be picked
         else if (($gameinfo['status'] === GAME_STATUS_STARTED) && ((int) $gameinfo['id_phase'] === PHASE_SELECTSTART)) {
@@ -61,6 +60,7 @@ class Map {
         $countryData = array();
         while ($country = mysqli_fetch_array($result)) {
             if (!array_key_exists('countrySelectOption', $country)) {
+                $unitCount = 0;
                 $id_user = (int) $country['id_user'];
                 if ($id_user <= 0) {
                     $id_user = NEUTRAL_COUNTRY;
@@ -69,6 +69,7 @@ class Map {
                 $unitsViewData = array();
                 /* @var $unit ModelInGameLandUnit */
                 foreach ($units as $unit) {
+                    $unitCount += $unit->getCount();
                     $landUnit = ModelLandUnit::getModelById($unit->getIdUnit());
                     $unitViewData = array(
                         'name' => $landUnit->getName(),
@@ -77,6 +78,7 @@ class Map {
                     $unitsViewData[] = $unitViewData;
                 }
                 $country['units'] = $unitsViewData;
+                $country['unitCount'] = $unitCount;
             }
 
             $countryData[] = $country;

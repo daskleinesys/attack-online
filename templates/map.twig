@@ -3,7 +3,7 @@
     <head>
         {% include 'partials/head.twig' %}
     </head>
-    <body id="top" class="layout_1">
+    <body id="top" class="layout_1 show-resources">
         <div class="map" id="small_map">
 
             <div class="imagemap">
@@ -84,32 +84,36 @@
 
                     {# COUNTRY STATUS INFO #}
                     {% if country.resource %}
-                    <div class="resource" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="resource_{{country.number}}">
+                    <div class="resource" style="top:{{country.yres}}px; left:{{country.xres}}px;">
                         <img src="{{absRefPrefix}}dist/images/resources/{{country.res_label}}{{country.prod}}.gif" class="resource" alt="" />
                     </div>
                     {% endif %}
-                    {% if country.tank %}
-                    <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.number}}">
-                        <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
-                    </div>
-                    {% endif %}
-                    {% if country.traderoute %}
-                    <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.number}}">
-                        <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
-                    </div>
-                    {% endif %}
-
-                    {# COUNTRY UNIT INFO #}
+                    {# status info
+                        {% if country.tank %}
+                        <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.number}}">
+                            <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
+                        </div>
+                        {% endif %}
+                        {% if country.traderoute %}
+                        <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.number}}">
+                            <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
+                        </div>
+                        {% endif %}
+                    #}
                     {% if country.units %}
                     <div class="units" style="top:{{country.yres}}px; left:{{country.xres}}px;" >
-                        <div class="landunits" id="landunit_{{country.number}}">
+                        <div class="landunits">
                             <img src="{{absRefPrefix}}dist/images/units/land/{{(country.unitCount) ? country.unitCount : '0'}}.gif" class="landunits" alt="" />
                         </div>
+                        {# ships count
                         <div class="seaunits" id="seaunit_{{country.number}}">
                             <img src="{{absRefPrefix}}dist/images/units/sea/{{(country.shipCount) ? country.shipCount : '0'}}.gif" class="seaunits" alt="" />
                         </div>
+                        #}
                     </div>
                     {% endif %}
+                    {# COUNTRY STATUS INFO END #}
+
                 {% endfor %}
 
                 <div class="transparent">
@@ -122,6 +126,35 @@
                 </div>
 
             </div>
+
+            <div class="map--toggle-status-display">
+                <form action="#">
+                    <ul>
+                        <li>
+                            <label>Status-Anzeige</label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="display" onchange="$('body').removeClass('show-landunits').addClass('show-resources')" checked="checked" />
+                                Ressourcen
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="display" onchange="$('body').removeClass('show-resources').addClass('show-landunits')" />
+                                Landeinheiten
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits')" />
+                                Nur L&auml;nder
+                            </label>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+
         </div>
 
         <script src="{{absRefPrefix}}vendor/requirejs/require.js" data-main="{{absRefPrefix}}dist/js/main"></script>
