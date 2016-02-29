@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]><html class="ie6 no-js" lang="de" dir="ltr"><![endif]-->
-<!--[if IE 7 ]><html class="ie7 no-js" lang="de" dir="ltr"><![endif]-->
-<!--[if IE 8 ]><html class="ie8 no-js" lang="de" dir="ltr"><![endif]-->
-<!--[if IE 9 ]><html class="ie9 no-js" lang="de" dir="ltr"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!-->
-<html class="no-js" lang="de" dir="ltr"><!--<![endif]-->
+<html class="no-js" lang="de" dir="ltr">
     <head>
         {% include 'partials/head.twig' %}
     </head>
@@ -30,11 +25,6 @@
                                 <tr>
                                     <td>{{country.user}}</td>
                                 </tr>
-                                {% for unit in country.units %}
-                                <tr>
-                                    <td>{{unit.name}}:</td><td>{{unit.count}}</td>
-                                </tr>
-                                {% endfor %}
                                 {# ship
                                 <tr>
                                     <td>{{country.unit}}</td><td>{{howmanyships}}</td>
@@ -50,6 +40,12 @@
                                 </tr>
                                 shipatsea #}
                             {% endif %}
+
+                            {% for unit in country.units %}
+                                <tr>
+                                    <td>{{unit.name}}:</td><td>{{unit.count}}</td>
+                                </tr>
+                            {% endfor %}
 
                             {% if country.resource %}
                             <tr>
