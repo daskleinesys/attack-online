@@ -137,7 +137,7 @@ class ContentLandMove extends ContentOperation {
             try {
                 $controller->deleteLandMove(intval($_POST['delete']));
                 $data['status'] = array(
-                    'message' => 'Landzug gel&ouml;scht.'
+                    'message' => 'Landzug gelöscht.'
                 );
             } catch (NullPointerException $ex) {
                 $data['errors'] = array(
