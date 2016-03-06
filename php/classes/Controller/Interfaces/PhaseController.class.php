@@ -21,6 +21,13 @@ abstract class PhaseController extends ConstrictedController {
     }
 
     /**
+     * fixates the move if no error occured
+     *
+     * @return void
+     */
+    public abstract function finishMove();
+
+    /**
      * checks if user already finished this move, returns true if user is already finished
      *
      * @return boolean

@@ -117,3 +117,13 @@
         (Angreifen neutraler Länder, Angriffsbegrenzungen, Kampfsystem, etc.)
     </small>
 </p>
+
+{% if errors %}
+    <br>
+    <p class="error">{{ errors.message }}</p>
+{% endif %}
+
+{% if status %}
+    <br>
+    <p class="status">{{ status.message }}</p>
+{% endif %}
