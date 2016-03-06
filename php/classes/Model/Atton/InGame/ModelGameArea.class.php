@@ -63,7 +63,7 @@ class ModelGameArea {
     /**
      * returns the specific model for corresponding area
      *
-     * @param $id-game int
+     * @param $id_game int
      * @param $id_area int
      * @throws NullPointerException
      * @return ModelGameArea

@@ -93,24 +93,29 @@ class ContentLandMove extends ContentOperation {
     }
 
     private function showNewMove(array &$data) {
-        $iter = ModelArea::iterator(TYPE_LAND);
-        while ($iter->hasNext()) {
-            $_Area = $iter->next();
-            $_ZArea = ModelGameArea::getGameAreaForArea($this->id_game_logged_in, $_Area->getId());
-            $area = array();
-            $area['idzarea'] = $_ZArea->getId();
-            $area['number'] = $_Area->getNumber();
-            $area['name'] = $_Area->getName();
-            $this->xtpl->assign('area', $area);
-            if ($_ZArea->getIdUser() == $this->id_user_logged_in) $this->xtpl->parse('main.newmove.startarea');
-            $this->xtpl->parse('main.newmove.destinationarea');
+        $startAreas = array();
+        $destinationAreas = array();
+        $areas = ModelArea::iterator(TYPE_LAND);
+        while ($areas->hasNext()) {
+            /* @var $area ModelArea */
+            $area = $areas->next();
+            $zArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId());
+            $areaViewData = array();
+            $areaViewData['id_zarea'] = $zArea->getId();
+            $areaViewData['number'] = $area->getNumber();
+            $areaViewData['name'] = $area->getName();
+            if ($zArea->getIdUser() === ModelUser::getCurrentUser()->getId()) {
+                $startAreas[] = $areaViewData;
+            }
+            $destinationAreas[] = $areaViewData;
         }
+        $data['startAreas'] = $startAreas;
+        $data['destinationAreas'] = $destinationAreas;
 
-        $_Game = ModelGame::getGame($this->id_game_logged_in);
-        if ($_Game->getIdPhase() != PHASE_LANDMOVE) $this->xtpl->parse('main.notactualphase');
-
-        $this->xtpl->parse('main.newmove');
-        $this->xtpl->parse('main.fixate');
+        $game = ModelGame::getCurrentGame();
+        if ($game->getIdPhase() !== PHASE_LANDMOVE) {
+            $data['notCurrentPhase'] = true;
+        }
     }
 
     private function checkFixate(array &$data) {

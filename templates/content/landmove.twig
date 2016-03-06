@@ -43,8 +43,8 @@
                     <label>
                         <select name="start" size="1">
                             <option value="" disabled selected>Land w&auml;hlen</option>
-                            {% for area in areas.start %}
-                                <option value="{{ area.id }}">{{ area.number }} {{ area.name }}</option>
+                            {% for area in startAreas %}
+                                <option value="{{ area.id_zarea }}">{{ area.number }} {{ area.name }}</option>
                             {% endfor %}
                         </select>
                     </label>
@@ -54,8 +54,8 @@
                     <label>
                         <select name="destination" size="1">
                             <option value="">Land w&auml;hlen</option>
-                            {% for area in areas.destination %}
-                                <option value="{{ area.id }}">{{ area.number }} {{ area.name }}</option>
+                            {% for area in destinationAreas %}
+                                <option value="{{ area.id_zarea }}">{{ area.number }} {{ area.name }}</option>
                             {% endfor %}
                         </select>
                     </label>
