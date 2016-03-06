@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Operations;
+
 use AttOn\Controller\User\UserGameInteraction;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelUser;

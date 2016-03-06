@@ -1,0 +1,119 @@
+{% include 'content/partials/currentgame.twig' %}
+
+<h1>Landz&uuml;ge</h1>
+
+
+<form method="post" action="{{ absRefPrefix }}landmove/">
+    <table>
+        <colgroup>
+            <col span="2"/>
+            <col span="4"/>
+            <col/>
+        </colgroup>
+
+        <tr>
+            <th>Startfeld</th>
+            <th>Zielfeld</th>
+            {% for unit in units %}
+                <th>{{ unit.abbreviation }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+
+        {% for move in moves %}
+            <tr>
+                <td>{{ move.start }}</td>
+                <td>{{ move.destination }}</td>
+                {% for unit in move.units %}
+                    <td class="center">{{ unit.count }}</td>
+                {% endfor %}
+                {% if not turnFixated %}
+                    <td class="button">
+                        <button type="submit" value="{{ move.id }}" name="delete">
+                            <img src="{{ absRefPrefix }}dist/images/delete.gif" alt="delete_mvoe"/>
+                        </button>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        {% if not turnFixated %}
+            <tr>
+                <td>
+                    <label>
+                        <select name="start" size="1">
+                            <option value="" disabled selected>Land w&auml;hlen</option>
+                            {% for area in areas.start %}
+                                <option value="{{ area.id }}">{{ area.number }} {{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </td>
+
+                <td>
+                    <label>
+                        <select name="destination" size="1">
+                            <option value="">Land w&auml;hlen</option>
+                            {% for area in areas.destination %}
+                                <option value="{{ area.id }}">{{ area.number }} {{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </td>
+
+                {% for unit in units %}
+                    <td class="center">
+                        <label>
+                            <input class="number" type="number" name="{unit.abbreviation}" value="0" min="0" max="999"
+                                   placeholder="0"/>
+                        </label>
+                    </td>
+                {% endfor %}
+
+                <td>
+                    <input type="submit" name="newmove" value="+"/>
+                </td>
+            </tr>
+        {% endif %}
+
+    </table>
+</form>
+
+{% if notCurrentPhase %}
+    <p class="error">
+        <small>
+            Achtung, dies ist nicht die aktuelle Phase.
+            <br/>
+            Es könnte sein, dass ihr eure Züge noch vor dem Ende dieser Runde ändern wollt, um euch auf unvorhergesehene Züge der Mitspieler
+            einzustellen.
+        </small>
+    </p>
+{% endif %}
+
+<ul>
+    {% for unit in units %}
+        <li>{unit.abbreviation} = {unit.name}</li>
+    {% endfor %}
+</ul>
+
+<hr/>
+
+{% if turnFixated %}
+    <p>
+        Achtung, du hast den Zug bereits fixiert.
+    </p>
+{% else %}
+    <form method="post" action="{{ absRefPrefix }}landmove/">
+        <h2>Zug beenden</h2>
+        <p>Achtung, wenn du den folgenden Knopf dr&uuml;ckst wird der Landzug fixiert und du kannst ihn nicht mehr &auml;ndern. Erst
+            wenn alle Spieler diesen Zug beendet haben erfolgt die Berechnung und das Spiel geht in die n&auml;chste Phase.</p>
+        <input type="submit" name="fixate_land_move" value="Fertig"/>
+    </form>
+{% endif %}
+
+<p>
+    <small>
+        N&auml;here Infos zum Landzug findet ihr <a class="linktext" href="{{ absRefPrefix }}manual&amp;topic=moves&amp;type=land">hier</a>.
+        (Angreifen neutraler Länder, Angriffsbegrenzungen, Kampfsystem, etc.)
+    </small>
+</p>
