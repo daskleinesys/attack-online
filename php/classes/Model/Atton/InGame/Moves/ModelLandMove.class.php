@@ -42,7 +42,7 @@ class ModelLandMove extends ModelMove {
      *
      * @param $id_game int
      * @param $id_move int
-     * @throws NullPointerException. ModelException
+     * @throws NullPointerException
      * @return ModelLandMove
      */
     public static function getLandMove($id_game, $id_move) {

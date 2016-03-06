@@ -271,7 +271,7 @@ class SQLCommands {
             LEFT JOIN $moves_units_table AS move_units ON (moves.id = move_units.id_zmove)
             LEFT JOIN $units_table AS zunits ON (move_units.id_zunit = zunits.id)
             LEFT JOIN units ON (zunits.id_unit = units.id)
-            WHERE moves.id = :id_move", true);
+            WHERE moves.id = :id_move AND moves.id_phase = :id_phase", true);
 
         // new moves
         self::$DataSource->load_query('create_move', "INSERT INTO $moves_table (id_user, id_phase, round) VALUES (:id_user, :id_phase, :round)", true);
