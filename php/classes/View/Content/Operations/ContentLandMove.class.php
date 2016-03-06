@@ -22,8 +22,7 @@ class ContentLandMove extends ContentOperation {
         $this->handleInput($data);
         $this->showMoves($data);
 
-        return;
-        if (!$this->checkFixate($data)) {
+        if (!$this->checkFixate($data, PHASE_LANDMOVE)) {
             $this->showNewMove($data);
         }
     }
@@ -116,14 +115,6 @@ class ContentLandMove extends ContentOperation {
         if ($game->getIdPhase() !== PHASE_LANDMOVE) {
             $data['notCurrentPhase'] = true;
         }
-    }
-
-    private function checkFixate(array &$data) {
-        $_IGPI = ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user_logged_in, $this->id_game_logged_in);
-        if ($_IGPI->getIsReadyForPhase(PHASE_LANDMOVE) == 1) {
-            return true;
-        }
-        return false;
     }
 
     private function handleInput(array &$data) {

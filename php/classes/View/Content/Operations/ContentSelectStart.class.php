@@ -41,7 +41,7 @@ class ContentSelectStart extends Interfaces\ContentOperation {
         }
 
         // parse moves
-        $this->checkFixate($data);
+        $this->checkFixate($data, PHASE_SELECTSTART);
         $this->parseOptions($data);
     }
 
@@ -112,11 +112,6 @@ class ContentSelectStart extends Interfaces\ContentOperation {
             }
         }
         $data['options'] = $viewData;
-    }
-
-    private function checkFixate(array &$data) {
-        $igpi = ModelInGamePhaseInfo::getInGamePhaseInfo(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
-        $data['turnFixated'] = ($igpi->getIsReadyForPhase(PHASE_SELECTSTART)) ? true : false;
     }
 
 }
