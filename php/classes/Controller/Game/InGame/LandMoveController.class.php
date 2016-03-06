@@ -5,7 +5,9 @@ use AttOn\Controller\Interfaces\PhaseController;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\NullPointerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
 use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
+use AttOn\Model\Atton\ModelLandUnit;
 use AttOn\Model\Game\ModelGame;
 
 class LandMoveController extends PhaseController {
@@ -119,8 +121,8 @@ class LandMoveController extends PhaseController {
         $steps[1] = $start;
         $steps[2] = $destination;
 
-        $round = $game->getRound();
-        $phase = $game->getIdPhase();
+        $round = (int)$game->getRound();
+        $phase = (int)$game->getIdPhase();
         if ($phase > PHASE_LANDMOVE) {
             ++$round;
         }
@@ -212,6 +214,8 @@ class LandMoveController extends PhaseController {
             }
             ++$steps;
         }
+
+        return false;
     }
 
     /**
@@ -232,65 +236,106 @@ class LandMoveController extends PhaseController {
          * check if user owns the start country
          */
         $id_start_area = $steps[1];
-        $_ZArea = ModelGameArea::getGameArea($this->id_game, $id_start_area);
-        if ($_ZArea->getIdUser() != $this->id_user) throw new ControllerException('Start country isn\'t owned by this user.');
-
-        /*
-         * check if target area is land area
-         */
-        if ($_ZArea->getIdType() != TYPE_LAND) throw new ControllerException('Start area not a country.');
-
-        /*
-         * check if enough units are left in the country -> iterate over all moves (except this) and substract outgoing units from country units
-         */
-        $_Ingame_Unit_Models = ModelInGameLandUnit::getUnitsByIdZAreaUser($this->id_game, $id_start_area, $this->id_user); //array(int id_unit => ModelInGameLandUnit)
-        $area_units = array();
-        $iter = ModelLandUnit::iterator();
-        while ($iter->hasNext()) {
-            $_Unit = $iter->next();
-            $id_unit = $_Unit->getId();
-            $area_units[$id_unit] = (isset($_Ingame_Unit_Models[$id_unit])) ? $_Ingame_Unit_Models[$id_unit]->getCount() : 0;
+        $zArea = ModelGameArea::getGameArea($this->id_game, $id_start_area);
+        if ($zArea->getIdUser() !== $this->id_user) {
+            throw new ControllerException('Start country isn\'t owned by this user.');
         }
-        $iter_moves = ModelLandMove::iterator($this->id_game, $round, $this->id_user);
-        while ($iter_moves->hasNext()) {
-            $_Move = $iter_moves->next();
-            if ($_Move->getId() == $id_move) continue; // only subtract units from other moves
 
-            $move_steps = $_Move->getSteps();
-            $_ZArea = ModelGameArea::getGameArea($this->id_game, $move_steps[count($move_steps)]);
-            if ($_ZArea->getIdUser() != $this->id_user && (!in_array($_ZArea->getId(), $attacks))) $attacks[] = $_ZArea->getId(); // check if this is an attack
-            if ($move_steps[1] != $id_start_area) continue; // only subtract units outgoing from the same area
+        /*
+         * check if start area is land area
+         */
+        if ($zArea->getIdType() !== TYPE_LAND) {
+            throw new ControllerException('Start area not a country.');
+        }
 
-            $move_units = $_Move->getUnits();
-            foreach ($move_units as $id_unit => $count) {
-                $area_units[$id_unit] -= $count;
+        /*
+         * check if enough units are left in the country -> iterate over all moves (except this), substract outgoing and add incoming units from country units
+         * also count number of attacks
+         */
+        $ingameLandUnits = ModelInGameLandUnit::getUnitsByIdZAreaUser($this->id_game, $id_start_area, $this->id_user); //array(int id_unit => ModelInGameLandUnit)
+        $area_units = array();
+        $landUnitsIterator = ModelLandUnit::iterator();
+        while ($landUnitsIterator->hasNext()) {
+            /* @var $landUnit ModelLandMove */
+            $landUnit = $landUnitsIterator->next();
+            $id_unit = (int)$landUnit->getId();
+            if ((isset($ingameLandUnits[$id_unit]))) {
+                /* @var $ingameLandUnit ModelInGameLandUnit */
+                $ingameLandUnit = $ingameLandUnits[$id_unit];
+                $area_units[$id_unit] = $ingameLandUnit->getCount();
+            } else {
+                $area_units[$id_unit] = 0;
             }
         }
+        $landMovesIterator = ModelLandMove::iterator($this->id_user, $this->id_game, $round);
+        while ($landMovesIterator->hasNext()) {
+            /* @var $landMove ModelLandMove */
+            $landMove = $landMovesIterator->next();
+            if ($landMove->getId() === $id_move) {
+                continue; // only subtract units from other moves
+            }
+
+            $move_steps = $landMove->getSteps();
+            $zTargetArea = ModelGameArea::getGameArea($this->id_game, end($move_steps));
+            $zStartArea = ModelGameArea::getGameArea($this->id_game, reset($move_steps));
+            // check if this is an attack
+            if ($zTargetArea->getIdUser() !== $this->id_user && (!in_array($zTargetArea->getId(), $attacks))) {
+                $attacks[] = $zArea->getId();
+            }
+            if ($zStartArea->getId() === $id_start_area) {
+                $move_units = $landMove->getUnits();
+                foreach ($move_units as $id_unit => $count) {
+                    $area_units[$id_unit] -= $count;
+                }
+            } else if ($zTargetArea->getId() === $id_start_area) {
+                $move_units = $landMove->getUnits();
+                foreach ($move_units as $id_unit => $count) {
+                    $area_units[$id_unit] += $count;
+                }
+            }
+        }
+        $total_units_left = 0;
         foreach ($area_units as $id_unit => $count) {
-            if (isset($units[$id_unit]) && $units[$id_unit] > $count) throw new ControllerException('Invalid move, not enough units in area.');
+            if (isset($units[$id_unit]) && $units[$id_unit] > $count) {
+                throw new ControllerException('Invalid move, not enough units in area.');
+            }
+            $count_leaving = isset($units[$id_unit]) ? $units[$id_unit] : 0;
+            $total_units_left += ($count - $count_leaving);
+        }
+        if ($total_units_left <= 0) {
+            throw new ControllerException('Can\'t leave country empty.');
         }
 
         /*
          * check if target area is reachable -> 2 cases: type land or type aircraft movement
          */
-        $id_target_area = $steps[count($steps)];
+        $id_target_area = (int)end($steps);
         $type = TYPE_AIR;
         $speed = 99999;
         foreach ($units as $id_unit => $count) {
-            if ($count <= 0) continue;
-            $_Unit = ModelLandUnit::getModelById($id_unit);
-            if ($_Unit->getIdType() < $type) $type = $_Unit->getIdType();
-            if ($_Unit->getSpeed() < $speed) $speed = $_Unit->getSpeed();
+            if ($count <= 0) {
+                continue;
+            }
+            /* @var $landUnit ModelLandUnit */
+            $landUnit = ModelLandUnit::getModelById((int)$id_unit);
+            if ($landUnit->getIdType() < $type) {
+                $type = $landUnit->getIdType();
+            }
+            if ($landUnit->getSpeed() < $speed) {
+                $speed = $landUnit->getSpeed();
+            }
         }
-        if (!$this->checkPossibleRoute($id_start_area, $id_target_area, $type, $speed)) throw new ControllerException('Unable to find route between the 2 countries.');
+        if (!$this->checkPossibleRoute($id_start_area, $id_target_area, $type, $speed)) {
+            throw new ControllerException('Unable to find route between the 2 countries.');
+        }
 
         /*
          * check if target area is enemy area, only MAX_LAND_ATTACKS attacks per round
          */
-        $_ZArea = ModelGameArea::getGameArea($this->id_game, $id_target_area);
-        if ($_ZArea->getIdUser() != $this->id_user) { // move is an attack
-            if (!in_array($_ZArea->getId(), $attacks)) {
-                $attacks[] = $_ZArea->getId();
+        $zTargetArea = ModelGameArea::getGameArea($this->id_game, $id_target_area);
+        if ($zTargetArea->getIdUser() !== $this->id_user) { // move is an attack
+            if (!in_array($zTargetArea->getId(), $attacks)) {
+                $attacks[] = $zTargetArea->getId();
             }
             if (count($attacks) > MAX_LAND_ATTACKS) {
                 throw new ControllerException('Unable to start any more attacks! Only ' . MAX_LAND_ATTACKS . ' per round allowed.');
@@ -300,7 +345,9 @@ class LandMoveController extends PhaseController {
         /*
          * check if target area is land area
          */
-        if ($_ZArea->getIdType() != TYPE_LAND) throw new ControllerException('Destination not a country.');
+        if ($zTargetArea->getIdType() != TYPE_LAND) {
+            throw new ControllerException('Destination not a country.');
+        }
 
         return true;
     }

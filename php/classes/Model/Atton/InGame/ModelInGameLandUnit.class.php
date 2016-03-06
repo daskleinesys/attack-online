@@ -87,7 +87,7 @@ class ModelInGameLandUnit {
         $iter = ModelLandUnit::iterator();
         while ($iter->hasNext()) {
             $landUnit = $iter->next();
-            $id_unit = $landUnit->getId();
+            $id_unit = (int)$landUnit->getId();
             $output[$id_unit] = self::getModelByIdZAreaUserUnit($id_game, $id_zarea, $id_user, $id_unit);
         }
         return $output;
