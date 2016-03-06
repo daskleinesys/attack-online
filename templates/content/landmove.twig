@@ -20,6 +20,7 @@
             <th></th>
         </tr>
 
+        {# SHOW CURRENT LANDMOVES #}
         {% for move in moves %}
             <tr>
                 <td>{{ move.startArea.number }} {{ move.startArea.name }}</td>
@@ -37,6 +38,7 @@
             </tr>
         {% endfor %}
 
+        {# CREATE NEW LANDMOVE #}
         {% if not turnFixated %}
             <tr>
                 <td>

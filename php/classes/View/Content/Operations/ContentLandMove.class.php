@@ -1,6 +1,9 @@
 <?php
 namespace AttOn\View\Content\Operations;
 
+use AttOn\Controller\Game\InGame\LandMoveController;
+use AttOn\Exceptions\ControllerException;
+use AttOn\Exceptions\NullPointerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
 use AttOn\Model\Atton\ModelArea;
@@ -121,50 +124,66 @@ class ContentLandMove extends ContentOperation {
         if (empty($_POST)) {
             return;
         }
-        $_MoveController = new LandMoveController($this->id_user_logged_in, $this->id_game_logged_in);
+        $controller = new LandMoveController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+
+        // fixating land move
+        if (isset($_POST['fixate_land_move'])) {
+            $controller->finishMove();
+            return;
+        }
 
         // deleting land move
-        try {
-            if (isset($_POST['delete'])) {
-                $_MoveController->deleteLandMove(intval($_POST['delete']));
-                $this->showContentInfo('move deleted');
+        if (isset($_POST['delete'])) {
+            try {
+                $controller->deleteLandMove(intval($_POST['delete']));
+                $data['status'] = array(
+                    'message' => 'Landzug gel&ouml;scht.'
+                );
+            } catch (NullPointerException $ex) {
+                $data['errors'] = array(
+                    'message' => $ex->getMessage()
+                );
+            } catch (ControllerException $ex) {
+                $data['errors'] = array(
+                    'message' => $ex->getMessage()
+                );
+            } finally {
+                return;
             }
-        } catch (NullPointerException $ex) {
-            $this->showErrorMsg($ex->getMessage());
-        } catch (ControllerException $ex) {
-            $this->_Logger->error($ex);
-            $this->showErrorMsg($ex->getMessage());
         }
 
         // creating new land move
-        try {
-            if (isset($_POST['newmove'])) {
+        if (isset($_POST['newmove'])) {
+            try {
                 if (!isset($_POST['start']) || !isset($_POST['destination'])) {
-                    $this->showErrorMsg('Missing parameter!');
+                    $data['errors'] = array(
+                        'message' => 'Missing parameter!'
+                    );
                     return;
                 }
                 $units = array();
                 $iter = ModelLandUnit::iterator();
                 while ($iter->hasNext()) {
-                    $_Unit = $iter->next();
-                    $abbr = $_Unit->getAbbreviation();
-                    $id_unit = $_Unit->getId();
+                    /* @var $unit ModelLandUnit */
+                    $unit = $iter->next();
+                    $abbr = $unit->getAbbreviation();
+                    $id_unit = $unit->getId();
                     $units[$id_unit] = (isset($_POST[$abbr])) ? intval($_POST[$abbr]) : 0;
                 }
-                $_MoveController->createLandMove(intval($_POST['start']), intval($_POST['destination']), $units);
-                $this->showContentInfo('move created');
+                $controller->createLandMove(intval($_POST['start']), intval($_POST['destination']), $units);
+                $data['status'] = array(
+                    'message' => 'Landzug erstellt.'
+                );
+            } catch (NullPointerException $ex) {
+                $data['errors'] = array(
+                    'message' => $ex->getMessage()
+                );
+            } catch (ControllerException $ex) {
+                $data['errors'] = array(
+                    'message' => $ex->getMessage()
+                );
             }
-        } catch (NullPointerException $ex) {
-            $this->_Logger->error($ex);
-            $this->showErrorMsg($ex->getMessage());
-        } catch (ControllerException $ex) {
-            $this->_Logger->error($ex);
-            $this->showErrorMsg($ex->getMessage());
         }
-
-        // fixating land move
-        if (isset($_POST['fixate_land_move'])) $_MoveController->finishMove();
-
     }
 
 }
