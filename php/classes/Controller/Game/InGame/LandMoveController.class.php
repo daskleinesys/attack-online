@@ -280,7 +280,7 @@ class LandMoveController extends PhaseController {
             $zStartArea = ModelGameArea::getGameArea($this->id_game, reset($move_steps));
             // check if this is an attack
             if ($zTargetArea->getIdUser() !== $this->id_user && (!in_array($zTargetArea->getId(), $attacks))) {
-                $attacks[] = $zArea->getId();
+                $attacks[] = $zTargetArea->getId();
             }
             if ($zStartArea->getId() === $id_start_area) {
                 $move_units = $landMove->getUnits();

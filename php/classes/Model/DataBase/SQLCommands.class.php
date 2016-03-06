@@ -216,7 +216,7 @@ class SQLCommands {
 
         // unit info
         self::$DataSource->load_query('get_land_unit', "SELECT id, name, abbreviation, price, speed, killing_sequence, kill_sequence_offset, ship_takeover, id_type FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_all_land_units', "SELECT id FROM units WHERE id_type = " . TYPE_LAND);
+        self::$DataSource->load_query('get_all_land_units', "SELECT id FROM units WHERE id_type = " . TYPE_LAND . " OR id_type = " . TYPE_AIR);
         self::$DataSource->load_query('get_ship', "SELECT id, name, abbreviation, price, speed, tanksize, hitpoints, id_type FROM units WHERE id = :id_unit");
         self::$DataSource->load_query('get_all_ships', "SELECT id FROM units WHERE id_type = " . TYPE_SEA);
     }
