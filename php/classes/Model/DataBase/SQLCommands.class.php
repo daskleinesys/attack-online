@@ -251,6 +251,7 @@ class SQLCommands {
         $moves_table = "z" . $id_game . "_moves";
         $moves_areas_table = "z" . $id_game . "_moves_areas";
         $moves_units_table = "z" . $id_game . "_moves_units";
+        $units_table = "z" . $id_game . "_units";
 
         // start moves
         self::$DataSource->load_query('get_start_move', "SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, areas.id_zarea, areas.step
@@ -260,11 +261,17 @@ class SQLCommands {
         self::$DataSource->load_query('get_start_move_for_user', "SELECT moves.id FROM $moves_table AS moves WHERE moves.id_user = :id_user AND id_phase = :id_phase AND round = :round AND deleted = 0 LIMIT 1", true);
 
         // land moves
-        self::$DataSource->load_query('get_land_move', "SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, steps.step, areas.id_zarea, units.id_unit, units.numberof
-				FROM $moves_table AS moves
-				LEFT JOIN $moves_areas_table AS areas ON (moves.id = areas.id_zmove)
-				LEFT JOIN $moves_units_table AS units ON (moves.id = units.id_zmove)
-				WHERE moves.id = :id_move", true);
+        self::$DataSource->load_query('get_land_move', "
+            SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
+                move_areas.id_zarea, move_areas.step,
+                move_units.id_zunit, move_units.numberof,
+                units.id AS id_unit, units.abbreviation, units.name
+            FROM $moves_table AS moves
+            LEFT JOIN $moves_areas_table AS move_areas ON (moves.id = move_areas.id_zmove)
+            LEFT JOIN $moves_units_table AS move_units ON (moves.id = move_units.id_zmove)
+            LEFT JOIN $units_table AS zunits ON (move_units.id_zunit = zunits.id)
+            LEFT JOIN units ON (zunits.id_unit = units.id)
+            WHERE moves.id = :id_move", true);
 
         // new moves
         self::$DataSource->load_query('create_move', "INSERT INTO $moves_table (id_user, id_phase, round) VALUES (:id_user, :id_phase, :round)", true);
@@ -304,7 +311,6 @@ class SQLCommands {
         self::$DataSource->load_query('create_zarea', "INSERT INTO $areas_table (tank,id_user,id_area,id_resource,productivity) VALUES (:tank,:id_user,:id_area,:id_resource,:productivity)", true);
 
         // units info
-        $units_table = "z" . $id_game . "_units";
         //query
         self::$DataSource->load_query('get_land_units_for_zarea_user_unit', "SELECT id, id_unit, id_user, id_zarea, count FROM $units_table WHERE id_zarea = :id_zarea AND id_user = :id_user AND id_unit = :id_unit");
         //update

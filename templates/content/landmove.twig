@@ -22,8 +22,8 @@
 
         {% for move in moves %}
             <tr>
-                <td>{{ move.start }}</td>
-                <td>{{ move.destination }}</td>
+                <td>{{ move.startArea.number }} {{ move.startArea.name }}</td>
+                <td>{{ move.destinationArea.number }} {{ move.destinationArea.name }}</td>
                 {% for unit in move.units %}
                     <td class="center">{{ unit.count }}</td>
                 {% endfor %}
@@ -92,7 +92,7 @@
 
 <ul>
     {% for unit in units %}
-        <li>{unit.abbreviation} = {unit.name}</li>
+        <li>{{ unit.abbreviation }} = {{ unit.name }}</li>
     {% endfor %}
 </ul>
 

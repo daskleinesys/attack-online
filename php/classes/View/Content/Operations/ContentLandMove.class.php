@@ -1,6 +1,12 @@
 <?php
 namespace AttOn\View\Content\Operations;
 
+use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
+use AttOn\Model\Atton\ModelArea;
+use AttOn\Model\Atton\ModelLandUnit;
+use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelUser;
 use AttOn\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentLandMove extends ContentOperation {
@@ -12,72 +18,81 @@ class ContentLandMove extends ContentOperation {
     public function run(array &$data) {
         $data['template'] = $this->getTemplate();
         $this->addCurrentGameInfo($data);
-        return;
 
-        $this->parseGame($data);
-        $this->handleInput();
-        $this->showMoves();
-        if (!$this->checkFixate()) {
-            $this->showNewMove();
+        $this->handleInput($data);
+        $this->showMoves($data);
+
+        return;
+        if (!$this->checkFixate($data)) {
+            $this->showNewMove($data);
         }
     }
 
-    private function showMoves() {
-        // show unit description
-        $unit_iter = ModelLandUnit::iterator();
-        while ($unit_iter->hasNext()) {
-            $_Unit = $unit_iter->next();
-            $this->xtpl->assign('abbr', $_Unit->getAbbreviation());
-            $this->xtpl->assign('unit', $_Unit->getName());
-            $this->xtpl->parse('main.unit');
-            $this->xtpl->parse('main.unitdescription');
-            $this->xtpl->parse('main.newmove.unit');
+    private function showMoves(array &$data) {
+        // add unit description
+        $units = ModelLandUnit::iterator();
+        $unitsViewData = array();
+        while ($units->hasNext()) {
+            /* @var $unit ModelLandUnit */
+            $unit = $units->next();
+            $unitsViewData[] = array(
+                'id' => $unit->getId(),
+                'abbreviation' => $unit->getAbbreviation(),
+                'name' => $unit->getName()
+            );
         }
+        $data['units'] = $unitsViewData;
 
         // show moves
-        $_Game = ModelGame::getGame($this->id_game_logged_in);
-        $id_game = $_Game->getId();
-        $round = $_Game->getRound();
-        $phase = $_Game->getIdPhase();
-        if ($phase > PHASE_LANDMOVE) $round++;
-
-        $move_iter = ModelLandMove::iterator($id_game, $round, $this->id_user_logged_in);
-        while ($move_iter->hasNext()) {
-            $_Move = $move_iter->next();
-            $move = array();
-            $move['id'] = $_Move->getIdMove();
-
-            $steps = $_Move->getSteps();
-            $_ZArea = ModelGameArea::getGameArea($id_game, $steps[1]);
-            $_Area = ModelArea::getArea($_ZArea->getIdArea());
-            $move['start'] = $_Area->getNumber() . ' ' . $_Area->getName();
-
-            $steps = $_Move->getSteps();
-            $_ZArea = ModelGameArea::getGameArea($id_game, $steps[count($steps)]);
-            $_Area = ModelArea::getArea($_ZArea->getIdArea());
-            $move['destination'] = $_Area->getNumber() . ' ' . $_Area->getName();
-
-            $this->xtpl->assign('move', $move);
-
-            $units = $_Move->getUnits();
-            $unit_iter = ModelLandUnit::iterator();
-            while ($unit_iter->hasNext()) {
-                $_Unit = $unit_iter->next();
-                $id_unit = $_Unit->getId();
-                $count = (isset($units[$id_unit])) ? $units[$id_unit] : 0;
-                $this->xtpl->assign('count', $count);
-                $this->xtpl->parse('main.move.unit');
-            }
-
-            if (!$this->checkFixate()) {
-                $this->xtpl->parse('main.move.delete');
-            }
-
-            $this->xtpl->parse('main.move');
+        $game = ModelGame::getCurrentGame();
+        $id_game = $game->getId();
+        $round = $game->getRound();
+        $phase = $game->getIdPhase();
+        if ($phase > PHASE_LANDMOVE) {
+            ++$round;
         }
+
+        $moves = ModelLandMove::iterator(ModelUser::getCurrentUser()->getId(), $id_game, $round);
+        $movesViewData = array();
+        while ($moves->hasNext()) {
+            /* @var $move ModelLandMove */
+            $move = $moves->next();
+            $moveViewData = array();
+            $moveViewData['id'] = $move->getIdMove();
+
+            $steps = $move->getSteps();
+            $zArea = ModelGameArea::getGameArea((int)$id_game, (int)array_shift($steps));
+            $area = ModelArea::getArea((int)$zArea->getIdArea());
+            $moveViewData['startArea'] = array(
+                'number' => $area->getNumber(),
+                'name' => $area->getName()
+            );
+            $zArea = ModelGameArea::getGameArea((int)$id_game, (int)array_pop($steps));
+            $area = ModelArea::getArea($zArea->getIdArea());
+            $moveViewData['destinationArea'] = array(
+                'number' => $area->getNumber(),
+                'name' => $area->getName()
+            );
+
+            $units = $move->getUnits();
+            $unit_iter = ModelLandUnit::iterator();
+            $unitsViewData = array();
+            while ($unit_iter->hasNext()) {
+                /* @var $unit ModelLandUnit */
+                $unit = $unit_iter->next();
+                $id_unit = (int)$unit->getId();
+                $unitsViewData[] = array(
+                    'id' => $id_unit,
+                    'count' => (isset($units[$id_unit])) ? $units[$id_unit] : 0
+                );
+            }
+            $moveViewData['units'] = $unitsViewData;
+            $movesViewData[] = $moveViewData;
+        }
+        $data['moves'] = $movesViewData;
     }
 
-    private function showNewMove() {
+    private function showNewMove(array &$data) {
         $iter = ModelArea::iterator(TYPE_LAND);
         while ($iter->hasNext()) {
             $_Area = $iter->next();
@@ -98,7 +113,7 @@ class ContentLandMove extends ContentOperation {
         $this->xtpl->parse('main.fixate');
     }
 
-    private function checkFixate() {
+    private function checkFixate(array &$data) {
         $_IGPI = ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user_logged_in, $this->id_game_logged_in);
         if ($_IGPI->getIsReadyForPhase(PHASE_LANDMOVE) == 1) {
             return true;
@@ -106,9 +121,10 @@ class ContentLandMove extends ContentOperation {
         return false;
     }
 
-    private function handleInput() {
-
-        if (empty($_POST)) return;
+    private function handleInput(array &$data) {
+        if (empty($_POST)) {
+            return;
+        }
         $_MoveController = new LandMoveController($this->id_user_logged_in, $this->id_game_logged_in);
 
         // deleting land move

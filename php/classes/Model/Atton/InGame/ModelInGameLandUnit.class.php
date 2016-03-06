@@ -96,6 +96,13 @@ class ModelInGameLandUnit {
     /**
      * @return int
      */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
     public function getIdUnit() {
         return $this->id_unit;
     }
