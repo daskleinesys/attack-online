@@ -249,11 +249,13 @@ class LandMoveController extends PhaseController {
         }
 
         /*
-         * check if enough units are left in the country -> iterate over all moves (except this), substract outgoing and add incoming units from country units
-         * also count number of attacks
+         * check if enough units are left in the country -> iterate over all moves (except this), substract outgoing
+         * check if there are any incoming units
+         * count number of attacks
          */
         $ingameLandUnits = ModelInGameLandUnit::getUnitsByIdZAreaUser($this->id_game, $id_start_area, $this->id_user); //array(int id_unit => ModelInGameLandUnit)
         $area_units = array();
+        $units_incoming = 0;
         $landUnitsIterator = ModelLandUnit::iterator();
         while ($landUnitsIterator->hasNext()) {
             /* @var $landUnit ModelLandMove */
@@ -290,11 +292,11 @@ class LandMoveController extends PhaseController {
             } else if ($zTargetArea->getId() === $id_start_area) {
                 $move_units = $landMove->getUnits();
                 foreach ($move_units as $id_unit => $count) {
-                    $area_units[$id_unit] += $count;
+                    $units_incoming += $count;
                 }
             }
         }
-        $total_units_left = 0;
+        $total_units_left = $units_incoming;
         foreach ($area_units as $id_unit => $count) {
             if (isset($units[$id_unit]) && $units[$id_unit] > $count) {
                 throw new ControllerException('Invalid move, not enough units in area.');
