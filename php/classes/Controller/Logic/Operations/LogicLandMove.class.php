@@ -180,4 +180,3 @@ class LogicLandMove extends PhaseLogic {
     }
 
 }
-

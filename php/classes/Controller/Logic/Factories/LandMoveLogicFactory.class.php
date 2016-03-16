@@ -6,7 +6,7 @@ use AttOn\Controller\Logic\Operations\LogicLandMove;
 
 class LandMoveLogicFactory implements LogicFactoryInterface {
 
-	public function getPhase() {
+	public function getIdPhase() {
 		return PHASE_LANDMOVE;
 	}
 

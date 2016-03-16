@@ -1,7 +1,7 @@
 <?php
 namespace AttOn\Controller;
 
-use AttOn\Controller\Logic\Factories\LogicFactoryInterface;
+use AttOn\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
 use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\LogicException;
@@ -82,7 +82,7 @@ class CronMain {
 
 		foreach ($this->factories as $factory) {
             /* @var $factory LogicFactoryInterface */
-			if ($factory->getPhase() === $game->getIdPhase()) {
+			if ($factory->getIdPhase() === $game->getIdPhase()) {
 				$phaseLogic = $factory->getOperation($id_game);
 			}
 		}

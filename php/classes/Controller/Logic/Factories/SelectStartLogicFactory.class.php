@@ -6,7 +6,7 @@ use AttOn\Controller\Logic\Operations\LogicSelectStart;
 
 class SelectStartLogicFactory implements LogicFactoryInterface {
 
-	public function getPhase() {
+	public function getIdPhase() {
 		return PHASE_SELECTSTART;
 	}
 
