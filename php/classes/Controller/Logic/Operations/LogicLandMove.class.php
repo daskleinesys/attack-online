@@ -83,6 +83,9 @@ class LogicLandMove extends PhaseLogic {
                 $this->checkForAbandonedArea($id_move);
             }
 
+            // TODO : remove after dev
+            throw new \Exception('rollback, still developing');
+
             $this->finishProcessing();
         } catch (\Exception $ex) {
             $this->logger->fatal($ex);

@@ -119,7 +119,7 @@ class SQLCommands {
         self::$DataSource->load_query('get_games_rdy_v2', "SELECT g.id FROM games g
 			JOIN (SELECT id_game, count(id_user) AS players FROM is_in_game GROUP BY id_game) pl ON (pl.id_game = g.id)
 			JOIN (SELECT id_game, id_phase, count(id_user) AS players_done FROM in_game_phase_info WHERE is_ready = 1 GROUP BY id_game, id_phase) pl_dn ON (pl_dn.id_game = g.id AND pl_dn.id_phase = g.id_phase)
-			WHERE pl.players = pl_dn.players_done");
+			WHERE pl.players = pl_dn.players_done AND g.processing = 0");
 
         // update general game inf
         self::$DataSource->load_query('delete_game_password', "UPDATE games SET password = NULL WHERE id = :id_game");
