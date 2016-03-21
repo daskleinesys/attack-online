@@ -77,16 +77,17 @@ class LogicLandMove extends PhaseLogic {
             }
 
             /*
-             * 5. check for empty areas and revert to neutral if anyone found
+             * 5. check for empty areas and revert to neutral if anyone found+
+             * TODO : do not run through moves, check all countries if empty
              */
             foreach ($this->finished_moves as $id_move) {
                 $this->checkForAbandonedArea($id_move);
             }
 
-            // TODO : remove after dev
+            // TODO : remove after dev and add finishProcessing
             throw new \Exception('rollback, still developing');
+            //$this->finishProcessing();
 
-            $this->finishProcessing();
         } catch (\Exception $ex) {
             $this->logger->fatal($ex);
             $this->rollback();
@@ -97,12 +98,13 @@ class LogicLandMove extends PhaseLogic {
     private function sortAndValidateMoves() {
         $game = ModelGame::getGame($this->id_game);
         $round = $game->getRound();
-        $move_iter = ModelLandMove::iterator($this->id_game, $round);
+        $move_iter = ModelLandMove::iterator(null, $this->id_game, $round);
         $controllerForUser = array();
         $controller = null;
 
         // run through moves
         while ($move_iter->hasNext()) {
+            /* @var $move ModelLandMove */
             $move = $move_iter->next();
             $id_move = $move->getId();
             $id_user = $move->getIdUser();
@@ -139,17 +141,17 @@ class LogicLandMove extends PhaseLogic {
     }
 
     private function executeTroopMovement($id_move) {
-        $_Move = ModelLandMove::getLandMove($this->id_game, $id_move);
-        $id_user = $_Move->getIdUser();
-        $steps = $_Move->getSteps();
+        $move = ModelLandMove::getLandMove($this->id_game, $id_move);
+        $id_user = $move->getIdUser();
+        $steps = $move->getSteps();
         $from = reset($steps);
         $to = end($steps);
-        $units = $_Move->getUnits();
+        $units = $move->getUnits();
         foreach ($units as $id_unit => $count) {
-            $_IGLUnit_from = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
-            $_IGLUnit_from->addCount($count * -1);
-            $_IGLUnit_to = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $to, $id_user, $id_unit);
-            $_IGLUnit_to->addCount($count);
+            $landUnit_from = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
+            $landUnit_from->addCount($count * -1);
+            $landUnit_to = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $to, $id_user, $id_unit);
+            $landUnit_to->addCount($count);
         }
         $this->finished_moves[] = $id_move;
     }
@@ -163,23 +165,30 @@ class LogicLandMove extends PhaseLogic {
     }
 
     private function checkForAbandonedArea($id_move) {
-        $_Move = ModelLandMove::getLandMove($this->id_game, $id_move);
-        $steps = $_Move->getSteps();
+        $move = ModelLandMove::getLandMove($this->id_game, $id_move);
+        $steps = $move->getSteps();
         $from = reset($steps);
-        if (in_array($from, $this->checked_areas)) return;
-        else $this->checked_areas[] = $from;
-        $_ZArea = ModelGameArea::getGameArea($this->id_game, $from);
-        $id_user = $_ZArea->getIdUser();
+        if (in_array($from, $this->checked_areas)) {
+            return;
+        } else {
+            $this->checked_areas[] = $from;
+        }
+        $zArea = ModelGameArea::getGameArea($this->id_game, $from);
+        $id_user = $zArea->getIdUser();
         $units = ModelInGameLandUnit::getUnitsByIdZAreaUser($this->id_game, $from, $id_user);
         $count = 0;
-        foreach ($units as $_IGLandUnit) {
-            $count += $_IGLandUnit->getCount();
+        /* @var $landUnit ModelInGameLandUnit */
+        foreach ($units as $landUnit) {
+            $count += $landUnit->getCount();
         }
-        if ($count > 0) return;
+        if ($count > 0) {
+            return;
+        }
 
         // unit count <= 0 -> remove country to neutral
-        $_ZArea = ModelGameArea::getGameArea($this->id_game, $from);
-        $_ZArea->setIdUser(NEUTRAL_COUNTRY);
+        $zArea = ModelGameArea::getGameArea($this->id_game, $from);
+        $zArea->setIdUser(NEUTRAL_COUNTRY);
+        // TODO : reset unit count
     }
 
 }
