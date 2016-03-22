@@ -77,7 +77,12 @@ $app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug) {
 });
 
 /*
-TODO Werner? concept + proposol for the following:
+@TODO @Werner? concept + proposol for the following:
+in einem featurebranch mal überlegen und auscoden
+
+aufteilung der einzelnen komponenten
+konkret für einzelnen ablauf zb userlogin oder gamecreate
+
 $app->get('/:content/')function($content) {
     new ContentFactory();
     $controller = ContentFactory->getController($content);
