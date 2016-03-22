@@ -32,7 +32,6 @@ class LogicLandMove extends PhaseLogic {
     /**
      * run the game logic
      *
-     * @throws \Exception
      * @throws LogicException
      * @return void
      */
@@ -91,7 +90,6 @@ class LogicLandMove extends PhaseLogic {
         } catch (\Exception $ex) {
             $this->logger->fatal($ex);
             $this->rollback();
-            throw $ex;
         }
     }
 
@@ -101,6 +99,9 @@ class LogicLandMove extends PhaseLogic {
         $move_iter = ModelLandMove::iterator(null, $this->id_game, $round);
         $controllerForUser = array();
         $controller = null;
+
+        echo "\nmove-iter:\n";
+        print_r($move_iter);
 
         // run through moves
         while ($move_iter->hasNext()) {
@@ -138,6 +139,10 @@ class LogicLandMove extends PhaseLogic {
                 $this->troop_moves[] = $id_move;
             }
         }
+        echo "\nattacks:\n";
+        print_r($this->attacks);
+        echo "\ntroop_moves:\n";
+        print_r($this->troop_moves);
     }
 
     private function executeTroopMovement($id_move) {

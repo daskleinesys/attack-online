@@ -53,6 +53,7 @@ $app->get('/map/', function() use($app, $debug) {
 });
 
 $app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug) {
+    echo '<pre>';
     if (empty($id_game)) {
         $id_game = null;
     } else if ($id_game !== null) {
@@ -67,12 +68,11 @@ $app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug) {
     $cron = new CronMain();
     $cron->execute($id_game);
 
-    // TODO : make prettier output
     if ($cron->hasErrors()) {
-        echo 'cron failed <pre>';
+        echo "\ncron failed";
         var_dump($cron->getErrors());
     } else {
-        echo 'cron sucess';
+        echo "\ncron sucess";
     }
 });
 

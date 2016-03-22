@@ -85,8 +85,12 @@ class ModelLandMove extends ModelMove {
         $query = 'get_specific_moves';
         $dict = array();
         $dict[':id_phase'] = PHASE_LANDMOVE;
-        $dict[':id_user'] = ($id_user === null) ? '%' : intval($id_user);
         $dict[':round'] = ($round === null) ? '%' : intval($round);
+        if ($id_user === null) {
+            $query = 'get_all_moves_for_phase_and_round';
+        } else {
+            $dict[':id_user'] = intval($id_user);
+        }
 
         $result = DataSource::Singleton()->epp($query, $dict);
         $moves = array();
