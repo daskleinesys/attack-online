@@ -14,9 +14,8 @@ class LogicLandMove extends PhaseLogic {
     private $logger;
 
     private $troop_moves = array(); // array (int $id_move)
-    private $attacks = array(); // array[int $id_start_country][int $id_target_country] = array(int $id_move)
+    private $attack_moves_to = array(); // array (int $id_start_country => array(int $id_move))
     private $finished_moves = array(); // array (int $id_move)
-    private $checked_areas = array(); // array (int $id_zarea)
 
     /**
      * returns object to run game logic -> should only be called by factory
@@ -62,26 +61,19 @@ class LogicLandMove extends PhaseLogic {
              * 3.b execute nml-fights
              * 3.c create temporary moves for winner
              */
-            foreach ($this->attacks as $id_move) {
-                $this->checkForNMLFight($id_move);
-            }
+            $this->checkForNMLFight();
 
             /*
              * 4. execute remaining fights
              */
-            foreach ($this->attacks as $id_move) {
-                if (!in_array($id_move, $this->finished_moves)) {
-                    $this->executeAttack($id_move);
-                }
+            foreach ($this->attack_moves_to as $moves) {
+                $this->executeAttack($moves);
             }
 
             /*
-             * 5. check for empty areas and revert to neutral if anyone found+
-             * TODO : do not run through moves, check all countries if empty
+             * 5. check for empty areas and revert to neutral if any found
              */
-            foreach ($this->finished_moves as $id_move) {
-                $this->checkForAbandonedArea($id_move);
-            }
+            $this->checkForAbandonedAreas();
 
             // TODO : remove after dev and add finishProcessing
             throw new \Exception('rollback, still developing');
@@ -99,9 +91,6 @@ class LogicLandMove extends PhaseLogic {
         $move_iter = ModelLandMove::iterator(null, $this->id_game, $round);
         $controllerForUser = array();
         $controller = null;
-
-        echo "\nmove-iter:\n";
-        print_r($move_iter);
 
         // run through moves
         while ($move_iter->hasNext()) {
@@ -127,22 +116,15 @@ class LogicLandMove extends PhaseLogic {
             // sort moves
             $steps = $move->getSteps();
             $zArea = ModelGameArea::getGameArea($this->id_game, end($steps));
-            if ($zArea->getIdUser() != $id_user) {
-                if (!isset($this->attacks[reset($steps)])) {
-                    $this->attacks[reset($steps)] = array();
+            if ($zArea->getIdUser() !== $id_user) {
+                if (!isset($this->attack_moves_to[end($steps)])) {
+                    $this->attack_moves_to[end($steps)] = array();
                 }
-                if (!isset($this->attacks[reset($steps)][end($steps)])) {
-                    $this->attacks[reset($steps)][end($steps)] = array();
-                }
-                $this->attacks[reset($steps)][end($steps)][] = $id_move;
+                $this->attack_moves_to[end($steps)][] = $id_move;
             } else {
                 $this->troop_moves[] = $id_move;
             }
         }
-        echo "\nattacks:\n";
-        print_r($this->attacks);
-        echo "\ntroop_moves:\n";
-        print_r($this->troop_moves);
     }
 
     private function executeTroopMovement($id_move) {
@@ -161,15 +143,18 @@ class LogicLandMove extends PhaseLogic {
         $this->finished_moves[] = $id_move;
     }
 
-    private function checkForNMLFight($id_move) {
-        // TODO: code nml fights
+    private function checkForNMLFight() {
+        // TODO: concept for NML missing -> especially if there are combined attacks
     }
 
-    private function executeAttack($id_move) {
+    private function executeAttack(array $moves) {
         // TODO: code attacks
     }
 
-    private function checkForAbandonedArea($id_move) {
+    private function checkForAbandonedAreas() {
+        // TODO : do not run through moves, check all countries if empty
+        return;
+
         $move = ModelLandMove::getLandMove($this->id_game, $id_move);
         $steps = $move->getSteps();
         $from = reset($steps);
