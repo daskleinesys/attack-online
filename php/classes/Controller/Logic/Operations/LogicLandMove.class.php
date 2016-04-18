@@ -18,6 +18,8 @@ class LogicLandMove extends PhaseLogic {
     private $attack_moves_to = array(); // array (int $id_start_country => array(int $id_move))
     private $finished_moves = array(); // array (int $id_move)
 
+    private $rolls = array();
+
     /**
      * returns object to run game logic -> should only be called by factory
      *
@@ -183,6 +185,7 @@ class LogicLandMove extends PhaseLogic {
         }
 
         // 3. calculate winner and remaining units
+        $attacker_wins = $this->calculateFight($units_attacker, $units_defender);
 
         // 4. update target country units (and user if attacker won)
 
@@ -217,6 +220,53 @@ class LogicLandMove extends PhaseLogic {
         $zArea = ModelGameArea::getGameArea($this->id_game, $from);
         $zArea->setIdUser(NEUTRAL_COUNTRY);
         // TODO : reset unit count
+    }
+
+    private function calculateFight(array &$units_attacker, array &$units_defender) {
+        // 1. check air-superiority (0 == none, 1 == attacker, 2 == defender)
+        // roll d6 for each player, +1 for each airplane, +1 automatically for defender (ground-to-air defense)
+        // attacker/defender unable to get air-superiority if they have no airplanes (other player DOES NOT automatically get air-superiority, still needs to win the roll)
+        $air_superiority = 0;
+        $air_sup_roll = $this->rollTheDie() + $units_attacker[ID_AIRCRAFT] - $this->rollTheDie() - $units_defender[ID_AIRCRAFT] - 1;
+        if ($air_sup_roll > 0 && $units_attacker[ID_AIRCRAFT] > 0) {
+            $air_superiority = 1;
+        } else if ($air_sup_roll < 0 && $units_defender[ID_AIRCRAFT] > 0) {
+            $air_superiority = 2;
+        }
+
+        // 2. roll alternating until no units left for one side
+        // start with attacker, then alternate
+
+        // roll d6 for each non-airplane unit, hits if rolled lower or equal the number of units of that type (subtract 1 from roll if air-superiority, to minimum of 1)
+        // ID_INFANTRY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY
+        // ID_ARTILLERY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY (hits 2 times!)
+        // ID_TANK hit -> destroy ID_TANK -> ID_ARTILLERY -> ID_INFANTRY
+        // roll d3 for airplane units, hits if rolled lower or equal the number of airplanes. subtract 1 if air-superiority, to minimum of 1. 1 is always a hit, even if no airplanes available.
+        // ID_AIRCRAFT hit -> destroy ID_AIRCRAFT -> ID_ARTILLERY -> ID_TANK -> ID_INFANTRY
+
+        // check if player with air-superiority has aircraft remaining, if not set air-superiority to 0
+        // check if a player has no units left
+
+        return true;
+    }
+
+    private function rollTheDie() {
+        if (empty($this->rolls)) {
+
+            // TODO : add quota check
+            // curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/quota/?ip=213.47.114.14&format=plain');
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/integers/?num=200&min=1&max=6&col=1&base=10&format=plain&rnd=new');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'phpRandDotOrg ' . '1.1.0' . ' : ' . 'thomas.schagerl@gmx.net');
+            $rolls = curl_exec($ch);
+            curl_close($ch);
+            $this->rolls = explode("\n", $rolls);
+            array_pop($this->rolls);
+        }
+        return array_pop($this->rolls);
     }
 
 }
