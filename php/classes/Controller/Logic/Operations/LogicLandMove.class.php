@@ -8,6 +8,7 @@ use AttOn\Exceptions\LogicException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
 use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
+use AttOn\Model\Atton\ModelLandUnit;
 use AttOn\Model\Game\ModelGame;
 
 class LogicLandMove extends PhaseLogic {
@@ -66,8 +67,8 @@ class LogicLandMove extends PhaseLogic {
             /*
              * 4. execute remaining fights
              */
-            foreach ($this->attack_moves_to as $moves) {
-                $this->executeAttack($moves);
+            foreach ($this->attack_moves_to as $id_target_area => $moves) {
+                $this->executeAttack($id_target_area, $moves);
             }
 
             /*
@@ -147,8 +148,45 @@ class LogicLandMove extends PhaseLogic {
         // TODO: concept for NML missing -> especially if there are combined attacks
     }
 
-    private function executeAttack(array $moves) {
+    private function executeAttack($id_target_area, array $moves) {
         // TODO: code attacks
+
+        // 0. init empty arrays for attacker/defender units
+        $units_attacker = array();
+        $units_defender = array();
+
+        // 1. get units for defender
+        $target_area = ModelGameArea::getGameArea($this->id_game, $id_target_area);
+        $id_defender = $target_area->getIdUser();
+        $iter = ModelLandUnit::iterator();
+        while ($iter->hasNext()) {
+            /* @var ModelLandUnit $unit */
+            $unit = $iter->next();
+            $units_attacker[$unit->getId()] = 0;
+            $landUnit_defender = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_target_area, $id_defender, $unit->getId());
+            $units_defender[$unit->getId()] = $landUnit_defender->getCount();
+        }
+
+        // 2. add up all units for attacker (multiple moves possible, check already finished moves from NML-fights)
+        // 2.a subtract units from originating country
+        foreach ($moves as $id_move) {
+            $move = ModelLandMove::getLandMove($this->id_game, $id_move);
+            $id_user = $move->getIdUser();
+            $steps = $move->getSteps();
+            $from = reset($steps);
+            $units = $move->getUnits();
+            foreach ($units as $id_unit => $count) {
+                $landUnit_from = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
+                $landUnit_from->addCount($count * -1);
+                $units_attacker[$id_unit] += $count;
+            }
+        }
+
+        // 3. calculate winner and remaining units
+
+        // 4. update target country units (and user if attacker won)
+
+        // 4. flag all moves as finished
     }
 
     private function checkForAbandonedAreas() {
