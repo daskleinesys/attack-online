@@ -73,11 +73,6 @@ class LogicLandMove extends PhaseLogic {
                 $this->executeAttack($id_target_area, $moves);
             }
 
-            /*
-             * 5. check for empty areas and revert to neutral if any found
-             */
-            $this->checkForAbandonedAreas();
-
             // TODO : remove after dev and add finishProcessing
             throw new \Exception('rollback, still developing');
             //$this->finishProcessing();
@@ -193,36 +188,6 @@ class LogicLandMove extends PhaseLogic {
 
         // 4. flag all moves as finished
         // TODO : flag all moves as finished
-    }
-
-    private function checkForAbandonedAreas() {
-        // TODO : do not run through moves, check all countries if empty
-        return;
-
-        $move = ModelLandMove::getLandMove($this->id_game, $id_move);
-        $steps = $move->getSteps();
-        $from = reset($steps);
-        if (in_array($from, $this->checked_areas)) {
-            return;
-        } else {
-            $this->checked_areas[] = $from;
-        }
-        $zArea = ModelGameArea::getGameArea($this->id_game, $from);
-        $id_user = $zArea->getIdUser();
-        $units = ModelInGameLandUnit::getUnitsByIdZAreaUser($this->id_game, $from, $id_user);
-        $count = 0;
-        /* @var $landUnit ModelInGameLandUnit */
-        foreach ($units as $landUnit) {
-            $count += $landUnit->getCount();
-        }
-        if ($count > 0) {
-            return;
-        }
-
-        // unit count <= 0 -> remove country to neutral
-        $zArea = ModelGameArea::getGameArea($this->id_game, $from);
-        $zArea->setIdUser(NEUTRAL_COUNTRY);
-        // TODO : reset unit count
     }
 
     // return true if attacker wins, false if defender wins
