@@ -1,0 +1,173 @@
+{% include 'content/partials/currentgame.twig' %}
+
+<h1>Produktion</h1>
+
+<form method="post" action="{{ absRefPrefix }}production/">
+    <table width="589">
+        <colgroup>
+            <col width=""/>
+            <col width="112"/>
+            <col width="80"/>
+            <col width="137"/>
+            <col width="45"/>
+            <col width="28"/>
+        </colgroup>
+
+        <tr>
+            <th>Land</th>
+            <th>Einheit</th>
+            <th>Anzahl</th>
+            <th>Kosten (PP)</th>
+            <th></th>
+        </tr>
+
+        {# SHOW CURRENT PRODUCTION MOVES #}
+        {% for move in moves %}
+            <tr>
+                <td>{{ move.area }}</td>
+                <td>{{ move.unitName }}</td>
+                <td>{{ move.unitCount }}</td>
+                <td align="right">{{ move.costs }}</td>
+                {% if not turnFixated %}
+                    <td class="button">
+                        <button type="submit" value="{{ move.id }}" name="delete">
+                            <img src="{{ absRefPrefix }}dist/images/delete.gif" alt="delete_mvoe"/>
+                        </button>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        {% if costsSum %}
+            <tr>
+                <th colspan="3" align="right">Summe:</th>
+                <th align="right">{{ costsSum }}</th>
+                <th></th>
+            </tr>
+            <tr></tr>
+        {% endif %}
+
+        {# CREATE NEW PRODUCTION MOVE #}
+        {% if not turnFixated %}
+            <tr>
+                <td>
+                    <label>
+                        <select name="area" size="1">
+                            <option value="" disabled selected>Land wählen</option>
+                            {% for area in areas %}
+                                <option value="{{ area.id_zarea }}">{{ area.number }} {{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <select name="unit" size="1">
+                            <option value="" disabled selected>Einheit wählen</option>
+                            {% for unit in units %}
+                                <option value="{{ unit.id }}">{{ unit.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="number" name="count" value="" maxlength="3" size="3"/>
+                    </label>
+                </td>
+                <td></td>
+                <td class="center">
+                    <input type="submit" name="newmove" value="+"/>
+                </td>
+            </tr>
+        {% endif %}
+
+    </table>
+</form>
+
+{% if notCurrentPhase %}
+    <p class="error">
+        <small>
+            Achtung, dies ist nicht die aktuelle Phase.
+            <br>
+            Es könnte sein, dass ihr eure Züge noch vor dem Ende dieser Runde ändern wollt, um euch auf unvorhergesehene Züge der Mitspieler
+            einzustellen.
+            <br>
+            Außerdem können sich die errechneten PP noch ändern, da noch andere Phasen abgeschlossen werden, bevor die Produktion statt
+            findet.
+        </small>
+    </p>
+{% endif %}
+
+{% if turnFixated %}
+    <p>
+        Achtung, du hast den Zug bereits fixiert.
+    </p>
+{% else %}
+    <form method="post" action="{{ absRefPrefix }}production/">
+        <h2>Zug beenden</h2>
+        <p>Achtung, wenn du den folgenden Knopf drückst wird die Produktion fixiert und du kannst sie nicht mehr ändern. Erst
+            wenn alle Spieler diesen Zug beendet haben erfolgt die Berechnung und das Spiel geht in die nächste Phase.</p>
+        <input type="submit" name="fixate_production" value="Fertig"/>
+    </form>
+{% endif %}
+
+<hr/>
+
+<h3>Wirtschaftleistung</h3>
+
+<table width="335">
+    <colgroup>
+        <col width="200"/>
+        <col width="90"/>
+        <col width="45"/>
+    </colgroup>
+    <tr>
+        <th></th>
+        <th>Anzahl</th>
+        <th>PP</th>
+    </tr>
+    <tr>
+        <td>Reserven</td>
+        <td></td>
+        <td align="right">{{ production.money }}</td>
+    </tr>
+    <tr>
+        <td>Länderwirtschaftsleistung</td>
+        <td align="right">{{ production.countries }}</td>
+        <td align="right">{{ production.resproduction }}</td>
+    </tr>
+    <tr>
+        <td>Handelsrouten</td>
+        <td align="right">{{ production.traderoutes }}</td>
+        <td align="right">{{ production.trproduction }}</td>
+    </tr>
+    <tr>
+        <td>Ressourcenkombos</td>
+        <td align="right">{{ production.combos }}</td>
+        <td align="right">{{ production.comboproduction }}</td>
+    </tr>
+    <tr>
+        <th align="right" colspan="2">Summe:</th>
+        <td align="right">{{ production.sum }}</td>
+    </tr>
+</table>
+
+<p>
+    <small>
+        Nähere Infos zur Produktion findet ihr <a class="linktext" href="{{ absRefPrefix }}manual/moves/production/">hier</a>.<br>
+        (Wie komme ich zu den PP, wofür kann ich sie ausgeben, etc.)
+    </small>
+</p>
+
+{% if errors %}
+    <br>
+    <p class="error">{{ errors.message }}</p>
+{% endif %}
+
+{% if status %}
+    <br>
+    <p class="status">{{ status.message }}</p>
+{% endif %}
