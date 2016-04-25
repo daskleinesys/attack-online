@@ -44,7 +44,7 @@ class ModelIsInGameInfo {
      * @param $id_user int
      * @param $id_game int
      * @throws NullPointerException
-     * @return ModelInGamePhaseInfo
+     * @return ModelIsInGameInfo
      */
     public static function getIsInGameInfo($id_user, $id_game) {
         if (isset(self::$models[$id_user][$id_game])) {
