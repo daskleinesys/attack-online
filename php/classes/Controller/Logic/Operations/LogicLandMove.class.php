@@ -151,8 +151,6 @@ class LogicLandMove extends PhaseLogic {
     }
 
     private function executeAttack($id_target_area, array $moves) {
-        // TODO: code attacks
-
         // 0. init empty arrays for attacker/defender units
         $units_attacker = array();
         $units_defender = array();
@@ -186,10 +184,15 @@ class LogicLandMove extends PhaseLogic {
 
         // 3. calculate winner and remaining units
         $attacker_wins = $this->calculateFight($units_attacker, $units_defender);
+        // TODO : update defender units
 
         // 4. update target country units (and user if attacker won)
+        if ($attacker_wins) {
+            // TODO : update country and attacker units
+        }
 
         // 4. flag all moves as finished
+        // TODO : flag all moves as finished
     }
 
     private function checkForAbandonedAreas() {
@@ -222,6 +225,7 @@ class LogicLandMove extends PhaseLogic {
         // TODO : reset unit count
     }
 
+    // return true if attacker wins, false if defender wins
     private function calculateFight(array &$units_attacker, array &$units_defender) {
         // 1. check air-superiority (0 == none, 1 == attacker, 2 == defender)
         // roll d6 for each player, +1 for each airplane, +1 automatically for defender (ground-to-air defense)
@@ -237,31 +241,64 @@ class LogicLandMove extends PhaseLogic {
         // 2. roll alternating until no units left for one side
         // start with attacker, then alternatej
         while ($this->hasUnits($units_attacker)) {
-            // roll d6 for each non-airplane unit, hits if rolled lower or equal the number of units of that type (subtract 1 from roll if air-superiority, to minimum of 1)
-            // ID_INFANTRY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY
-            // ID_ARTILLERY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY (hits 2 times!)
-            // ID_TANK hit -> destroy ID_TANK -> ID_ARTILLERY -> ID_INFANTRY
-            // roll d3 for airplane units, hits if rolled lower or equal the number of airplanes. subtract 1 if air-superiority, to minimum of 1. 1 is always a hit, even if no airplanes available.
-            // ID_AIRCRAFT hit -> destroy ID_AIRCRAFT -> ID_ARTILLERY -> ID_TANK -> ID_INFANTRY
+            // TODO : use unit settings from DB (killing sequence, kills, die)
+            // roll d6 for each non-airplane unit still left, hits if rolled lower or equal the number of units of that type (subtract 1 from roll if air-superiority)
+            if ($this->checkHit($units_attacker[ID_INFANTRY], ($air_superiority === 1))) {
+                // ID_INFANTRY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY
+                $this->removeUnit($units_defender, array(ID_INFANTRY, ID_TANK, ID_ARTILLERY));
+            }
+            if ($this->checkHit($units_attacker[ID_ARTILLERY], ($air_superiority === 1))) {
+                // ID_ARTILLERY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY (hits 2 times!)
+                $this->removeUnit($units_defender, array(ID_INFANTRY, ID_TANK, ID_ARTILLERY));
+                $this->removeUnit($units_defender, array(ID_INFANTRY, ID_TANK, ID_ARTILLERY));
+            }
+            if ($this->checkHit($units_attacker[ID_TANK], ($air_superiority === 1))) {
+                // ID_TANK hit -> destroy ID_TANK -> ID_ARTILLERY -> ID_INFANTRY
+                $this->removeUnit($units_defender, array(ID_TANK, ID_ARTILLERY, ID_INFANTRY));
+            }
+            // roll d3 for airplane units, hits if rolled lower or equal the number of airplanes. 1 is always a hit, even if no airplanes available.
+            if ($this->checkHit(max(1, $units_attacker[ID_AIRCRAFT] * 2), false)) {
+                // ID_AIRCRAFT hit -> destroy ID_AIRCRAFT -> ID_ARTILLERY -> ID_TANK -> ID_INFANTRY
+                $this->removeUnit($units_defender, array(ID_AIRCRAFT, ID_ARTILLERY, ID_TANK, ID_INFANTRY));
+            }
 
             // check if defender lost air-superiority
+            if ($air_superiority === 2 && $units_defender[ID_AIRCRAFT] === 0) {
+                $air_superiority = 0;
+            }
 
             if (!$this->hasUnits($units_defender)) {
                 // 3.a defender has no units left -> attacker wins
                 return true;
             }
 
-            // roll d6 for each non-airplane unit, hits if rolled lower or equal the number of units of that type (subtract 1 from roll if air-superiority, to minimum of 1)
-            // ID_INFANTRY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY
-            // ID_ARTILLERY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY (hits 2 times!)
-            // ID_TANK hit -> destroy ID_TANK -> ID_ARTILLERY -> ID_INFANTRY
-            // roll d3 for airplane units, hits if rolled lower or equal the number of airplanes. subtract 1 if air-superiority, to minimum of 1. 1 is always a hit, even if no airplanes available.
-            // ID_AIRCRAFT hit -> destroy ID_AIRCRAFT -> ID_ARTILLERY -> ID_TANK -> ID_INFANTRY
+            // roll d6 for each non-airplane unit still left, hits if rolled lower or equal the number of units of that type (subtract 1 from roll if air-superiority)
+            if ($this->checkHit($units_defender[ID_INFANTRY], ($air_superiority === 2))) {
+                // ID_INFANTRY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY
+                $this->removeUnit($units_attacker, array(ID_INFANTRY, ID_TANK, ID_ARTILLERY));
+            }
+            if ($this->checkHit($units_defender[ID_ARTILLERY], ($air_superiority === 2))) {
+                // ID_ARTILLERY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY (hits 2 times!)
+                $this->removeUnit($units_attacker, array(ID_INFANTRY, ID_TANK, ID_ARTILLERY));
+                $this->removeUnit($units_attacker, array(ID_INFANTRY, ID_TANK, ID_ARTILLERY));
+            }
+            if ($this->checkHit($units_defender[ID_TANK], ($air_superiority === 2))) {
+                // ID_TANK hit -> destroy ID_TANK -> ID_ARTILLERY -> ID_INFANTRY
+                $this->removeUnit($units_attacker, array(ID_TANK, ID_ARTILLERY, ID_INFANTRY));
+            }
+            // roll d3 for airplane units, hits if rolled lower or equal the number of airplanes. 1 is always a hit, even if no airplanes available.
+            if ($this->checkHit(max(1, $units_defender[ID_AIRCRAFT] * 2), false)) {
+                // ID_AIRCRAFT hit -> destroy ID_AIRCRAFT -> ID_ARTILLERY -> ID_TANK -> ID_INFANTRY
+                $this->removeUnit($units_attacker, array(ID_AIRCRAFT, ID_ARTILLERY, ID_TANK, ID_INFANTRY));
+            }
 
             // check if attacker lost air-superiority
+            if ($air_superiority === 1 && $units_attacker[ID_AIRCRAFT] === 0) {
+                $air_superiority = 0;
+            }
         }
 
-        // 3.b attacker has no units left, attacker wins
+        // 3.b attacker has no units left, defender wins
         return false;
     }
 
@@ -291,6 +328,26 @@ class LogicLandMove extends PhaseLogic {
             }
         }
         return false;
+    }
+
+    private function checkHit($unit_count, $air_superiority) {
+        if ($unit_count < 1) {
+            return false;
+        }
+        $roll = $this->rollTheDie() - (($air_superiority) ? 1 : 0);
+        if ($roll <= $unit_count) {
+            return true;
+        }
+        return false;
+    }
+
+    private function removeUnit(array &$units, array $kill_sequence) {
+        foreach ($kill_sequence as $id_unit) {
+            if ($units[$id_unit] > 0) {
+                --$units[$id_unit];
+                return;
+            }
+        }
     }
 
 }
