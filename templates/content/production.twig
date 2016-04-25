@@ -74,7 +74,7 @@
                 </td>
                 <td>
                     <label>
-                        <input type="number" name="count" value="" maxlength="3" size="3"/>
+                        <input type="number" name="count" value="" min="1" max="99"/>
                     </label>
                 </td>
                 <td></td>
@@ -114,7 +114,7 @@
     </form>
 {% endif %}
 
-<hr/>
+<hr>
 
 <h3>Wirtschaftleistung</h3>
 
@@ -135,7 +135,7 @@
         <td align="right">{{ production.money }}</td>
     </tr>
     <tr>
-        <td>Länderwirtschaftsleistung</td>
+        <td>Länder</td>
         <td align="right">{{ production.countries }}</td>
         <td align="right">{{ production.resproduction }}</td>
     </tr>
@@ -145,7 +145,7 @@
         <td align="right">{{ production.trproduction }}</td>
     </tr>
     <tr>
-        <td>Ressourcenkombos</td>
+        <td>Kombos</td>
         <td align="right">{{ production.combos }}</td>
         <td align="right">{{ production.comboproduction }}</td>
     </tr>
@@ -154,6 +154,8 @@
         <td align="right">{{ production.sum }}</td>
     </tr>
 </table>
+
+<hr>
 
 <p>
     <small>
