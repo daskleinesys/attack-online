@@ -1,11 +1,9 @@
 <?php
 namespace AttOn\View\Content\Operations;
 
-use AttOn\Controller\Game\InGame\LandMoveController;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\NullPointerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelLandUnit;
 use AttOn\Model\Game\ModelGame;
@@ -41,10 +39,18 @@ class ContentProduction extends ContentOperation {
         if (empty($_POST)) {
             return;
         }
+
+        // TODO : create production controller
+
+        // 1. check fixate
+
+        // 2. delete production if necessary
+
+        // 3. create new production (validate first)
     }
 
     private function showMoves(array &$data) {
-
+        // TODO : show current moves already entered by the user
     }
 
     private function showCurrentProduction(array &$data) {
