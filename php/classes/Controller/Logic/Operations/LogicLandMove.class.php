@@ -73,9 +73,7 @@ class LogicLandMove extends PhaseLogic {
                 $this->executeAttack($id_target_area, $moves);
             }
 
-            // TODO : remove after dev and add finishProcessing
-            throw new \Exception('rollback, still developing');
-            //$this->finishProcessing();
+            $this->finishProcessing();
 
         } catch (\Exception $ex) {
             $this->logger->fatal($ex);
@@ -164,9 +162,11 @@ class LogicLandMove extends PhaseLogic {
 
         // 2. add up all units for attacker (multiple moves possible, check already finished moves from NML-fights)
         // 2.a subtract units from originating country
+        $id_attacker = 0;
         foreach ($moves as $id_move) {
             $move = ModelLandMove::getLandMove($this->id_game, $id_move);
             $id_user = $move->getIdUser();
+            $id_attacker = $id_user;
             $steps = $move->getSteps();
             $from = reset($steps);
             $units = $move->getUnits();
@@ -179,15 +179,34 @@ class LogicLandMove extends PhaseLogic {
 
         // 3. calculate winner and remaining units
         $attacker_wins = $this->calculateFight($units_attacker, $units_defender);
-        // TODO : update defender units
+        // 3.a update defender units
+        $iter = ModelLandUnit::iterator();
+        while ($iter->hasNext()) {
+            /* @var ModelLandUnit $unit */
+            $unit = $iter->next();
+            $landUnit_defender = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_target_area, $id_defender, $unit->getId());
+            $landUnit_defender->setCount($units_defender[$unit->getId()]);
+        }
 
         // 4. update target country units (and user if attacker won)
         if ($attacker_wins) {
-            // TODO : update country and attacker units
+            // 4.a update attacker units
+            $iter = ModelLandUnit::iterator();
+            while ($iter->hasNext()) {
+                /* @var ModelLandUnit $unit */
+                $unit = $iter->next();
+                $landUnit_attacker = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_target_area, $id_attacker, $unit->getId());
+                $landUnit_attacker->setCount($units_attacker[$unit->getId()]);
+            }
+            // 4.b update country owner
+            $area = ModelGameArea::getGameArea($this->id_game, $id_target_area);
+            $area->setIdUser($id_attacker);
         }
 
         // 4. flag all moves as finished
-        // TODO : flag all moves as finished
+        foreach ($moves as $id_move) {
+            $this->finished_moves[] = $id_move;
+        }
     }
 
     // return true if attacker wins, false if defender wins
@@ -270,8 +289,8 @@ class LogicLandMove extends PhaseLogic {
     private function rollTheDie() {
         if (empty($this->rolls)) {
 
-            // TODO : add quota check
-            // curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/quota/?ip=213.47.114.14&format=plain');
+            // add quota check - if necessary
+            // curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/quota/?ip=CURRENT_IP&format=plain');
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/integers/?num=200&min=1&max=6&col=1&base=10&format=plain&rnd=new');
