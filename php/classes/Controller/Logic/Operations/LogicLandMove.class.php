@@ -9,6 +9,7 @@ use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
 use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
 use AttOn\Model\Atton\ModelLandUnit;
+use AttOn\Model\Game\Dice\DieSix;
 use AttOn\Model\Game\ModelGame;
 
 class LogicLandMove extends PhaseLogic {
@@ -18,7 +19,7 @@ class LogicLandMove extends PhaseLogic {
     private $attack_moves_to = array(); // array (int $id_start_country => array(int $id_move))
     private $finished_moves = array(); // array (int $id_move)
 
-    private $rolls = array();
+    private $die;
 
     /**
      * returns object to run game logic -> should only be called by factory
@@ -29,6 +30,7 @@ class LogicLandMove extends PhaseLogic {
     public function __construct($id_game) {
         parent::__construct($id_game, PHASE_LANDMOVE);
         $this->logger = \Logger::getLogger('LogicLandMove');
+        $this->die = new DieSix();
     }
 
     /**
@@ -215,7 +217,7 @@ class LogicLandMove extends PhaseLogic {
         // roll d6 for each player, +1 for each airplane, +1 automatically for defender (ground-to-air defense)
         // attacker/defender unable to get air-superiority if they have no airplanes (other player DOES NOT automatically get air-superiority, still needs to win the roll)
         $air_superiority = 0;
-        $air_sup_roll = $this->rollTheDie() + $units_attacker[ID_AIRCRAFT] - $this->rollTheDie() - $units_defender[ID_AIRCRAFT] - 1;
+        $air_sup_roll = $this->die->roll() + $units_attacker[ID_AIRCRAFT] - $this->die->roll() - $units_defender[ID_AIRCRAFT] - 1;
         if ($air_sup_roll > 0 && $units_attacker[ID_AIRCRAFT] > 0) {
             $air_superiority = 1;
         } else if ($air_sup_roll < 0 && $units_defender[ID_AIRCRAFT] > 0) {
@@ -286,25 +288,6 @@ class LogicLandMove extends PhaseLogic {
         return false;
     }
 
-    private function rollTheDie() {
-        if (empty($this->rolls)) {
-
-            // add quota check - if necessary
-            // curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/quota/?ip=CURRENT_IP&format=plain');
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://www.random.org/integers/?num=200&min=1&max=6&col=1&base=10&format=plain&rnd=new');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'phpRandDotOrg ' . '1.1.0' . ' : ' . 'thomas.schagerl@gmx.net');
-            $rolls = curl_exec($ch);
-            curl_close($ch);
-            $this->rolls = explode("\n", $rolls);
-            array_pop($this->rolls);
-        }
-        return array_pop($this->rolls);
-    }
-
     private function hasUnits(array $units) {
         foreach ($units as $count) {
             if ($count > 0) {
@@ -318,7 +301,7 @@ class LogicLandMove extends PhaseLogic {
         if ($unit_count < 1) {
             return false;
         }
-        $roll = $this->rollTheDie() - (($air_superiority) ? 1 : 0);
+        $roll = $this->die->roll() - (($air_superiority) ? 1 : 0);
         if ($roll <= $unit_count) {
             return true;
         }
