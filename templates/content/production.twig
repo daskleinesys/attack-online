@@ -24,10 +24,10 @@
         {# SHOW CURRENT PRODUCTION MOVES #}
         {% for move in moves %}
             <tr>
-                <td>{{ move.area }}</td>
-                <td>{{ move.unitName }}</td>
-                <td>{{ move.unitCount }}</td>
-                <td align="right">{{ move.costs }}</td>
+                <td>{{ move.area.number }} {{ move.area.name }}</td>
+                <td>{{ move.units.name }}</td>
+                <td>{{ move.units.count }}</td>
+                <td align="right">{{ move.units.cost }}</td>
                 {% if not turnFixated %}
                     <td class="button">
                         <button type="submit" value="{{ move.id }}" name="delete">
@@ -46,7 +46,7 @@
                 <th align="right">{{ costsSum }}</th>
                 <th></th>
             </tr>
-            <tr></tr>
+            <tr><th colspan ="5"><br></th></tr>
         {% endif %}
 
         {# CREATE NEW PRODUCTION MOVE #}
@@ -54,7 +54,7 @@
             <tr>
                 <td>
                     <label>
-                        <select name="area" size="1">
+                        <select name="id_zarea" size="1">
                             <option value="" disabled selected>Land wählen</option>
                             {% for area in areas %}
                                 <option value="{{ area.id_zarea }}">{{ area.number }} {{ area.name }}</option>
@@ -64,7 +64,7 @@
                 </td>
                 <td>
                     <label>
-                        <select name="unit" size="1">
+                        <select name="id_unit" size="1">
                             <option value="" disabled selected>Einheit wählen</option>
                             {% for unit in units %}
                                 <option value="{{ unit.id }}">{{ unit.name }}</option>

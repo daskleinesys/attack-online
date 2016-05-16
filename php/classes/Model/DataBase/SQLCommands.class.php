@@ -260,8 +260,19 @@ class SQLCommands {
 				WHERE moves.id = :id_move", true);
         self::$DataSource->load_query('get_start_move_for_user', "SELECT moves.id FROM $moves_table AS moves WHERE moves.id_user = :id_user AND id_phase = :id_phase AND round = :round AND deleted = 0 LIMIT 1", true);
 
-        // land moves
+        // in-game moves
         self::$DataSource->load_query('get_land_move', "
+            SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
+                move_areas.id_zarea, move_areas.step,
+                move_units.id_zunit, move_units.numberof,
+                units.id AS id_unit, units.abbreviation, units.name
+            FROM $moves_table AS moves
+            LEFT JOIN $moves_areas_table AS move_areas ON (moves.id = move_areas.id_zmove)
+            LEFT JOIN $moves_units_table AS move_units ON (moves.id = move_units.id_zmove)
+            LEFT JOIN $units_table AS zunits ON (move_units.id_zunit = zunits.id)
+            LEFT JOIN units ON (zunits.id_unit = units.id)
+            WHERE moves.id = :id_move AND moves.id_phase = :id_phase", true);
+        self::$DataSource->load_query('get_production_move', "
             SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
                 move_areas.id_zarea, move_areas.step,
                 move_units.id_zunit, move_units.numberof,
