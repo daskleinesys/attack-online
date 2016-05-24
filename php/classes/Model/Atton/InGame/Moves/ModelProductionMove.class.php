@@ -171,4 +171,23 @@ class ModelProductionMove extends ModelMove {
         return $this->units;
     }
 
+    /**
+     * @throws NullPointerException
+     * @return int total cost of this production move (all units)
+     */
+    public function getCost() {
+        $costsSum = 0;
+        $unit_iter = ModelLandUnit::iterator();
+        while ($unit_iter->hasNext()) {
+            /* @var $unit ModelLandUnit */
+            $unit = $unit_iter->next();
+            $id_unit = (int)$unit->getId();
+            if (!isset($this->units[$id_unit]) || $this->units[$id_unit] <= 0) {
+                continue;
+            }
+            $costsSum += (int)$unit->getPrice() * $this->units[$id_unit];
+        }
+        return $costsSum;
+    }
+
 }

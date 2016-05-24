@@ -9,8 +9,8 @@ use AttOn\Model\Atton\InGame\Moves\ModelProductionMove;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelLandUnit;
 use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Model\User\ModelUser;
+use AttOn\Tools\UserViewHelper;
 use AttOn\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentProduction extends ContentOperation {
@@ -148,47 +148,7 @@ class ContentProduction extends ContentOperation {
     }
 
     private function showCurrentProduction(array &$data) {
-        $viewData = array();
-
-        // money on bank
-        $ingame = ModelIsInGameInfo::getIsInGameInfo(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
-        $viewData['money'] = $ingame->getMoney();
-
-        // money from resources
-        $viewData['countries'] = 0;
-        $viewData['resproduction'] = 0;
-        $combos = array();
-        $combos[RESOURCE_OIL] = 0;
-        $combos[RESOURCE_TRANSPORT] = 0;
-        $combos[RESOURCE_INDUSTRY] = 0;
-        $combos[RESOURCE_MINERALS] = 0;
-        $combos[RESOURCE_POPULATION] = 0;
-        $iter = ModelGameArea::iterator(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
-        while ($iter->hasNext()) {
-            $area = $iter->next();
-            ++$viewData['countries'];
-            $viewData['resproduction'] += $area->getProductivity();
-            ++$combos[$area->getIdResource()];
-        }
-
-        // money from traderoutes
-        $viewData['traderoutes'] = 0;
-        $viewData['trproduction'] = 0;
-
-        // money from combos
-        $combo_count = $combos[RESOURCE_OIL];
-        foreach ($combos as $res_count) {
-            if ($res_count < $combo_count) {
-                $combo_count = $res_count;
-            }
-        }
-        $viewData['combos'] = $combo_count;
-        $viewData['comboproduction'] = $combo_count * 4;
-
-        // sum
-        $viewData['sum'] = $viewData['money'] + $viewData['resproduction'] + $viewData['trproduction'] + $viewData['comboproduction'];
-
-        $data['production'] = $viewData;
+        $data['production'] = UserViewHelper::getCurrentProductionForUserInGame(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
     }
 
     private function showNewMove(array &$data) {

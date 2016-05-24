@@ -5,7 +5,9 @@ use AttOn\Controller\Interfaces\PhaseController;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\Moves\ModelProductionMove;
+use AttOn\Model\Atton\ModelLandUnit;
 use AttOn\Model\Game\ModelGame;
+use AttOn\Tools\UserViewHelper;
 
 class ProductionController extends PhaseController {
 
@@ -102,8 +104,39 @@ class ProductionController extends PhaseController {
         return;
     }
 
-    private function validateNewProductionMove($round, $id_zarea, $units) {
-        // TODO : implement
+    private function validateNewProductionMove($round, $id_zarea, array $units) {
+        // 1. check if zarea belongs to user
+        $gameArea = ModelGameArea::getGameArea($this->id_game, $id_zarea);
+        if ($this->id_user !== $gameArea->getIdUser()) {
+            throw new ControllerException('Unable to create production move. Area doesn\'t belong to the current user.');
+        }
+
+        // 2. check if user has enough res left
+        // 2.a check cost of previous productions
+        $current_costs = 0;
+        $moves = ModelProductionMove::iterator($this->id_user, $this->id_game, $round);
+        while ($moves->hasNext()) {
+            /* @var $move ModelProductionMove */
+            $move = $moves->next();
+            $current_costs += $move->getCost();
+        }
+        // 2.b get available res
+        $current_production = UserViewHelper::getCurrentProductionForUserInGame($this->id_user, $this->id_game);
+        // 2.c get cost of new move
+        $new_cost = 0;
+        $unit_iter = ModelLandUnit::iterator();
+        while ($unit_iter->hasNext()) {
+            /* @var $unit ModelLandUnit */
+            $unit = $unit_iter->next();
+            $id_unit = (int)$unit->getId();
+            if (!isset($units[$id_unit]) || $units[$id_unit] <= 0) {
+                continue;
+            }
+            $new_cost += (int)$unit->getPrice() * $units[$id_unit];
+        }
+        if ($current_production['sum'] - $current_costs < $new_cost) {
+            throw new ControllerException('Insufficient funds!');
+        }
     }
 
 }
