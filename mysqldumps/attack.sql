@@ -1,12 +1,20 @@
--- Attack Online SQL Dump
--- Jan 18, 2016
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+-- phpMyAdmin SQL Dump
+-- version 4.5.2
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: May 24, 2016 at 03:39 PM
+-- Server version: 10.1.9-MariaDB
+-- PHP Version: 7.0.1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `atton`
@@ -18,12 +26,11 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `a2a`
 --
 
-CREATE TABLE IF NOT EXISTS `a2a` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `a2a` (
+  `id` int(11) NOT NULL,
   `id_area1` int(11) NOT NULL,
-  `id_area2` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=816 ;
+  `id_area2` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `a2a`
@@ -845,8 +852,8 @@ INSERT INTO `a2a` (`id`, `id_area1`, `id_area2`) VALUES
 -- Table structure for table `areas`
 --
 
-CREATE TABLE IF NOT EXISTS `areas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `areas` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL DEFAULT 'unnamed',
   `number` int(11) NOT NULL,
   `coords_small` varchar(400) NOT NULL,
@@ -861,10 +868,8 @@ CREATE TABLE IF NOT EXISTS `areas` (
   `tanksize` int(11) NOT NULL DEFAULT '0',
   `id_type` int(11) NOT NULL,
   `zone` int(11) NOT NULL DEFAULT '0',
-  `economy` enum('poor','weak','normal','strong','none') NOT NULL DEFAULT 'none',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `number` (`number`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=144 ;
+  `economy` enum('poor','weak','normal','strong','none') NOT NULL DEFAULT 'none'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `areas`
@@ -1021,12 +1026,11 @@ INSERT INTO `areas` (`id`, `name`, `number`, `coords_small`, `x`, `y`, `x2`, `y2
 -- Table structure for table `colors`
 --
 
-CREATE TABLE IF NOT EXISTS `colors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `colors` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
-  `color` varchar(40) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+  `color` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `colors`
@@ -1046,14 +1050,13 @@ INSERT INTO `colors` (`id`, `name`, `color`) VALUES
 -- Table structure for table `dice`
 --
 
-CREATE TABLE IF NOT EXISTS `dice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `dice` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `abbr` varchar(40) NOT NULL,
   `effect` text,
-  `id_type` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+  `id_type` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `dice`
@@ -1072,8 +1075,8 @@ INSERT INTO `dice` (`id`, `name`, `abbr`, `effect`, `id_type`) VALUES
 -- Table structure for table `games`
 --
 
-CREATE TABLE IF NOT EXISTS `games` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `games` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `id_game_mode` int(40) NOT NULL,
   `players` int(11) NOT NULL,
@@ -1082,18 +1085,8 @@ CREATE TABLE IF NOT EXISTS `games` (
   `status` enum('new','started','running','done') NOT NULL DEFAULT 'new',
   `id_phase` int(11) NOT NULL DEFAULT '21',
   `round` int(11) NOT NULL DEFAULT '0',
-  `processing` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=49 ;
-
---
--- Dumping data for table `games`
---
-
-INSERT INTO `games` (`id`, `name`, `id_game_mode`, `players`, `id_creator`, `password`, `status`, `id_phase`, `round`, `processing`) VALUES
-(39, 'FirstAttonGameEver', 2, 6, 14, NULL, 'running', 5, 5, 0),
-(45, 'bentom', 2, 2, 14, NULL, 'done', 1, 1, 0);
+  `processing` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1101,14 +1094,13 @@ INSERT INTO `games` (`id`, `name`, `id_game_mode`, `players`, `id_creator`, `pas
 -- Table structure for table `game_modes`
 --
 
-CREATE TABLE IF NOT EXISTS `game_modes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `game_modes` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `abbreviation` varchar(40) NOT NULL,
   `description` text NOT NULL,
-  `phases` varchar(40) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  `phases` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `game_modes`
@@ -1125,14 +1117,13 @@ INSERT INTO `game_modes` (`id`, `name`, `abbreviation`, `description`, `phases`)
 -- Table structure for table `has_dice`
 --
 
-CREATE TABLE IF NOT EXISTS `has_dice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `has_dice` (
+  `id` int(11) NOT NULL,
   `id_unit` int(11) NOT NULL,
   `id_die` int(11) NOT NULL,
   `numberof` int(11) DEFAULT NULL,
-  `id_unit_against` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+  `id_unit_against` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `has_dice`
@@ -1162,14 +1153,13 @@ INSERT INTO `has_dice` (`id`, `id_unit`, `id_die`, `numberof`, `id_unit_against`
 -- Table structure for table `has_hits`
 --
 
-CREATE TABLE IF NOT EXISTS `has_hits` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `has_hits` (
+  `id` int(11) NOT NULL,
   `id_die` int(11) NOT NULL,
   `id_hit` int(11) DEFAULT NULL,
   `id_unit` int(11) DEFAULT NULL,
-  `numberof` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+  `numberof` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `has_hits`
@@ -1204,15 +1194,14 @@ INSERT INTO `has_hits` (`id`, `id_die`, `id_hit`, `id_unit`, `numberof`) VALUES
 -- Table structure for table `has_units`
 --
 
-CREATE TABLE IF NOT EXISTS `has_units` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `has_units` (
+  `id` int(11) NOT NULL,
   `id_ressource` int(11) NOT NULL,
   `productivity` int(11) NOT NULL,
   `id_unit` int(11) NOT NULL,
   `numberof` int(11) NOT NULL,
-  `type` enum('losses','strength') NOT NULL DEFAULT 'strength',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=73 ;
+  `type` enum('losses','strength') NOT NULL DEFAULT 'strength'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `has_units`
@@ -1298,13 +1287,12 @@ INSERT INTO `has_units` (`id`, `id_ressource`, `productivity`, `id_unit`, `numbe
 -- Table structure for table `hits`
 --
 
-CREATE TABLE IF NOT EXISTS `hits` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `hits` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `abbr` varchar(40) NOT NULL,
-  `dmg` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `dmg` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `hits`
@@ -1322,53 +1310,14 @@ INSERT INTO `hits` (`id`, `name`, `abbr`, `dmg`) VALUES
 -- Table structure for table `in_game_phase_info`
 --
 
-CREATE TABLE IF NOT EXISTS `in_game_phase_info` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `in_game_phase_info` (
+  `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_game` int(11) NOT NULL,
   `id_phase` int(11) NOT NULL,
   `notif_rule` tinyint(4) NOT NULL,
-  `is_ready` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=145 ;
-
---
--- Dumping data for table `in_game_phase_info`
---
-
-INSERT INTO `in_game_phase_info` (`id`, `id_user`, `id_game`, `id_phase`, `notif_rule`, `is_ready`) VALUES
-(1, 14, 0, 1, 1, 0),
-(2, 14, 0, 2, 1, 0),
-(3, 14, 0, 3, 1, 0),
-(4, 14, 0, 4, 1, 0),
-(5, 14, 0, 5, 1, 0),
-(6, 14, 0, 21, 1, 0),
-(7, 14, 0, 22, 1, 0),
-(8, 14, 0, 23, 1, 0),
-(9, 14, 39, 1, 1, 0),
-(10, 14, 39, 2, 1, 0),
-(11, 14, 39, 3, 1, 0),
-(12, 14, 39, 4, 1, 0),
-(13, 14, 39, 5, 1, 0),
-(14, 14, 39, 21, 1, 0),
-(15, 14, 39, 22, 1, 0),
-(16, 14, 39, 23, 1, 0),
-(17, 14, 45, 1, 1, 0),
-(18, 14, 45, 2, 1, 0),
-(19, 14, 45, 3, 1, 0),
-(20, 14, 45, 4, 1, 0),
-(21, 14, 45, 5, 1, 0),
-(22, 14, 45, 21, 1, 0),
-(23, 14, 45, 22, 1, 0),
-(24, 14, 45, 23, 1, 0),
-(25, 3, 0, 1, 1, 0),
-(26, 3, 0, 2, 1, 0),
-(27, 3, 0, 3, 1, 0),
-(28, 3, 0, 4, 1, 0),
-(29, 3, 0, 5, 1, 0),
-(30, 3, 0, 21, 1, 0),
-(31, 3, 0, 22, 1, 0),
-(32, 3, 0, 23, 1, 0);
+  `is_ready` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1376,29 +1325,14 @@ INSERT INTO `in_game_phase_info` (`id`, `id_user`, `id_game`, `id_phase`, `notif
 -- Table structure for table `is_in_game`
 --
 
-CREATE TABLE IF NOT EXISTS `is_in_game` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `is_in_game` (
+  `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_game` int(11) NOT NULL,
   `id_color` int(11) DEFAULT NULL,
   `money` int(11) NOT NULL DEFAULT '0',
-  `id_set` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=115 ;
-
---
--- Dumping data for table `is_in_game`
---
-
-INSERT INTO `is_in_game` (`id`, `id_user`, `id_game`, `id_color`, `money`, `id_set`) VALUES
-(90, 14, 39, 1, 0, 12),
-(91, 15, 39, 3, 0, 7),
-(93, 30, 39, 5, 2, 9),
-(95, 31, 39, 2, 0, 10),
-(96, 32, 39, 4, 1, 11),
-(97, 33, 39, 6, 39, 8),
-(109, 14, 45, 1, 0, 1),
-(110, 32, 45, 3, 0, 4);
+  `id_set` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1406,21 +1340,20 @@ INSERT INTO `is_in_game` (`id`, `id_user`, `id_game`, `id_color`, `money`, `id_s
 -- Table structure for table `move_errors`
 --
 
-CREATE TABLE IF NOT EXISTS `move_errors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `move_errors` (
+  `id` int(11) NOT NULL,
   `reason` varchar(40) NOT NULL,
-  `explanation` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+  `explanation` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `move_errors`
 --
 
 INSERT INTO `move_errors` (`id`, `reason`, `explanation`) VALUES
+(1, 'default', 'Es wurde kein Grund angegeben.'),
 (2, 'too much out', 'Es haben sich mehr Einheiten aus dem Feld bewegt als sich darin befanden.'),
 (3, 'no in empty', 'Es haben sich alle Einheiten aus dem Feld bewegt, jedoch keine hinein.'),
-(1, 'default', 'Es wurde kein Grund angegeben.'),
 (4, 'too much attacks', 'Sie haben die maximale Anzahl an Angriffen &uuml;berschritten.'),
 (5, 'wrong area type', 'Das Zielfeld hatte nicht den richtigen Typ. (zB. Landzug aber kein Landfeld)'),
 (6, 'not enough speed', 'Ihre Einheiten hatten nicht genug Reichweite f&uuml;r den eingegebenen Zug.'),
@@ -1435,12 +1368,11 @@ INSERT INTO `move_errors` (`id`, `reason`, `explanation`) VALUES
 -- Table structure for table `optiontypes`
 --
 
-CREATE TABLE IF NOT EXISTS `optiontypes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `optiontypes` (
+  `id` int(11) NOT NULL,
   `units` int(11) NOT NULL,
-  `countries` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+  `countries` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `optiontypes`
@@ -1460,13 +1392,12 @@ INSERT INTO `optiontypes` (`id`, `units`, `countries`) VALUES
 -- Table structure for table `phases`
 --
 
-CREATE TABLE IF NOT EXISTS `phases` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `phases` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `label` varchar(40) NOT NULL,
-  `id_type` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+  `id_type` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `phases`
@@ -1488,13 +1419,12 @@ INSERT INTO `phases` (`id`, `name`, `label`, `id_type`) VALUES
 -- Table structure for table `resources`
 --
 
-CREATE TABLE IF NOT EXISTS `resources` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `resources` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `label` varchar(40) NOT NULL,
-  `id_type` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+  `id_type` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `resources`
@@ -1513,14 +1443,13 @@ INSERT INTO `resources` (`id`, `name`, `label`, `id_type`) VALUES
 -- Table structure for table `resource_allocation`
 --
 
-CREATE TABLE IF NOT EXISTS `resource_allocation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `resource_allocation` (
+  `id` int(11) NOT NULL,
   `id_resource` int(11) NOT NULL DEFAULT '1',
   `res_power` smallint(6) NOT NULL DEFAULT '1',
   `economy` enum('poor','weak','normal','strong','none') NOT NULL DEFAULT 'poor',
-  `count` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+  `count` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `resource_allocation`
@@ -1558,14 +1487,13 @@ INSERT INTO `resource_allocation` (`id`, `id_resource`, `res_power`, `economy`, 
 -- Table structure for table `startregions`
 --
 
-CREATE TABLE IF NOT EXISTS `startregions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `startregions` (
+  `id` int(11) NOT NULL,
   `id_area` int(11) NOT NULL,
   `id_optiontype` int(11) NOT NULL,
   `id_set` int(11) NOT NULL,
-  `options` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=119 ;
+  `options` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `startregions`
@@ -1697,12 +1625,11 @@ INSERT INTO `startregions` (`id`, `id_area`, `id_optiontype`, `id_set`, `options
 -- Table structure for table `startsets`
 --
 
-CREATE TABLE IF NOT EXISTS `startsets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `startsets` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) DEFAULT NULL,
-  `players` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+  `players` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `startsets`
@@ -1728,13 +1655,12 @@ INSERT INTO `startsets` (`id`, `name`, `players`) VALUES
 -- Table structure for table `startships`
 --
 
-CREATE TABLE IF NOT EXISTS `startships` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `startships` (
+  `id` int(11) NOT NULL,
   `id_unit` int(11) NOT NULL,
   `numberof` int(11) NOT NULL,
-  `players` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+  `players` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `startships`
@@ -1756,17 +1682,11 @@ INSERT INTO `startships` (`id`, `id_unit`, `numberof`, `players`) VALUES
 -- Table structure for table `techs`
 --
 
-CREATE TABLE IF NOT EXISTS `techs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `techs` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
-  `effect` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `techs`
---
-
+  `effect` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1774,13 +1694,12 @@ CREATE TABLE IF NOT EXISTS `techs` (
 -- Table structure for table `traderoutes`
 --
 
-CREATE TABLE IF NOT EXISTS `traderoutes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `traderoutes` (
+  `id` int(11) NOT NULL,
   `size` int(11) NOT NULL,
   `id_area1` int(11) NOT NULL,
-  `id_area2` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3679 ;
+  `id_area2` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `traderoutes`
@@ -5473,14 +5392,12 @@ INSERT INTO `traderoutes` (`id`, `size`, `id_area1`, `id_area2`) VALUES
 -- Table structure for table `traderoutes_production`
 --
 
-CREATE TABLE IF NOT EXISTS `traderoutes_production` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `traderoutes_production` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) DEFAULT '0',
   `value` int(11) NOT NULL,
-  `production` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `value` (`value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+  `production` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `traderoutes_production`
@@ -5512,11 +5429,10 @@ INSERT INTO `traderoutes_production` (`id`, `name`, `value`, `production`) VALUE
 -- Table structure for table `types`
 --
 
-CREATE TABLE IF NOT EXISTS `types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(40) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+CREATE TABLE `types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `types`
@@ -5525,7 +5441,7 @@ CREATE TABLE IF NOT EXISTS `types` (
 INSERT INTO `types` (`id`, `name`) VALUES
 (1, 'land'),
 (2, 'sea'),
-(3, 'landnsea');
+(3, 'air');
 
 -- --------------------------------------------------------
 
@@ -5533,10 +5449,10 @@ INSERT INTO `types` (`id`, `name`) VALUES
 -- Table structure for table `units`
 --
 
-CREATE TABLE IF NOT EXISTS `units` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `units` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
-  `abbr` varchar(40) DEFAULT NULL,
+  `abbreviation` varchar(40) DEFAULT NULL,
   `price` int(11) NOT NULL,
   `tanksize` int(11) DEFAULT NULL,
   `hitpoints` int(11) NOT NULL DEFAULT '1',
@@ -5544,23 +5460,22 @@ CREATE TABLE IF NOT EXISTS `units` (
   `special` text,
   `killing_sequence` varchar(40) DEFAULT NULL,
   `bonus_kills` varchar(40) DEFAULT NULL,
-  `kill_sequ_offset` int(11) DEFAULT NULL,
+  `kill_sequence_offset` int(11) DEFAULT NULL,
   `hitchance` int(11) NOT NULL,
   `hitbonus` int(11) NOT NULL,
   `ship_takeover` int(11) NOT NULL,
-  `id_type` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+  `id_type` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `units`
 --
 
-INSERT INTO `units` (`id`, `name`, `abbr`, `price`, `tanksize`, `hitpoints`, `speed`, `special`, `killing_sequence`, `bonus_kills`, `kill_sequ_offset`, `hitchance`, `hitbonus`, `ship_takeover`, `id_type`) VALUES
+INSERT INTO `units` (`id`, `name`, `abbreviation`, `price`, `tanksize`, `hitpoints`, `speed`, `special`, `killing_sequence`, `bonus_kills`, `kill_sequence_offset`, `hitchance`, `hitbonus`, `ship_takeover`, `id_type`) VALUES
 (1, 'Infanterie', 'Inf', 2, NULL, 1, 1, NULL, '1:3:2:4', NULL, NULL, 16, 10, 10, 1),
 (2, 'Artillerie', 'Art', 3, NULL, 1, 1, NULL, '1:3:2:4', '1', NULL, 16, 10, 0, 1),
 (3, 'Panzer', 'Pan', 4, NULL, 1, 2, 'kann nur eigene L&auml;nder &uuml;berqueren', '1:3:2:4', NULL, 1, 16, 20, 5, 1),
-(4, 'Flieger', 'Flug', 5, NULL, 1, 2, 'kann eigene und neutrale See- und Landfelder &uuml;berqueren. Feindliche Seefelder k&ouml;nnen &uuml;berquert werden, wenn keine kampff&auml;higen Flugzeugtr&auml;ger oder Schlachtschiffe vorhanden sind', '4:3:2:1', NULL, NULL, 33, 10, 3, 1),
+(4, 'Flieger', 'Flug', 5, NULL, 1, 2, 'kann eigene und neutrale See- und Landfelder &uuml;berqueren. Feindliche Seefelder k&ouml;nnen &uuml;berquert werden, wenn keine kampff&auml;higen Flugzeugtr&auml;ger oder Schlachtschiffe vorhanden sind', '4:3:2:1', NULL, NULL, 33, 10, 3, 3),
 (5, 'U-Boot(e)', NULL, 3, 4, 2, 1, NULL, NULL, NULL, NULL, 0, 0, 0, 2),
 (6, 'Zerst&ouml;rer', NULL, 3, 3, 2, 1, NULL, NULL, NULL, NULL, 0, 0, 0, 2),
 (7, 'Schlachtschiff(e)', NULL, 5, 7, 4, 1, NULL, NULL, NULL, NULL, 0, 0, 0, 2),
@@ -5572,8 +5487,8 @@ INSERT INTO `units` (`id`, `name`, `abbr`, `price`, `tanksize`, `hitpoints`, `sp
 -- Table structure for table `user`
 --
 
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(40) NOT NULL,
   `lastname` varchar(40) NOT NULL,
   `login` varchar(40) NOT NULL,
@@ -5581,24 +5496,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(40) NOT NULL,
   `status` enum('inactive','active','moderator','admin','deleted') NOT NULL DEFAULT 'inactive',
   `verify` varchar(40) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `login_UNIQUE` (`login`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=36 ;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `name`, `lastname`, `login`, `password`, `email`, `status`, `verify`) VALUES
-(3, 'Thomas', 'Schagerl', 'daskleinesys', 'b43da39bb4307fe8263649106343eb3ca87b6c2d', 'thomas.schagerl@gmx.net', 'admin', NULL),
-(14, 'Thomas', 'Schagerl', 'tommel', 'a3308aef7ef9423cfe8dba674f5d3e6e08346db6', 'thomas.schagerl@gmx.net', 'moderator', NULL),
-(15, 'hrym', 'hrym', 'hrym', '88098463a351f6a85bbb89acbb2ab5121447d2c1', 'nemecek@gmx.net', 'active', NULL),
-(30, 'Jack', 'Silver', 'Sunny', 'fb8b100bab666ce62522a1d23ae35b14bca9b92c', 'informatics@gmx.net', 'active', '0a158aa7deb5ba43a94e3dc5fca57e3c860b5642'),
-(31, 'Georg', 'Lang', 'NumberOne', 'c899326fbf877e8b69b46c1ca64467b2dd87518b', 'gela1@langundco.at', 'active', 'd41efb43abacd9b0d85034bac761f97671b72c40'),
-(32, 'Ben', 'Wenzel', 'Thrias', 'afe5fd4ff1a85caa390fd9f36005c6f785b58cb4', 'siegfried16@gmx.at', 'active', '91f4f112d7e67385106be5444b042c48c19d45d2'),
-(33, 'lukas', 'geyrhofer', 'lukas', 'a9fd7405d731bfc39819a458af34c930cb9abe67', 'lukas.geyrhofer@gmx.at', 'active', 'deb162b01c1b7929b66a5ce2aa4ef77ebd371d88'),
-(34, 'Manuela', 'Steininger', 'Manu', '957f3694f92a4d026e3983215766941e841295bd', 'manuela.steininger@gmx.at', 'active', '713d4a12fcde45c33b1a097704ecfb73b659e5cb'),
-(35, 'tom', 'schagerl', 'testererkerl', 'f77dee183038c6e715f7f48300e0840e0e25cacc', 'thomas.schagerl@gmx.net', 'deleted', 'dc6b3ae8e99b3e69192d9f942ab979c951c26847');
+  `token` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5606,20 +5505,14 @@ INSERT INTO `user` (`id`, `name`, `lastname`, `login`, `password`, `email`, `sta
 -- Table structure for table `z_areas`
 --
 
-CREATE TABLE IF NOT EXISTS `z_areas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_areas` (
+  `id` int(11) NOT NULL,
   `tank` int(11) NOT NULL DEFAULT '0',
   `id_user` int(11) NOT NULL DEFAULT '-1',
   `id_area` int(11) NOT NULL,
   `id_resource` int(11) NOT NULL DEFAULT '0',
-  `productivity` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_areas`
---
-
+  `productivity` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5627,18 +5520,12 @@ CREATE TABLE IF NOT EXISTS `z_areas` (
 -- Table structure for table `z_battle_reports`
 --
 
-CREATE TABLE IF NOT EXISTS `z_battle_reports` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_battle_reports` (
+  `id` int(11) NOT NULL,
   `id_winner` int(11) DEFAULT NULL,
   `round` int(11) NOT NULL,
-  `id_phase` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_battle_reports`
---
-
+  `id_phase` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5646,21 +5533,15 @@ CREATE TABLE IF NOT EXISTS `z_battle_reports` (
 -- Table structure for table `z_battle_reports_units`
 --
 
-CREATE TABLE IF NOT EXISTS `z_battle_reports_units` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_battle_reports_units` (
+  `id` int(11) NOT NULL,
   `id_battle` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `battle_round` int(11) NOT NULL,
   `type` enum('start','heal','loss','end') NOT NULL DEFAULT 'start',
   `id_unit` int(11) NOT NULL,
-  `numberof` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_battle_reports_units`
---
-
+  `numberof` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5668,20 +5549,14 @@ CREATE TABLE IF NOT EXISTS `z_battle_reports_units` (
 -- Table structure for table `z_battle_reports_user`
 --
 
-CREATE TABLE IF NOT EXISTS `z_battle_reports_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_battle_reports_user` (
+  `id` int(11) NOT NULL,
   `id_battle` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_targetarea` int(11) DEFAULT NULL,
   `id_finalarea` int(11) DEFAULT NULL,
-  `show` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_battle_reports_user`
---
-
+  `show` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5689,58 +5564,40 @@ CREATE TABLE IF NOT EXISTS `z_battle_reports_user` (
 -- Table structure for table `z_moves`
 --
 
-CREATE TABLE IF NOT EXISTS `z_moves` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_moves` (
+  `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_phase` int(11) NOT NULL,
   `round` int(11) NOT NULL DEFAULT '0',
-  `status` enum('correct','illegal') NOT NULL,
-  `id_move_error` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_moves`
---
-
+  `deleted` tinyint(4) NOT NULL DEFAULT '0',
+  `id_move_error` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `z_route`
+-- Table structure for table `z_moves_areas`
 --
 
-CREATE TABLE IF NOT EXISTS `z_route` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_moves_areas` (
+  `id` int(11) NOT NULL,
   `id_zmove` int(11) NOT NULL,
   `id_zarea` int(11) NOT NULL,
-  `id_zsea` int(11) DEFAULT NULL,
-  `steps` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_route`
---
-
+  `step` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `z_sees`
+-- Table structure for table `z_moves_units`
 --
 
-CREATE TABLE IF NOT EXISTS `z_sees` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_user` int(11) NOT NULL,
-  `id_zarea` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_sees`
---
-
+CREATE TABLE `z_moves_units` (
+  `id` int(11) NOT NULL,
+  `id_zunit` int(11) DEFAULT NULL,
+  `id_zmove` int(11) NOT NULL,
+  `numberof` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5748,17 +5605,11 @@ CREATE TABLE IF NOT EXISTS `z_sees` (
 -- Table structure for table `z_techs`
 --
 
-CREATE TABLE IF NOT EXISTS `z_techs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_techs` (
+  `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `id_techs` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_techs`
---
-
+  `id_techs` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5766,21 +5617,15 @@ CREATE TABLE IF NOT EXISTS `z_techs` (
 -- Table structure for table `z_traderoutes`
 --
 
-CREATE TABLE IF NOT EXISTS `z_traderoutes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_traderoutes` (
+  `id` int(11) NOT NULL,
   `name` varchar(40) DEFAULT NULL,
   `id_traderoute1` int(11) NOT NULL,
   `id_traderoute2` int(11) NOT NULL DEFAULT '0',
   `value` int(11) NOT NULL DEFAULT '0',
   `max_value` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `z_traderoutes`
---
-
+  `id_user` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5788,8 +5633,8 @@ CREATE TABLE IF NOT EXISTS `z_traderoutes` (
 -- Table structure for table `z_units`
 --
 
-CREATE TABLE IF NOT EXISTS `z_units` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `z_units` (
+  `id` int(11) NOT NULL,
   `tank` int(11) DEFAULT NULL,
   `hitpoints` int(11) DEFAULT NULL,
   `name` varchar(40) DEFAULT NULL,
@@ -5799,33 +5644,417 @@ CREATE TABLE IF NOT EXISTS `z_units` (
   `id_user` int(11) NOT NULL,
   `id_zarea` int(11) DEFAULT NULL,
   `id_zsea` int(11) DEFAULT NULL,
-  `id_type` int(11) NOT NULL,
-  `id_unit` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `id_unit` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `z_units`
+-- Indexes for dumped tables
 --
 
-
--- --------------------------------------------------------
+--
+-- Indexes for table `a2a`
+--
+ALTER TABLE `a2a`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Table structure for table `z_unit_moves`
+-- Indexes for table `areas`
 --
-
-CREATE TABLE IF NOT EXISTS `z_unit_moves` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_zunit` int(11) DEFAULT NULL,
-  `id_unit` int(11) DEFAULT NULL,
-  `id_zmove` int(11) NOT NULL,
-  `numberof` int(11) DEFAULT NULL,
-  `name` varchar(40) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+ALTER TABLE `areas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `number` (`number`);
 
 --
--- Dumping data for table `z_unit_moves`
+-- Indexes for table `colors`
+--
+ALTER TABLE `colors`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `dice`
+--
+ALTER TABLE `dice`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `games`
+--
+ALTER TABLE `games`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name_UNIQUE` (`name`);
+
+--
+-- Indexes for table `game_modes`
+--
+ALTER TABLE `game_modes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `has_dice`
+--
+ALTER TABLE `has_dice`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `has_hits`
+--
+ALTER TABLE `has_hits`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `has_units`
+--
+ALTER TABLE `has_units`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `hits`
+--
+ALTER TABLE `hits`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `in_game_phase_info`
+--
+ALTER TABLE `in_game_phase_info`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `is_in_game`
+--
+ALTER TABLE `is_in_game`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `move_errors`
+--
+ALTER TABLE `move_errors`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `optiontypes`
+--
+ALTER TABLE `optiontypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `phases`
+--
+ALTER TABLE `phases`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `resources`
+--
+ALTER TABLE `resources`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `resource_allocation`
+--
+ALTER TABLE `resource_allocation`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `startregions`
+--
+ALTER TABLE `startregions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `startsets`
+--
+ALTER TABLE `startsets`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `startships`
+--
+ALTER TABLE `startships`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `techs`
+--
+ALTER TABLE `techs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `traderoutes`
+--
+ALTER TABLE `traderoutes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `traderoutes_production`
+--
+ALTER TABLE `traderoutes_production`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `value` (`value`);
+
+--
+-- Indexes for table `types`
+--
+ALTER TABLE `types`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `units`
+--
+ALTER TABLE `units`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `login_UNIQUE` (`login`);
+
+--
+-- Indexes for table `z_areas`
+--
+ALTER TABLE `z_areas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_battle_reports`
+--
+ALTER TABLE `z_battle_reports`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_battle_reports_units`
+--
+ALTER TABLE `z_battle_reports_units`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_battle_reports_user`
+--
+ALTER TABLE `z_battle_reports_user`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_moves`
+--
+ALTER TABLE `z_moves`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_moves_areas`
+--
+ALTER TABLE `z_moves_areas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_moves_units`
+--
+ALTER TABLE `z_moves_units`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_techs`
+--
+ALTER TABLE `z_techs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_traderoutes`
+--
+ALTER TABLE `z_traderoutes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `z_units`
+--
+ALTER TABLE `z_units`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
 --
 
+--
+-- AUTO_INCREMENT for table `a2a`
+--
+ALTER TABLE `a2a`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=816;
+--
+-- AUTO_INCREMENT for table `areas`
+--
+ALTER TABLE `areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+--
+-- AUTO_INCREMENT for table `colors`
+--
+ALTER TABLE `colors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `dice`
+--
+ALTER TABLE `dice`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `games`
+--
+ALTER TABLE `games`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+--
+-- AUTO_INCREMENT for table `game_modes`
+--
+ALTER TABLE `game_modes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `has_dice`
+--
+ALTER TABLE `has_dice`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+--
+-- AUTO_INCREMENT for table `has_hits`
+--
+ALTER TABLE `has_hits`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+--
+-- AUTO_INCREMENT for table `has_units`
+--
+ALTER TABLE `has_units`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+--
+-- AUTO_INCREMENT for table `hits`
+--
+ALTER TABLE `hits`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `in_game_phase_info`
+--
+ALTER TABLE `in_game_phase_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+--
+-- AUTO_INCREMENT for table `is_in_game`
+--
+ALTER TABLE `is_in_game`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+--
+-- AUTO_INCREMENT for table `move_errors`
+--
+ALTER TABLE `move_errors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `optiontypes`
+--
+ALTER TABLE `optiontypes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `phases`
+--
+ALTER TABLE `phases`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+--
+-- AUTO_INCREMENT for table `resources`
+--
+ALTER TABLE `resources`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `resource_allocation`
+--
+ALTER TABLE `resource_allocation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+--
+-- AUTO_INCREMENT for table `startregions`
+--
+ALTER TABLE `startregions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+--
+-- AUTO_INCREMENT for table `startsets`
+--
+ALTER TABLE `startsets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT for table `startships`
+--
+ALTER TABLE `startships`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `techs`
+--
+ALTER TABLE `techs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `traderoutes`
+--
+ALTER TABLE `traderoutes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3679;
+--
+-- AUTO_INCREMENT for table `traderoutes_production`
+--
+ALTER TABLE `traderoutes_production`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+--
+-- AUTO_INCREMENT for table `types`
+--
+ALTER TABLE `types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `units`
+--
+ALTER TABLE `units`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+--
+-- AUTO_INCREMENT for table `z_areas`
+--
+ALTER TABLE `z_areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_battle_reports`
+--
+ALTER TABLE `z_battle_reports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_battle_reports_units`
+--
+ALTER TABLE `z_battle_reports_units`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_battle_reports_user`
+--
+ALTER TABLE `z_battle_reports_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_moves`
+--
+ALTER TABLE `z_moves`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_moves_areas`
+--
+ALTER TABLE `z_moves_areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_moves_units`
+--
+ALTER TABLE `z_moves_units`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_techs`
+--
+ALTER TABLE `z_techs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_traderoutes`
+--
+ALTER TABLE `z_traderoutes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `z_units`
+--
+ALTER TABLE `z_units`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -8,6 +8,9 @@ dist/css/*
 node_modules/*
 node_modules
 
+# LOCAL DB DATA
+mysqldumps/local*
+
 # LOCAL CONFIGURATION
 php/defines/local_configuration.php
 
