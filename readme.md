@@ -6,8 +6,8 @@
 ## Setup
 
 1. get sources from github (https://github.com/daskleinesys/atton)
-2. create database + user
-3. create tables in database (use dump in **mysqldumps/create.sql**)
+2. make composer update -> `php composer.phar update`
+3. build dist assets -> `npm install && grunt`
 4. create **php/defines/local_configuration.php** from **php/defines/local_configuration_sample.php**
-5. build dist assets with `grunt`
+5. setup webserver and database from **mysqldumps/attack.sql** OR use docker for local setup, therefore take a look at `docker-setup.sh`
 6. have fun :-)

@@ -14,6 +14,10 @@ docker build -t attack .
 
 # start new docker-container using the php-server docker-image just created
 docker run --name attack --link attack-db:mysql -d -p 80:80 \
+-v $(pwd)/dist:/var/www/html/dist \
+-v $(pwd)/php:/var/www/html/php \
+-v $(pwd)/templates:/var/www/html/templates \
+-v $(pwd)/vendor:/var/www/html/vendor \
 -v $(pwd)/.htaccess:/var/www/html/.htaccess \
 -v $(pwd)/favicon.ico:/var/www/html/favicon.ico \
 -v $(pwd)/index.php:/var/www/html/index.php \
