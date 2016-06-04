@@ -18,7 +18,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'a
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'defines.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'gamevars.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'local_configuration.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'configuration.php';
 
 // INIT ERROR-HANDLING && LOGGING
 global $log4php_config;

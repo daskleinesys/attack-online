@@ -1,11 +1,18 @@
 # BUILT FILES
-/dist/js
-/dist/css
 /.sass-cache
 /node_modules
 
-# LOCAL DB DATA
-mysqldumps/local*
+# SRC FILES
+/src
+/mysqldumps
+/.ebignore
+/.gitignore
+/bower.json
+/composer.*
+/docker-setup.sh
+/Dockerfile
+/Gruntfile.js
+/package.json
 
 # LOCAL CONFIGURATION
 php/defines/local_configuration.php
