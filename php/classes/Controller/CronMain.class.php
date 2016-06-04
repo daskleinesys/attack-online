@@ -90,7 +90,7 @@ class CronMain {
         }
 
         if (!isset($phaseLogic)) {
-            throw new ControllerException('No operation loaded.');
+            throw new ControllerException('missing phase-logic-operation for phase: ' . $game->getIdPhase());
         }
 
         /* @var $phaseLogic PhaseLogic */
