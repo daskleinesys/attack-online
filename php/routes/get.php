@@ -7,8 +7,13 @@ use AttOn\Model\Game\ModelGame;
 use AttOn\Tools\HeaderViewHelper;
 use AttOn\View\Map;
 use Slim\Slim;
+use Logger;
 
 /* @var $app Slim */
+/* @var $debug bool */
+/* @var $logger Logger */
+global $app, $debug, $logger;
+
 $app->get('/', function() use ($app, $debug) {
     $data = array();
     HeaderViewHelper::parseCurrentUser($data);
@@ -52,27 +57,33 @@ $app->get('/map/', function() use($app, $debug) {
     $app->render('map.twig', $data);
 });
 
-$app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug) {
+$app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug, $logger) {
     echo '<pre>';
     if (empty($id_game)) {
         $id_game = null;
+        $logger->debug('running cron-calculation for all applicable games');
     } else if ($id_game !== null) {
         $id_game = (int) $id_game;
+        $logger->debug('running cron-calculation for single game: ' . $id_game);
     }
 
     if ($debug && $id_game !== null) {
         $game = ModelGame::getGame($id_game);
         $game->setProcessing(false);
+        $logger->debug('debug mode - forcing reset of processing status of single game: ' . $id_game);
     }
 
     $cron = new CronMain();
     $cron->execute($id_game);
 
     if ($cron->hasErrors()) {
-        echo "\ncron failed";
-        var_dump($cron->getErrors());
+        $msg = "cron failed for:\n    ";
+        foreach ($cron->getErrors() as $key => $error) {
+            $msg .= $key . ' - ' . $error . "\n    ";
+        }
+        $logger->error($msg);
     } else {
-        echo "\ncron sucess";
+        $logger->debug('cron route successfully finished');
     }
 });
 
