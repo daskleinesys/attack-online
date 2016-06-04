@@ -30,6 +30,16 @@ class ProductionController extends PhaseController {
         $this->fixatePhase(true);
     }
 
+    /**
+     * validates the new move first (does the user own the country, has he/she enough res left)
+     *
+     * @param int $id_zarea
+     * @param array $units
+     * @return ModelProductionMove
+     * @throws ControllerException
+     * @throws \AttOn\Exceptions\ModelException
+     * @throws \AttOn\Exceptions\NullPointerException
+     */
     public function createProductionMove($id_zarea, $units) {
         $id_zarea = (int)$id_zarea;
 
@@ -70,6 +80,14 @@ class ProductionController extends PhaseController {
         return ModelProductionMove::createProductionMove($this->id_user, $this->id_game, $round, $id_zarea, $units);
     }
 
+    /**
+     * check if a move exists, then flag it as deleted
+     *
+     * @param int $id_move
+     * @return void
+     * @throws ControllerException
+     * @throws \AttOn\Exceptions\NullPointerException
+     */
     public function deleteProductionMove($id_move) {
         $id_move = intval($id_move);
 
@@ -102,6 +120,40 @@ class ProductionController extends PhaseController {
         // delete move
         $move->flagMoveDeleted();
         return;
+    }
+
+    /**
+     * checks if production is valid, takes in consideration all other moves for this phase/user that are not flagged as deleted
+     *
+     * @param ModelProductionMove $move
+     * @return void
+     * @throws ControllerException $ex
+     */
+    public function validateProductionMove(ModelProductionMove $move) {
+        // 1. check if zarea belongs to user
+        $gameArea = ModelGameArea::getGameArea($move->getIdGame(), $move->getIdZArea());
+        if ($move->getIdUser() !== $gameArea->getIdUser()) {
+            throw new ControllerException('Area doesn\'t belong to the user.');
+        }
+
+        // 2. check if user has enough res left
+        // 2.a check cost of previous productions
+        $current_costs = $move->getCost();
+        $moves = ModelProductionMove::iterator($move->getIdUser(), $move->getIdGame(), $move->getRound());
+        while ($moves->hasNext()) {
+            /* @var $move ModelProductionMove */
+            $move_tmp = $moves->next();
+            if ($move_tmp === $move) {
+                continue;
+            }
+            $current_costs += $move_tmp->getCost();
+        }
+        // 2.b get available res
+        $current_production = UserViewHelper::getCurrentProductionForUserInGame($move->getIdUser(), $move->getIdGame());
+
+        if ($current_production['sum'] - $current_costs < 0) {
+            throw new ControllerException('Insufficient funds!');
+        }
     }
 
     private function validateNewProductionMove($round, $id_zarea, array $units) {

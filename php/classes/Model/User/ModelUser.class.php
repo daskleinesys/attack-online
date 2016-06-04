@@ -66,7 +66,7 @@ class ModelUser {
 	 * @param string $orderby - ('login','name','lastname','email','status')
 	 * @param bool $direction - true == asc, false == desc
 	 * @throws DataSourceException
-	 * @return iterator
+	 * @return ModelIterator
 	 */
 	public static function iterator($status, $id_game = null, $orderby = null, $direction = true) {
 		$users = array();

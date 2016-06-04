@@ -5,7 +5,7 @@ use AttOn\Model\Atton\ModelStartingSet;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\Iterator\ModelIterator;
-use AttOn\Model\User\ModelUser;
+use AttOn\Exceptions\DataSourceException;
 use AttOn\Exceptions\JoinUserException;
 use AttOn\Exceptions\GameAdministrationException;
 use AttOn\Exceptions\NullPointerException;
@@ -214,7 +214,7 @@ class ModelIsInGameInfo {
     public function setColor($id_color) {
         $id_color = intval($id_color);
         ModelColor::getModelColor($id_color);
-        if (!ModelGame::getGame($this->id_game)->checkIfColorIsFree()) {
+        if (!ModelGame::getGame($this->id_game)->checkIfColorIsFree($id_color)) {
             throw new GameAdministrationException('Color already taken!');
         }
         $this->id_color = $id_color;
@@ -230,6 +230,19 @@ class ModelIsInGameInfo {
     public function addMoney($money) {
         $money = intval($money);
         $this->money += $money;
+        DataSource::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
+    }
+
+    /**
+     * sets the players money to given amount, must be greater or equal zero
+     *
+     * @param $money int/number
+     * @return void
+     */
+    public function setMoney($money) {
+        $money = intval($money);
+        $money = max(0, $money);
+        $this->money = $money;
         DataSource::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
     }
 

@@ -1,22 +1,21 @@
 <?php
 namespace AttOn\Controller\Logic\Operations;
 
-use AttOn\Controller\Game\InGame\LandMoveController;
+use AttOn\Controller\Game\InGame\ProductionController;
 use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\LogicException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
 use AttOn\Model\Atton\InGame\Moves\ModelProductionMove;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Game\Dice\DieSix;
 use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelIsInGameInfo;
+use AttOn\Tools\UserViewHelper;
 
 class LogicProduction extends PhaseLogic {
     private $logger;
 
     private $moves = array(); // array (ModelProductionMove $move)
+    private $spent_production = array(); // array (int $id_user => int $spent_production_value)
 
     /**
      * returns object to run game logic -> should only be called by factory
@@ -54,8 +53,10 @@ class LogicProduction extends PhaseLogic {
                 $this->executeProduction($move);
             }
 
-            // TODO : remove as soon as production is finished dev
-            throw new \Exception('not finished');
+            /*
+             * 3. update money for each user
+             */
+            $this->updateUserMoney();
 
             $this->finishProcessing();
 
@@ -66,11 +67,57 @@ class LogicProduction extends PhaseLogic {
     }
 
     private function validateMoves() {
-        // TODO : get all moves and validate them
+        $game = ModelGame::getGame($this->id_game);
+        $round = $game->getRound();
+        $move_iter = ModelProductionMove::iterator(null, $this->id_game, $round);
+        $controllerForUser = array();
+        $controller = null;
+
+        // run through moves
+        while ($move_iter->hasNext()) {
+            /* @var $move ModelProductionMove */
+            $move = $move_iter->next();
+            $id_user = $move->getIdUser();
+
+            // validate moves
+            if (!isset($controllerForUser[$id_user])) {
+                $controllerForUser[$id_user] = new ProductionController($id_user, $this->id_game);
+            }
+            try {
+                $controller = $controllerForUser[$id_user];
+                /* @var $controller ProductionController */
+                $controller->validateProductionMove($move);
+            } catch (ControllerException $ex) {
+                $this->logger->error($ex);
+                $move->flagMoveDeleted();
+                continue;
+            }
+
+            // add move to moves
+            $this->moves[] = $move;
+        }
     }
 
     private function executeProduction(ModelProductionMove $move) {
-        // TODO : execute move (add units and change money for user)
+        $id_user = $move->getIdUser();
+        $id_zarea = $move->getIdZArea();
+        foreach ($move->getUnits() as $id_unit => $count) {
+            $inGameLandUnits = ModelInGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
+            $inGameLandUnits->addCount($count);
+        }
+
+        if (!isset($this->spent_production[$id_user])) {
+            $this->spent_production[$id_user] = 0;
+        }
+        $this->spent_production[$id_user] += $move->getCost();
+    }
+
+    private function updateUserMoney() {
+        foreach ($this->spent_production as $id_user => $spent_production_value) {
+            $current_production = UserViewHelper::getCurrentProductionForUserInGame($id_user, $this->id_game);
+            $iig = ModelIsInGameInfo::getIsInGameInfo($id_user, $this->id_game);
+            $iig->setMoney($current_production['sum'] - $spent_production_value);
+        }
     }
 
 }
