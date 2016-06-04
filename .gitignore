@@ -3,6 +3,7 @@
 /dist/css
 /.sass-cache
 /node_modules
+/vendor
 
 # LOCAL DB DATA
 mysqldumps/local*
