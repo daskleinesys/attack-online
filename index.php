@@ -1,6 +1,9 @@
 <?php
 namespace AttOn;
 
+use Slim\Slim;
+use Slim\Views\Twig;
+
 // DEBUG && NO-MERGE
 $debug = isset($_REQUEST['debug']) ? true : false;
 if ($debug) {
@@ -26,7 +29,7 @@ global $log4php_config;
 $logger = \Logger::getLogger('index.php');
 
 // INIT SLIM APP
-$app = new \Slim\Slim( array('debug' => $debug, 'view' => new \Slim\Views\Twig()));
+$app = new Slim(array('debug' => $debug, 'view' => new Twig()));
 $view = $app->view();
 $view->parserExtensions = array(new \Twig_Extension_Debug());
 $view->parserOptions = array('debug' => $debug);
@@ -34,14 +37,14 @@ $env = $app->environment();
 $env['basepath'] = __DIR__;
 
 // DEFINE SLIM-ERROR HANDLING
-$app->error(function(\Exception $e) use ($app, $logger) {
+$app->error(function (\Exception $e) use ($app, $logger) {
     $logger->error($e->getMessage());
 
     $data = array();
     $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
     $app->render('error.twig', $data);
 });
-$app->notFound(function() use ($app) {
+$app->notFound(function () use ($app) {
     $data = array();
     $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
     $app->render('404.twig', $data);
@@ -49,7 +52,7 @@ $app->notFound(function() use ($app) {
 
 // INIT DB-CONNECTION
 try {
-	Model\DataBase\SQLCommands::init();
+    Model\DataBase\SQLCommands::init();
 } catch (Exceptions\DataSourceException $e) {
     $logger->fatal($e->getMessage());
     $app->render('error.twig');
