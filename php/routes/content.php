@@ -111,6 +111,7 @@ $app->map('/:content/', function ($content) use ($app, $debug, $logger) {
     // render 404
     if (!isset($content_object)) {
         $app->notFound();
+        return;
     }
 
     // run operation

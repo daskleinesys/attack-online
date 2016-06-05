@@ -1,6 +1,7 @@
 <?php
 namespace AttOn;
 
+use AttOn\Tools\HeaderViewHelper;
 use Slim\Slim;
 use Slim\Views\Twig;
 
@@ -41,12 +42,12 @@ $app->error(function (\Exception $e) use ($app, $logger) {
     $logger->error($e->getMessage());
 
     $data = array();
-    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('error.twig', $data);
 });
 $app->notFound(function () use ($app) {
     $data = array();
-    $data['user'] = Model\User\ModelUser::getCurrentUser()->getViewData();
+    HeaderViewHelper::parseCurrentUser($data);
     $app->render('404.twig', $data);
 });
 
