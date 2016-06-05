@@ -1,38 +1,39 @@
 <?php
 namespace AttOn;
+
 use AttOn\Controller\CronMain;
 use AttOn\Controller\User\UserActions;
 use AttOn\Exceptions\MapException;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Tools\HeaderViewHelper;
 use AttOn\View\Map;
-use Slim\Slim;
 use Logger;
+use Slim\Slim;
 
 /* @var $app Slim */
 /* @var $debug bool */
 /* @var $logger Logger */
 global $app, $debug, $logger;
 
-$app->get('/', function() use ($app, $debug) {
+$app->get('/', function () use ($app, $debug) {
     $data = array();
     HeaderViewHelper::parseCurrentUser($data);
     $data['template'] = 'home';
     $app->render('main.twig', $data);
 });
 
-$app->get('/login/', function() use ($app, $debug) {
+$app->get('/login/', function () use ($app, $debug) {
     UserActions::logout();
     $data['template'] = 'login';
     $app->render('main.twig', $data);
 });
 
-$app->get('/logout/', function() use ($app, $debug) {
+$app->get('/logout/', function () use ($app, $debug) {
     UserActions::logout();
     $app->redirect(ABS_REF_PREFIX);
 });
 
-$app->get('/map/', function() use($app, $debug) {
+$app->get('/map/', function () use ($app, $debug) {
     $data = array();
     if (ModelGame::getCurrentGame() === null) {
         $data['errors'] = array(
@@ -57,13 +58,13 @@ $app->get('/map/', function() use($app, $debug) {
     $app->render('map.twig', $data);
 });
 
-$app->get('/cron(/:id_game)(/)', function($id_game = null) use ($app, $debug, $logger) {
+$app->get('/cron(/:id_game)(/)', function ($id_game = null) use ($app, $debug, $logger) {
     echo '<pre>';
     if (empty($id_game)) {
         $id_game = null;
         $logger->debug('running cron-calculation for all applicable games');
     } else if ($id_game !== null) {
-        $id_game = (int) $id_game;
+        $id_game = (int)$id_game;
         $logger->debug('running cron-calculation for single game: ' . $id_game);
     }
 

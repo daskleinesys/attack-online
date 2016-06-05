@@ -1,15 +1,25 @@
 <?php
 namespace AttOn;
+
 use AttOn\Model\User\ModelUser;
 use AttOn\Tools\Autoloader;
 use AttOn\Tools\HeaderViewHelper;
 use AttOn\View\Content\Factories\GamesFactory;
 use AttOn\View\Content\Factories\GameInfoFactory;
+use AttOn\View\Content\Factories\Interfaces\ContentFactory;
 use AttOn\View\Content\Factories\JoinGameFactory;
 use AttOn\View\Content\Factories\NewGameFactory;
 use AttOn\Exceptions\SessionException;
+use AttOn\View\Content\Operations\Interfaces\ContentOperation;
+use Logger;
+use Slim\Slim;
 
-$app->map('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger) {
+/* @var $app Slim */
+/* @var $debug bool */
+/* @var $logger Logger */
+global $app, $debug, $logger;
+
+$app->map('/games(/:type)(/)', function ($type = null) use ($app, $debug, $logger) {
     if ($type === null || empty($type)) {
         $type = 'new';
     }
@@ -24,7 +34,7 @@ $app->map('/games(/:type)(/)', function($type = null) use ($app, $debug, $logger
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('games');
 
-$app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug, $logger) {
+$app->map('/gameinfo(/:id_game)(/)', function ($id_game = null) use ($app, $debug, $logger) {
     if ($id_game === null || empty($id_game)) {
         if (isset($_POST['id_game'])) {
             $app->redirect(ABS_REF_PREFIX . 'gameinfo/' . $_POST['id_game'] . '/', 200);
@@ -32,7 +42,7 @@ $app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug
             $app->redirect(ABS_REF_PREFIX . 'games/', 200);
         }
     }
-    $id_game = (int) $id_game;
+    $id_game = (int)$id_game;
 
     $data = array(
         'id_game' => $id_game
@@ -44,7 +54,7 @@ $app->map('/gameinfo(/:id_game)(/)', function($id_game = null) use ($app, $debug
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('gameinfo');
 
-$app->map('/joingame(/:id_game)(/)', function($id_game = null) use ($app, $debug, $logger) {
+$app->map('/joingame(/:id_game)(/)', function ($id_game = null) use ($app, $debug, $logger) {
     if ($id_game === null || empty($id_game)) {
         if (isset($_POST['id_game'])) {
             $app->redirect(ABS_REF_PREFIX . 'joingame/' . $_POST['id_game'] . '/', 200);
@@ -52,7 +62,7 @@ $app->map('/joingame(/:id_game)(/)', function($id_game = null) use ($app, $debug
             $app->redirect(ABS_REF_PREFIX . 'games/', 200);
         }
     }
-    $id_game = (int) $id_game;
+    $id_game = (int)$id_game;
 
     $data = array(
         'id_game' => $id_game
@@ -64,7 +74,7 @@ $app->map('/joingame(/:id_game)(/)', function($id_game = null) use ($app, $debug
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('joingame');
 
-$app->get('/newgame(/)', function() use ($app, $debug, $logger) {
+$app->get('/newgame(/)', function () use ($app, $debug, $logger) {
     $data = array();
     $factory = new NewGameFactory();
     $view = $factory->getOperation();
@@ -73,7 +83,7 @@ $app->get('/newgame(/)', function() use ($app, $debug, $logger) {
     $app->render('main.twig', $data);
 });
 
-$app->map('/:content/', function($content) use ($app, $debug, $logger) {
+$app->map('/:content/', function ($content) use ($app, $debug, $logger) {
     $data = array();
 
     // factory pattern
@@ -82,6 +92,7 @@ $app->map('/:content/', function($content) use ($app, $debug, $logger) {
 
     // get operation
     foreach ($factories as $factory) {
+        /* @var $factory ContentFactory */
         if ($factory->getName() === $content) {
             try {
                 $content_object = $factory->getOperation();
@@ -103,6 +114,7 @@ $app->map('/:content/', function($content) use ($app, $debug, $logger) {
     }
 
     // run operation
+    /* @var $content_object ContentOperation */
     $content_object->run($data);
     HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
