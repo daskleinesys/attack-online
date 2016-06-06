@@ -86,7 +86,7 @@ class UserActions {
                 </head>
                 <body>
                     <p>
-                        You just registered a new account at attack.thespielplatz.com. To active the account please use the following link:
+                        You just registered a new account at ' . DOMAIN_ORIGIN . '. To active the account please use the following link:
                         <br />
                         <a href="' . $verificationLink . '">
                             ' . $verificationLink . '
