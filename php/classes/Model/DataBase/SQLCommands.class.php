@@ -74,6 +74,7 @@ class SQLCommands {
 
         // register new user
         self::$DataSource->load_query('check_if_login_exists', 'SELECT id FROM user WHERE login = :login');
+        self::$DataSource->load_query('check_if_email_exists', 'SELECT id FROM user WHERE email = :email');
         self::$DataSource->load_query('get_id_for_login', 'SELECT id FROM user WHERE login = :login');
         self::$DataSource->load_query('create_new_user', "INSERT INTO user (name, lastname, login, password, email, verify) VALUES (:name, :lastname, :login, SHA(:password), :email, SHA(:verify))");
         self::$DataSource->load_query('get_verification_code_for_login', "SELECT id, verify FROM user WHERE login = :login");

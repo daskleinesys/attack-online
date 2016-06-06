@@ -1,0 +1,77 @@
+{% if errors %}
+    <p class="error">{{ errors.message }}</p>
+    <br>
+{% endif %}
+
+{% if status %}
+    <p class="status">{{ status.message }}</p>
+    <br>
+{% endif %}
+
+{% if created %}
+    <p class="status">User successfully created. Please check your e-mail to active your account.</p>
+    <br>
+{% else %}
+    <h1>create new Attack Online account</h1>
+    <p>Please fill out all fields.</p>
+    <form method="post" action="{{ absRefPrefix }}register/">
+        <p>
+        <table>
+            <tr>
+                <td>Given Name:</td>
+                <td>
+                    <label>
+                        <input type="text" id="firstname" name="firstname" value="{{ newuser.firstname }}" maxlength="40" size="40" required/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>Family Name:</td>
+                <td>
+                    <label>
+                        <input type="text" id="lastname" name="lastname" value="{{ newuser.lastname }}" maxlength="40" size="40" required/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>E-Mail:</td>
+                <td>
+                    <label>
+                        <input type="text" id="email" name="email" value="{{ newuser.email }}" maxlength="40" size="40" required/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>Username:</td>
+                <td>
+                    <label>
+                        <input type="text" id="login" name="login" value="{{ newuser.login }}" maxlength="15" size="40" required/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td>
+                    <label>
+                        <input type="password" id="password1" name="password1" maxlength="40" size="40" required/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>retype Password:</td>
+                <td>
+                    <label>
+                        <input type="password" id="password2" name="password2" maxlength="40" size="40" required/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="submit" value="Register" name="register"/>
+                    </label>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endif %}
