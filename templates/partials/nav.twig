@@ -20,7 +20,7 @@
 			<li>
 				<ul class="nav_active">
 					<li>
-						<a href="{{absRefPrefix}}games/" class="games">Partien</a><br />
+						<a href="{{absRefPrefix}}games/" class="games">Spiele</a><br />
 					</li>
 				</ul>
 			</li>
@@ -87,7 +87,7 @@
                     {% if (user.status == 'moderator' or user.status == 'admin') %}
                     {# --- START --- moderator-section --- #}
 					<li>
-						<a href="{{absRefPrefix}}gamesmod/" class="mod">Spiele</a><br />
+						<a href="{{absRefPrefix}}gamesmod/" class="mod">Mod</a><br />
 					</li>
                     {# --- END --- moderator-section --- #}
                     {% endif %}
@@ -95,7 +95,7 @@
                     {% if (user.status == 'admin') %}
                     {# --- START --- admin-section --- #}
 					<li>
-						<a href="{{absRefPrefix}}user/" class="admin">User</a><br />
+						<a href="{{absRefPrefix}}user/" class="admin">Admin</a><br />
 					</li>
                     {# --- END --- admin-section --- #}
                     {% endif %}

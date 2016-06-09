@@ -143,7 +143,11 @@ td input {
     margin: 0px;
 }
 
-div.clearfix {
+.clearfix:after {
+    content: "";
+    visibility: hidden;
+    display: block;
+    height: 0;
     clear: both;
 }
 
