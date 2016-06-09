@@ -1,0 +1,13 @@
+{% if errors %}
+    <p class="error">{{ errors.message }}</p>
+    <br>
+    <p>If the link in your e-mail doesn't work try logging in. Maybe your account is already active.</p>
+{% endif %}
+
+{% if success %}
+    <h1>Registration finished</h1>
+    <p>Account succesfully activated. Enjoy playing. :-)</p>
+{% endif %}
+
+<br>
+<a href="{{ absRefPrefix }}login/">go to login</a>

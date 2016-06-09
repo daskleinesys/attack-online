@@ -77,7 +77,7 @@ class UserActions {
         $id_newuser = $user->getUserId();
         $to = $email;
         $subject = 'Activation-Link Attack Online Account';
-        $verificationLink = DOMAIN_ORIGIN . ABS_REF_PREFIX . 'verify/?verify=true&user_id=' . $id_newuser . '&verificationCode=' . $verificationCode;
+        $verificationLink = DOMAIN_ORIGIN . ABS_REF_PREFIX . 'verify/?user_id=' . $id_newuser . '&verificationCode=' . $verificationCode;
 
         $msg =
             '<html>
@@ -167,6 +167,7 @@ class UserActions {
      * @param int $id_user
      * @param string $verification_code
      * @return int state
+     * @throws ControllerException
      * 1: user successfully created
      * 2: at least one empty entry
      * 3: verification doe preg_mismatch
@@ -178,32 +179,32 @@ class UserActions {
 
         // check input validity
         if (empty($id_user) || empty($verification_code)) {
-            return 2;
+            throw new ControllerException('Missing parameters');
         }
         $id_user = intval($id_user);
         if (!preg_match('/^([a-zA-Z0-9]+)?$/', $verification_code)) {
-            return 3;
+            throw new ControllerException('Invalid parameters');
         }
 
         // create user model
         try {
-            $_User = ModelUser::getUser($id_user);
+            $user = ModelUser::getUser($id_user);
         } catch (\Exception $ex) {
-            return 4;
+            throw new ControllerException('Invalid parameters');
         }
 
         // check verification code
-        if ($verification_code != $_User->getVerify()) {
-            return 5;
+        if ($verification_code != $user->getVerify()) {
+            throw new ControllerException('Invalid parameters');
         }
 
         // activate user (if inactive)
-        if ($_User->getStatus() == STATUS_USER_INACTIVE) {
-            $_User->setUserToActive();
+        if ($user->getStatus() !== STATUS_USER_INACTIVE) {
+            throw new ControllerException('Invalid parameters');
         }
 
         // return success
-        return 1;
+        $user->setUserToActive();
     }
 
 }
