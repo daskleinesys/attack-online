@@ -2,7 +2,6 @@
 namespace AttOn\View\Content\Operations;
 
 use AttOn\Controller\Game\GamesModeration;
-use AttOn\Model\Atton\ModelGameMode;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelUser;
 use AttOn\Model\User\ModelIsInGameInfo;
@@ -11,13 +10,24 @@ use AttOn\Exceptions\GameAdministrationException;
 
 class ContentGameInfo extends Interfaces\ContentOperation {
 
+    /**
+     * @var $id_game int
+     */
     private $id_game;
+
+    /**
+     * @var $game ModelGame
+     */
     private $game;
 
     public function getTemplate() {
         return 'gameinfo';
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function run(array &$data) {
         $data['template'] = $this->getTemplate();
 
@@ -29,7 +39,7 @@ class ContentGameInfo extends Interfaces\ContentOperation {
             $data['errors'] = array(
                 'message' => 'Game not found!'
             );
-            return true;
+            return;
         }
 
         if (isset($_POST['creator_action'])) {
@@ -39,7 +49,7 @@ class ContentGameInfo extends Interfaces\ContentOperation {
                 $data['errors'] = array(
                     'message' => $ex->getMessage()
                 );
-                return false;
+                return;
             }
         }
 
@@ -49,7 +59,6 @@ class ContentGameInfo extends Interfaces\ContentOperation {
     private function showGame(array &$data) {
         $gameInfo = array();
         $gameInfo['name'] = $this->game->getName();
-        $gameInfo['mode'] = ModelGameMode::getGameMode($this->game->getIdGameMode())->getName();
         $gameInfo['creator'] = $this->game->getCreator()->getLogin();
         $gameInfo['id'] = $this->game->getId();
         $gameInfo['status'] = $this->game->getStatus();
@@ -84,28 +93,28 @@ class ContentGameInfo extends Interfaces\ContentOperation {
             $data['status'] = array(
                 'message' => 'User successfully kicked.'
             );
-            return true;
+            return;
         }
         if (isset($_POST['change_pw'])) {
             $gamesModeration->changePassword($_POST['password1'], $_POST['password2'], $this->id_game);
             $data['status'] = array(
                 'message' => 'Password successfully changed.'
             );
-            return true;
+            return;
         }
         if (isset($_POST['start'])) {
             $gamesModeration->startGame($this->id_game);
             $data['status'] = array(
                 'message' => 'Game successfully started.'
             );
-            return true;
+            return;
         }
         if (isset($_POST['delete_affirmed'])) {
             $gamesModeration->deleteGame($this->id_game);
             $data['status'] = array(
                 'message' => 'Game successfully deleted.'
             );
-            return true;
+            return;
         }
     }
 

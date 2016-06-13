@@ -1,13 +1,12 @@
-{% if game_modes %}
 <h1>Neue Partie erstellen</h1>
-<form method="post" action="{{absRefPrefix}}newgame/">
+<form method="post" action="{{ absRefPrefix }}newgame/">
     <table>
         <tr>
             <td>
                 Spielname:
             </td>
             <td>
-                <input type="text" name="name" value="{{game.name}}" maxlength="40"/>
+                <input type="text" name="name" value="{{ game.name }}" maxlength="40"/>
             </td>
         </tr>
         <tr>
@@ -17,23 +16,9 @@
             <td>
                 <select name="players" size="1">
                     {% for x in 2..6 %}
-                    <option value="{{x}}" name="players" {% if x == game.players %}selected{% endif %}>{{x}}</option>
+                        <option value="{{ x }}" name="players" {% if x == game.players %}selected{% endif %}>{{ x }}</option>
                     {% endfor %}
                 </select>
-            </tr>
-        <tr>
-            <td>
-                Spielmodus:
-                <br>
-                <small>(<a class="linktext" href="{{absRefPrefix}}manual/game-modes/">Info</a>)</small>
-            </td>
-            <td>
-                <select name="game_mode" size="1">
-                    {% for game_mode in game_modes %}
-                    <option value="{{game_mode.id}}" name="game_mode">{{game_mode.name}} ({{game_mode.abbreviation}})</option>
-                    {% endfor %}
-                </select>
-            </td>
         </tr>
         <tr>
             <td>
@@ -58,35 +43,34 @@
         </tr>
         <tr>
             <td>
-                <input type="checkbox" name="play" value="play" checked="checked" /> Selbst mitspielen?
+                <input type="checkbox" name="play" value="play" checked="checked"/> Selbst mitspielen?
             </td>
             <td>
                 <select name="color" size="1">
                     {% for color in colors %}
-                    <option value="{{color.id}}" name="color">{{color.color}}</option>
+                        <option value="{{ color.id }}" name="color">{{ color.color }}</option>
                     {% endfor %}
                 </select>
             </td>
         </tr>
         <tr>
             <td>
-                <input type="submit" value="Erstellen" name="create" />
+                <input type="submit" value="Erstellen" name="create"/>
             </td>
         </tr>
     </table>
 </form>
-{% endif %}
 
 {% if errors %}
-<br>
-<p class="error">{{errors.message}}</p>
+    <br>
+    <p class="error">{{ errors.message }}</p>
 {% endif %}
 
 {% if status %}
-<br>
-<p class="status">{{status.message}}</p>
+    <br>
+    <p class="status">{{ status.message }}</p>
 {% endif %}
 
 <br>
 
-<a href="{{absRefPrefix}}games/">Zur&uuml;ck</a>
+<a href="{{ absRefPrefix }}games/">Zur&uuml;ck</a>

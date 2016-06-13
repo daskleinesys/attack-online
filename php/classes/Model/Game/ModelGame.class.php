@@ -1,11 +1,11 @@
 <?php
 namespace AttOn\Model\Game;
 
+use AttOn\Exceptions\ModelException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelColor;
 use AttOn\Model\Atton\ModelEconomy;
-use AttOn\Model\Atton\ModelGameMode;
 use AttOn\Model\Atton\ModelPhase;
 use AttOn\Model\Atton\ModelStartingSet;
 use AttOn\Model\DataBase\DataSource;
@@ -33,7 +33,6 @@ class ModelGame {
     // pre filled member_vars
     private $id; // int
     private $name; // string
-    private $id_game_mode; // int
     private $playerslots; // int
     private $id_creator; // int
     private $pw_protected; // bool
@@ -46,8 +45,8 @@ class ModelGame {
      * creates new game object, fills in relevant info if id given, otherwise use create function to create new game
      *
      * @param int $id_game
+     * @return ModelGame
      * @throws NullPointerException
-     * @return void
      */
     private function __construct($id_game) {
         $this->id = intval($id_game);
@@ -59,15 +58,14 @@ class ModelGame {
         if (!isset(self::$logger)) {
             self::$logger = Logger::getLogger('ModelGame');
         }
-
     }
 
     /**
      * returns game model for given id
      *
      * @param int $id_game
-     * @throws NullPointerException (if game not found)
      * @return ModelGame
+     * @throws NullPointerException (if game not found)
      */
     public static function getGame($id_game) {
         if (isset(self::$games[$id_game])) {
@@ -82,7 +80,7 @@ class ModelGame {
      *
      * @param $status - define for game status
      * @param int $id_user
-     * @return iterator
+     * @return ModelIterator
      */
     public static function iterator($status, $id_user = null) {
         $games = array();
@@ -103,6 +101,9 @@ class ModelGame {
                 break;
             case GAME_STATUS_STARTED:
                 $query = 'get_started_game_ids';
+                break;
+            default:
+                $query = '';
                 break;
         }
         if ($id_user != null) {
@@ -125,26 +126,20 @@ class ModelGame {
      * tries to create a new game - returns true on success
      *
      * @param string $name
-     * @param int $game_mode
      * @param int $players
      * @param int $id_creator
      * @param string $password
-     * @throws GameCreationException
      * @return ModelGame
+     * @throws GameCreationException
      */
-    public static function createGame($name, $game_mode, $players, $id_creator, $password) {
+    public static function createGame($name, $players, $id_creator, $password) {
         $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
         if (!empty($result)) {
             throw new GameCreationException('Spielname bereits vergeben!');
         }
-        $result = DataSource::Singleton()->epp('check_game_mode', array(':id_game_mode' => $game_mode));
-        if (empty($result)) {
-            throw new GameCreationException('Ungueltiger Spielmodus.');
-        }
-        // :game_name, :id_game_mode, :players, :id_creator
+        // :game_name, :players, :id_creator
         $dict = array();
         $dict[':game_name'] = $name;
-        $dict[':id_game_mode'] = $game_mode;
         $dict[':players'] = $players;
         $dict[':id_creator'] = $id_creator;
         if (empty($password)) {
@@ -180,8 +175,9 @@ class ModelGame {
     /**
      * deletes all tables,rows from database for this game
      *
-     * @throws GameAdministrationException - if game isn't loaded or the game isn't new
+     * @param int $id_game
      * @return bool - true if successfull
+     * @throws GameAdministrationException - if game isn't loaded or the game isn't new
      */
     public static function deleteGame($id_game) {
         try {
@@ -240,9 +236,9 @@ class ModelGame {
     /**
      * sets the current game model to game-model using given id
      *
-     * @throws NullPointerException if game not found
-     * @param $ig_game int
+     * @param int $id_game
      * @return ModelGame
+     * @throws NullPointerException if game not found
      */
     public static function setCurrentGame($id_game) {
         $id = intval($id_game);
@@ -265,13 +261,12 @@ class ModelGame {
     /**
      * @brief returns all view-relevant game-data as associative array
      *
-     * @return dictionary
+     * @return array
      */
     public function getViewData() {
         $data = array(
             'id' => $this->id,
             'name' => $this->name,
-            'id_game_mode' => $this->id_game_mode,
             'status' => $this->status,
             'id_phase' => $this->id_phase,
             'round' => $this->round,
@@ -284,8 +279,9 @@ class ModelGame {
     /**
      * sets game status of a new game to GAME_STATUS_STARTED
      *
-     * @throws GameAdministrationException
      * @return bool
+     * @throws GameAdministrationException
+     * @throws ModelException
      */
     public function startGame() {
         if ($this->status !== GAME_STATUS_NEW) {
@@ -324,13 +320,16 @@ class ModelGame {
                 case ECONOMY_STRONG:
                     $_Eco = $iter_strong->next();
                     break;
+                default:
+                    throw new ModelException('Area with invalid eco type found: ' . $_Area->getId());
+                    break;
             }
             ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
         }
 
         // create sea areas
         $iter_sea = ModelArea::iterator(TYPE_SEA);
-        while ($iter_sea->hasnext()) {
+        while ($iter_sea->hasNext()) {
             $_Area = $iter_sea->next();
             ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
         }
@@ -348,7 +347,6 @@ class ModelGame {
      * @return void
      */
     public function setPassword($password = null) {
-        $query = '';
         $dict = array();
         $dict[':id_game'] = $this->id;
         if ($password === null) {
@@ -365,7 +363,7 @@ class ModelGame {
     /**
      * sets the game status (and if necessary also changes the phase)
      *
-     * @param enum $status
+     * @param string $status - ENUM(new, started, running, done)
      * @return void
      */
     public function setStatus($status) {
@@ -397,8 +395,8 @@ class ModelGame {
      * sets the game phase (and if necessary also changes the status)
      *
      * @param int $id_phase
-     * @throws NullPointerException
      * @return void
+     * @throws NullPointerException
      */
     public function setPhase($id_phase) {
         $id_phase = intval($id_phase);
@@ -432,9 +430,8 @@ class ModelGame {
      * @return void
      */
     public function moveToNextPhase() {
-        // get phases
-        $_ModelGameMode = ModelGameMode::getGameMode($this->id_game_mode);
-        $phases = $_ModelGameMode->getPhases();
+        // TODO : add phases as development progresses
+        $phases = array(PHASE_LANDMOVE, /*PHASE_SEAMOVE, PHASE_TRADEROUTE, PHASE_TROOPSMOVE, */PHASE_PRODUCTION, PHASE_GAME_START, PHASE_SELECTSTART/*, PHASE_SETSHIPS*/);
 
         // check which phase is next
         $add_round = false;
@@ -506,8 +503,9 @@ class ModelGame {
     }
 
     /**
-     * @throws NullPointerException - if this color doesn't exist
+     * @param int $id_color
      * @return boolean
+     * @throws NullPointerException - if this color doesn't exist
      */
     public function checkIfColorIsFree($id_color) {
         $id_color = intval($id_color);
@@ -559,13 +557,6 @@ class ModelGame {
     }
 
     /**
-     * @return array(int)
-     */
-    public function getPhases() {
-        return $this->phases;
-    }
-
-    /**
      * @return int
      */
     public function getPlayerSlots() {
@@ -591,13 +582,6 @@ class ModelGame {
      */
     public function getCreator() {
         return ModelUser::getUser($this->id_creator);
-    }
-
-    /**
-     * @return int
-     */
-    public function getIdGameMode() {
-        return $this->id_game_mode;
     }
 
     /**
@@ -636,7 +620,6 @@ class ModelGame {
         // fill in info
         $data = $result[0];
         $this->name = $data['name'];
-        $this->id_game_mode = intval($data['id_game_mode']);
         $this->playerslots = intval($data['players']);
         $this->id_creator = intval($data['id_creator']);
         if ($data['password'] === null) {

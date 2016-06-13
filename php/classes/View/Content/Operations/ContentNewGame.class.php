@@ -2,9 +2,10 @@
 namespace AttOn\View\Content\Operations;
 
 use AttOn\Controller\Game\GamesModeration;
-use AttOn\Model\Atton\ModelColor;
-use AttOn\Model\Atton\ModelGameMode;
 use AttOn\Exceptions\GameCreationException;
+use AttOn\Exceptions\JoinUserException;
+use AttOn\Model\Atton\ModelColor;
+use AttOn\Model\User\ModelUser;
 
 class ContentNewGame extends Interfaces\ContentOperation {
 
@@ -18,10 +19,7 @@ class ContentNewGame extends Interfaces\ContentOperation {
         if (isset($_POST['create'])) {
             try {
                 $this->createGame($data);
-                $data['status'] = array(
-                    'message' => 'Game successfully created.'
-                );
-                return true;
+                return;
             } catch (GameCreationException $ex) {
                 $data['errors'] = array(
                     'message' => $ex->getMessage()
@@ -30,7 +28,7 @@ class ContentNewGame extends Interfaces\ContentOperation {
                 $data['errors'] = array(
                     'message' => 'Game created but unable to join game.'
                 );
-                return true;
+                return;
             }
         }
 
@@ -46,20 +44,6 @@ class ContentNewGame extends Interfaces\ContentOperation {
             $game['players'] = $_POST['players'];
         }
         $data['game'] = $game;
-
-        // game modes
-        // dict(id => int, name => string, phases => array(ints), abbreviation => string))
-        $game_modes = array();
-        $iter = ModelGameMode::iterator();
-        while ($iter->hasNext()) {
-            $gameMode = $iter->next();
-            $game_mode = array();
-            $game_mode['id'] = $gameMode->getId();
-            $game_mode['name'] = $gameMode->getName();
-            $game_mode['abbreviation'] = $gameMode->getAbbreviation();
-            $game_modes[] = $game_mode;
-        }
-        $data['game_modes'] = $game_modes;
 
         // colors
         $colors = array();
@@ -89,16 +73,17 @@ class ContentNewGame extends Interfaces\ContentOperation {
         if (!isset($_POST['password2'])) {
             $_POST['password2'] = '';
         }
-        if (!isset($_POST['game_mode'])) {
-            throw new GameCreationException('Missing game mode.');
-        }
         if (!isset($_POST['color'])) {
             throw new GameCreationException('Missing color.');
         }
         $creator_joins = (isset($_POST['play']));
 
         $gamesModeration = new GamesModeration(ModelUser::getCurrentUser()->getId());
-        $gamesModeration->create($_POST['name'], $_POST['players'], $_POST['password1'], $_POST['password2'], $_POST['game_mode'], $creator_joins, $_POST['color']);
+        $gamesModeration->create($_POST['name'], $_POST['players'], $_POST['password1'], $_POST['password2'], $creator_joins, $_POST['color']);
+        $data['status'] = array(
+            'message' => 'Game successfully created.'
+        );
+        return $data;
     }
 
 }

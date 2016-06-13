@@ -84,7 +84,7 @@ class SQLCommands {
         self::$DataSource->load_query('get_iig_info_for_user_in_game', "SELECT id, id_user, id_game, id_color, money, id_set FROM is_in_game WHERE id_game = :id_game AND id_user = :id_user");
         //query user
         self::$DataSource->load_query('get_all_user_ids_for_game', "SELECT id_user FROM is_in_game WHERE id_game = :id_game");
-        self::$DataSource->load_query('get_all_games_for_user', "SELECT games.id, games.name, games.id_game_mode, games.players, games.id_creator, games.status, games.id_phase, games.round, games.processing FROM games RIGHT JOIN is_in_game AS iig ON(games.id=iig.id_game) WHERE iig.id_user = :id_user");
+        self::$DataSource->load_query('get_all_games_for_user', "SELECT games.id, games.name, games.players, games.id_creator, games.status, games.id_phase, games.round, games.processing FROM games RIGHT JOIN is_in_game AS iig ON(games.id=iig.id_game) WHERE iig.id_user = :id_user");
         self::$DataSource->load_query('get_participating_user', "SELECT id_user FROM is_in_game WHERE id_game = :id_game");
         self::$DataSource->load_query('get_money_for_user', "SELECT money FROM is_in_game AS iig WHERE id_user = :id_user AND id_game = :id_game");
         self::$DataSource->load_query('get_user_status', 'SELECT status FROM user WHERE id = :id_user');
@@ -133,8 +133,8 @@ class SQLCommands {
         self::$DataSource->load_query('check_game_password', "SELECT id FROM games WHERE id = :id_game AND password = SHA(:password)");
 
         // new game
-        self::$DataSource->load_query('create_game_without_pw', "INSERT INTO games (name, id_game_mode, players, id_creator) VALUES (:game_name, :id_game_mode, :players, :id_creator)");
-        self::$DataSource->load_query('create_game_with_pw', "INSERT INTO games (name, id_game_mode, players, id_creator, password) VALUES (:game_name, :id_game_mode, :players, :id_creator, SHA(:password))");
+        self::$DataSource->load_query('create_game_without_pw', "INSERT INTO games (name, players, id_creator) VALUES (:game_name, :players, :id_creator)");
+        self::$DataSource->load_query('create_game_with_pw', "INSERT INTO games (name, players, id_creator, password) VALUES (:game_name, :players, :id_creator, SHA(:password))");
         self::$DataSource->load_query('get_starting_sets', "SELECT id,name,players FROM startsets WHERE players LIKE :players");
         self::$DataSource->load_query('get_starting_set', "SELECT id,name,players FROM startsets WHERE id = :id_set");
 
@@ -158,15 +158,12 @@ class SQLCommands {
         // game info
         // query
         self::$DataSource->load_query('check_game_name', 'SELECT id FROM games WHERE name = :name');
-        self::$DataSource->load_query('get_full_game_info', 'SELECT id,name,id_game_mode,players,id_creator,password,status,id_phase,round,processing FROM games WHERE id = :id_game');
-        self::$DataSource->load_query('get_game_status', 'SELECT status,id_game_mode FROM games WHERE id = :id_game');
+        self::$DataSource->load_query('get_full_game_info', 'SELECT id,name,players,id_creator,password,status,id_phase,round,processing FROM games WHERE id = :id_game');
+        self::$DataSource->load_query('get_game_status', 'SELECT status FROM games WHERE id = :id_game');
         self::$DataSource->load_query('get_processing_state', "SELECT processing FROM games WHERE id = :id_game LIMIT 1");
         self::$DataSource->load_query('get_round_phase_info_id_game', "SELECT games.id_phase AS id_phase, games.round, phases.name AS phase, phases.label, games.name AS name, games.status FROM games " .
             "LEFT JOIN phases AS phases ON (games.id_phase=phases.id) " .
             "WHERE games.id = :id_game");
-        self::$DataSource->load_query('get_game_phases', "SELECT game_modes.phases FROM games LEFT JOIN game_modes ON (games.id_game_mode=game_modes.id) WHERE games.id = :id_game");
-        self::$DataSource->load_query('get_game_phases_for_game_mode', "SELECT phases FROM game_modes WHERE id = :id_game_mode LIMIT 1");
-        self::$DataSource->load_query('get_game_mode_info', "SELECT name, abbreviation, phases FROM game_modes WHERE id = :id_game_mode LIMIT 1");
         // update
         self::$DataSource->load_query('set_game_phase', "UPDATE games SET id_phase = :id_phase WHERE id = :id_game");
         self::$DataSource->load_query('set_game_round', "UPDATE games SET round = :round WHERE id = :id_game");
@@ -177,12 +174,6 @@ class SQLCommands {
         self::$DataSource->load_query('get_phase_info', "SELECT id,name,label,id_type FROM phases WHERE id = :id_phase LIMIT 1");
         self::$DataSource->load_query('get_all_phases', "SELECT id,name,label FROM phases ORDER BY id ASC");
         self::$DataSource->load_query('get_phase_name', "SELECT name FROM phases WHERE id = :id_phase");
-
-        // game mode info
-        self::$DataSource->load_query('check_game_mode', "SELECT id FROM game_modes WHERE id = :id_game_mode");
-        self::$DataSource->load_query('get_game_modes', "SELECT id, name, abbreviation, phases FROM game_modes ORDER BY id ASC");
-        self::$DataSource->load_query('get_all_game_modes', "SELECT id FROM game_modes ORDER BY id ASC");
-        self::$DataSource->load_query('get_game_mode', "SELECT id, name, abbreviation, description, phases FROM game_modes WHERE id = :id_game_mode");
 
         // a2a
         self::$DataSource->load_query('get_a2a', "SELECT id_area2 AS id_adjacent_area FROM a2a WHERE id_area1 = :id_area");

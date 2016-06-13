@@ -2,140 +2,136 @@
 </aside>
 
 <aside class="menu">
-	<div class="menutop">
-	</div>
-	<div class="menumiddle">
-		<ul class="nav_menu">
-			<li>
-				<ul class="nav_main">
-					<li>
-						<a href="{{absRefPrefix}}">Home</a><br />
-					</li>
+    <div class="menutop">
+    </div>
+    <div class="menumiddle">
+        <ul class="nav_menu">
+            <li>
+                <ul class="nav_main">
+                    <li>
+                        <a href="{{ absRefPrefix }}">Home</a><br/>
+                    </li>
 
-				</ul>
-			</li>
+                </ul>
+            </li>
 
             {% if (user.loggedIn) %}
-            {# --- START --- active-user (logged-in) --- #}
-			<li>
-				<ul class="nav_active">
-					<li>
-						<a href="{{absRefPrefix}}games/" class="games">Spiele</a><br />
-					</li>
-				</ul>
-			</li>
+                {# --- START --- active-user (logged-in) --- #}
+                <li>
+                    <ul class="nav_active">
+                        <li>
+                            <a href="{{ absRefPrefix }}games/" class="games">Spiele</a><br/>
+                        </li>
+                    </ul>
+                </li>
 
-            {% if user.currGame and user.currGame.status == 'running' %}
-            {# --- START --- user-selected-active-game --- #}
-			<li>
-				<ul class="nav_game">
-					<li>
-						<a href="{{absRefPrefix}}overview/" class="turns">Übersicht</a><br />
-					</li>
-					<li>
-						<a href="{{absRefPrefix}}landmove/" class="turns">Landzug</a><br />
-					</li>
-                    {% if user.currGame.id_game_mode == 3 %}
-					<li>
-						<a href="{{absRefPrefix}}seamove/" class="turns">Seezug</a><br />
-					</li>
-					<li>
-						<a href="{{absRefPrefix}}traderoute/" class="turns">Handelsrouten</a><br />
-					</li>
-					<li>
-						<a href="{{absRefPrefix}}troopsmove/" class="turns">Verlegen</a><br />
-					</li>
-                    {% endif %}
-                    {% if user.currGame.id_game_mode == 2 or user.currGame.id_game_mode == 3 %}
-					<li>
-						<a href="{{absRefPrefix}}production/" class="turns">Produktion</a><br />
-					</li>
-                    {% endif %}
-                    {% if user.currGame.id_game_mode == 3 %}
-					<li>
-						<a href="{{absRefPrefix}}techtree/" class="turns">Tech-Tree</a><br />
-					</li>
-                    {% endif %}
-				</ul>
-			</li>
-            {# --- END --- user-selected-active-game --- #}
-            {% endif %}
+                {% if user.currGame and user.currGame.status == 'running' %}
+                    {# --- START --- user-selected-active-game --- #}
+                    <li>
+                        <ul class="nav_game">
+                            <li>
+                                <a href="{{ absRefPrefix }}overview/" class="turns">Übersicht</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}techtree/" class="turns">Tech-Tree</a><br/>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul class="nav_game nav_moves">
+                            <li>
+                                <a href="{{ absRefPrefix }}landmove/" class="turns">Landzug</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}seamove/" class="turns">Seezug</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}traderoute/" class="turns">Handelsrouten</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}troopsmove/" class="turns">Verlegen</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}production/" class="turns">Produktion</a><br/>
+                            </li>
+                        </ul>
+                    </li>
+                    {# --- END --- user-selected-active-game --- #}
+                {% endif %}
 
-            {% if user.currGame and user.currGame.status == 'started' %}
-            {# --- START --- user-selected-new-game --- #}
-			<li>
-				<ul class="nav_game">
-					<li>
-						<a href="{{absRefPrefix}}overview/" class="turns">Übersicht</a><br />
-					</li>
-					<li>
-						<a href="{{absRefPrefix}}selectstart/" class="turns">Startfelder</a><br />
-					</li>
-                    {% if user.currGame.id_game_mode == 3 %}
-					<li>
-						<a href="{{absRefPrefix}}setships/" class="turns">Schiffe</a><br />
-					</li>
-                    {% endif %}
-				</ul>
-			</li>
-            {# --- END --- user-selected-new-game --- #}
-            {% endif %}
+                {% if user.currGame and user.currGame.status == 'started' %}
+                    {# --- START --- user-selected-new-game --- #}
+                    <li>
+                        <ul class="nav_game">
+                            <li>
+                                <a href="{{ absRefPrefix }}overview/" class="turns">Übersicht</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}selectstart/" class="turns">Startfelder</a><br/>
+                            </li>
+                            <li>
+                                <a href="{{ absRefPrefix }}setships/" class="turns">Schiffe</a><br/>
+                            </li>
+                        </ul>
+                    </li>
+                    {# --- END --- user-selected-new-game --- #}
+                {% endif %}
 
-			<li>
-				<ul class="nav_controls">
+                <li>
+                    <ul class="nav_controls">
 
-                    {% if (user.status == 'moderator' or user.status == 'admin') %}
-                    {# --- START --- moderator-section --- #}
-					<li>
-						<a href="{{absRefPrefix}}gamesmod/" class="mod">Mod</a><br />
-					</li>
-                    {# --- END --- moderator-section --- #}
-                    {% endif %}
+                        {% if (user.status == 'moderator' or user.status == 'admin') %}
+                            {# --- START --- moderator-section --- #}
+                            <li>
+                                <a href="{{ absRefPrefix }}gamesmod/" class="mod">Mod</a><br/>
+                            </li>
+                            {# --- END --- moderator-section --- #}
+                        {% endif %}
 
-                    {% if (user.status == 'admin') %}
-                    {# --- START --- admin-section --- #}
-					<li>
-						<a href="{{absRefPrefix}}user/" class="admin">Admin</a><br />
-					</li>
-                    {# --- END --- admin-section --- #}
-                    {% endif %}
+                        {% if (user.status == 'admin') %}
+                            {# --- START --- admin-section --- #}
+                            <li>
+                                <a href="{{ absRefPrefix }}user/" class="admin">Admin</a><br/>
+                            </li>
+                            {# --- END --- admin-section --- #}
+                        {% endif %}
 
-					<li>
-						<a href ="{{absRefPrefix}}profile/">Profil</a><br />
-					</li>
-				</ul>
-			</li>
-            {# --- END --- active-user (logged-in) --- #}
+                        <li>
+                            <a href="{{ absRefPrefix }}profile/">Profil</a><br/>
+                        </li>
+                    </ul>
+                </li>
+                {# --- END --- active-user (logged-in) --- #}
             {% else %}
-            {# --- START --- inactive-user (not-logged-in) --- #}
-			<li>
-				<ul>
-					<li>
-						<a href="{{absRefPrefix}}whatis/">Was ist Att On?</a><br />
-					</li>
-					<li>
-						<a href="{{absRefPrefix}}register/">Registrieren</a><br />
-					</li>
-				</ul>
-			</li>
-            {# --- END --- inactive-user (not-logged-in) --- #}
+                {# --- START --- inactive-user (not-logged-in) --- #}
+                <li>
+                    <ul>
+                        <li>
+                            <a href="{{ absRefPrefix }}whatis/">Was ist Att On?</a><br/>
+                        </li>
+                        <li>
+                            <a href="{{ absRefPrefix }}register/">Registrieren</a><br/>
+                        </li>
+                    </ul>
+                </li>
+                {# --- END --- inactive-user (not-logged-in) --- #}
             {% endif %}
 
-			<li>
-				<ul class="info">
-					<li>
-						<a href="{{absRefPrefix}}manual/">Manual</a><br />
-					</li>
-					<li>
-						<a href="{{absRefPrefix}}imprint/">Impressum</a><br />
-					</li>
-				</ul>
-			</li>
-		</ul>
+            <li>
+                <ul class="info">
+                    <li>
+                        <a href="{{ absRefPrefix }}manual/">Manual</a><br/>
+                    </li>
+                    <li>
+                        <a href="{{ absRefPrefix }}imprint/">Impressum</a><br/>
+                    </li>
+                </ul>
+            </li>
+        </ul>
 
-	</div>
-	<div class="menubottom">
-	</div>
+    </div>
+    <div class="menubottom">
+    </div>
 </aside>
 
 <aside class="right">

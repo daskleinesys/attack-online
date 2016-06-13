@@ -2,12 +2,12 @@
 namespace AttOn\Controller\Game;
 
 use AttOn\Controller\Interfaces\ConstrictedController;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
-use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Exceptions\GameAdministrationException;
 use AttOn\Exceptions\GameCreationException;
 use AttOn\Exceptions\JoinUserException;
+use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelUser;
+use AttOn\Model\User\ModelIsInGameInfo;
 
 class GamesModeration extends ConstrictedController {
 
@@ -18,14 +18,13 @@ class GamesModeration extends ConstrictedController {
      * @param int $players
      * @param string $password1
      * @param string $password2
-     * @param int $game_mode
      * @param bool $creator_joins
      * @param int $id_color
      * @throws GameCreationException
-     * @throws JoinUserException
      * @return ModelGame
+     * @throws JoinUserException
      */
-    public function create($game_name, $players, $password1, $password2, $game_mode, $creator_joins, $id_color) {
+    public function create($game_name, $players, $password1, $password2, $creator_joins, $id_color) {
         $id_color = intval($id_color);
         $players = intval($players);
 
@@ -45,7 +44,7 @@ class GamesModeration extends ConstrictedController {
             throw new GameCreationException('Invalid password. At least 5 of the following letters: a-Z 0-9 $%\'-');
         }
 
-        $game = ModelGame::createGame($game_name, $game_mode, $players, ModelUser::getCurrentUser()->getId(), $password1);
+        $game = ModelGame::createGame($game_name, $players, ModelUser::getCurrentUser()->getId(), $password1);
 
         // join user
         if ($creator_joins) {
@@ -60,8 +59,8 @@ class GamesModeration extends ConstrictedController {
      *
      * @param int $id_user
      * @param int $id_game
-     * @throws GameAdministrationException
      * @return bool - true if user was kicked
+     * @throws GameAdministrationException
      */
     public function kickUser($id_user, $id_game) {
         $id_game = intval($id_game);
@@ -82,8 +81,9 @@ class GamesModeration extends ConstrictedController {
      *
      * @param string $password1
      * @param string $password2
-     * @throws GameAdministrationException - if passwords don't match or are invalid
+     * @param int $id_game
      * @return bool - true if password was changed
+     * @throws GameAdministrationException - if passwords don't match or are invalid
      */
     public function changePassword($password1 = null, $password2 = null, $id_game) {
         $id_game = intval($id_game);
@@ -102,8 +102,9 @@ class GamesModeration extends ConstrictedController {
     }
 
     /**
-     * @throws GameAdministrationException
+     * @param int $id_game
      * @return bool - true on success
+     * @throws GameAdministrationException
      */
     public function deleteGame($id_game) {
         $id_game = intval($id_game);
@@ -115,8 +116,9 @@ class GamesModeration extends ConstrictedController {
     }
 
     /**
-     * @throws GameAdministrationException
+     * @param int $id_game
      * @return bool
+     * @throws GameAdministrationException
      */
     public function startGame($id_game) {
         $id_game = intval($id_game);
@@ -135,9 +137,10 @@ class GamesModeration extends ConstrictedController {
     /**
      * sets the game status (and if necessary also changes the phase)
      *
-     * @param enum $status
-     * @throws GameAdministrationException
+     * @param int $id_game
+     * @param string $status - ENUM(new, started, running, done)
      * @return void
+     * @throws GameAdministrationException
      */
     public function setStatus($id_game, $status) {
         $id_game = intval($id_game);
