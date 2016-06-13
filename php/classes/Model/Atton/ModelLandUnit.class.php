@@ -1,5 +1,4 @@
 <?php
-
 namespace AttOn\Model\Atton;
 
 use AttOn\Exceptions\NullPointerException;

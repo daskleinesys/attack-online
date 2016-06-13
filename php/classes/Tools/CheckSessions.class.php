@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Tools;
+
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Model\User\ModelUser;

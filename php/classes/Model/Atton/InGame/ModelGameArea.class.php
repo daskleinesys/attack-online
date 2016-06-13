@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Model\Atton\InGame;
+
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\DataBase\SQLCommands;

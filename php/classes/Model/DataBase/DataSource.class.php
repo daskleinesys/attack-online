@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Model\DataBase;
+
 use AttOn\Exceptions\DataSourceException;
 
 class DataSource {

@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Operations;
+
 use AttOn\Controller\Game\GamesModeration;
 use AttOn\Model\Atton\ModelColor;
 use AttOn\Model\Atton\ModelGameMode;

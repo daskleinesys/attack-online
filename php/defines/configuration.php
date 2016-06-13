@@ -26,6 +26,11 @@ if (!defined('ABS_REF_PREFIX')) {
     define('ABS_REF_PREFIX', '/');
 }
 
+// misc
+if (!defined('ADMIN_MAIL')) {
+    define('ADMIN_MAIL', '');
+}
+
 global $log4php_config;
 if (!isset($log4php_config)) {
     $log4php_config = array();

@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View;
+
 use AttOn\Exceptions\MapException;
 use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
 use AttOn\Model\Atton\ModelLandUnit;

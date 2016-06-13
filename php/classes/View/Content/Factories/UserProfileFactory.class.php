@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Factories;
+
 use AttOn\View\Content\Operations;
 
 class UserProfileFactory extends Interfaces\ContentFactory {

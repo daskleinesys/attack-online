@@ -1,6 +1,4 @@
 <?php
-use AttOn\Model\DataBase\DataSource;
-
 namespace AttOn\Model\DataBase;
 
 class SQLCommands {

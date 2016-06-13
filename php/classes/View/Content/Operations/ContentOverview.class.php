@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Operations;
+
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelIsInGameInfo;

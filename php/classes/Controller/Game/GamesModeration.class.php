@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Controller\Game;
+
 use AttOn\Controller\Interfaces\ConstrictedController;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelUser;

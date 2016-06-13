@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Model\User;
+
 use AttOn\Model\Atton\ModelPhase;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\Iterator\ModelIterator;

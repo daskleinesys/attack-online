@@ -1,6 +1,13 @@
 <?php
 namespace AttOn;
 
+use Logger;
+use Slim\Slim;
+
+/* @var $app Slim */
+/* @var $debug bool */
+global $app, $debug;
+
 $app->post('/login/', function() use ($app, $debug) {
     // logout user if logged in
     Controller\User\UserActions::logout();

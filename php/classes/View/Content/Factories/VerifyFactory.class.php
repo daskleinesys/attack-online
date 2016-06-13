@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\View\Content\Factories;
+
 use AttOn\View\Content\Operations;
 
 class VerifyFactory extends Interfaces\ContentFactory {

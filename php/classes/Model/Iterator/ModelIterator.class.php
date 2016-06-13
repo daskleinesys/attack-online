@@ -1,5 +1,6 @@
 <?php
 namespace AttOn\Model\Iterator;
+
 use AttOn\Model\Iterator\Interfaces\AttonIterator;
 use AttOn\Exceptions\NullPointerException;
 

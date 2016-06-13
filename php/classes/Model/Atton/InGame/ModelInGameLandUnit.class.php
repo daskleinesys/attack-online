@@ -1,5 +1,4 @@
 <?php
-
 namespace AttOn\Model\Atton\InGame;
 
 use AttOn\Model\Atton\ModelLandUnit;

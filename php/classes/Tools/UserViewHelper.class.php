@@ -21,6 +21,7 @@ class UserViewHelper {
         // money on bank
         $ingame = ModelIsInGameInfo::getIsInGameInfo($id_user, $id_game);
         $output['money'] = $ingame->getMoney();
+        $output['moneySpendable'] = min($output['money'], MAX_MONEY_SPENDABLE);
 
         // money from resources
         $output['countries'] = 0;
@@ -54,7 +55,7 @@ class UserViewHelper {
         $output['comboproduction'] = $combo_count * 4;
 
         // sum
-        $output['sum'] = $output['money'] + $output['resproduction'] + $output['trproduction'] + $output['comboproduction'];
+        $output['sum'] = $output['moneySpendable'] + $output['resproduction'] + $output['trproduction'] + $output['comboproduction'];
 
         return $output;
     }
