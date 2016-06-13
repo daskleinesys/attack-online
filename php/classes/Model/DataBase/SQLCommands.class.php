@@ -215,26 +215,16 @@ class SQLCommands {
 
         // create tables
         self::$DataSource->load_query('create_areas_table', "CREATE TABLE z" . $id_game . "_areas LIKE z_areas", true);
-        self::$DataSource->load_query('create_battle_reports_table', "CREATE TABLE z" . $id_game . "_battle_reports LIKE z_battle_reports", true);
-        self::$DataSource->load_query('create_battle_reports_units_table', "CREATE TABLE z" . $id_game . "_battle_reports_units LIKE z_battle_reports_units", true);
-        self::$DataSource->load_query('create_battle_reports_user_table', "CREATE TABLE z" . $id_game . "_battle_reports_user LIKE z_battle_reports_user", true);
         self::$DataSource->load_query('create_moves_table', "CREATE TABLE z" . $id_game . "_moves LIKE z_moves", true);
         self::$DataSource->load_query('create_moves_areas_table', "CREATE TABLE z" . $id_game . "_moves_areas LIKE z_moves_areas", true);
         self::$DataSource->load_query('create_moves_units_table', "CREATE TABLE z" . $id_game . "_moves_units LIKE z_moves_units", true);
-        self::$DataSource->load_query('create_techs_table', "CREATE TABLE z" . $id_game . "_techs LIKE z_techs", true);
-        self::$DataSource->load_query('create_traderoutes_table', "CREATE TABLE z" . $id_game . "_traderoutes LIKE z_traderoutes", true);
         self::$DataSource->load_query('create_units_table', "CREATE TABLE z" . $id_game . "_units LIKE z_units", true);
 
         // drop tables
         self::$DataSource->load_query('drop_areas_table', "DROP TABLE z" . $id_game . "_areas", true);
-        self::$DataSource->load_query('drop_battle_reports_table', "DROP TABLE z" . $id_game . "_battle_reports", true);
-        self::$DataSource->load_query('drop_battle_reports_units_table', "DROP TABLE z" . $id_game . "_battle_reports_units", true);
-        self::$DataSource->load_query('drop_battle_reports_user_table', "DROP TABLE z" . $id_game . "_battle_reports_user", true);
         self::$DataSource->load_query('drop_moves_table', "DROP TABLE z" . $id_game . "_moves", true);
         self::$DataSource->load_query('drop_moves_areas_table', "DROP TABLE z" . $id_game . "_moves_areas", true);
         self::$DataSource->load_query('drop_moves_units_table', "DROP TABLE z" . $id_game . "_moves_units", true);
-        self::$DataSource->load_query('drop_techs_table', "DROP TABLE z" . $id_game . "_techs", true);
-        self::$DataSource->load_query('drop_traderoutes_table', "DROP TABLE z" . $id_game . "_traderoutes", true);
         self::$DataSource->load_query('drop_units_table', "DROP TABLE z" . $id_game . "_units", true);
 
         // define table-name
