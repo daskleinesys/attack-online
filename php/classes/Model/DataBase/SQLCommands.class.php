@@ -3,15 +3,18 @@ namespace AttOn\Model\DataBase;
 
 class SQLCommands {
 
-    // DataSource link
-    /* @var DataSource */
+    /**
+     * @var $DataSource DataSource
+     */
     private static $DataSource = null;
     private static $id_game = null;
 
-
-    // load predefined SQL commands into DataSource class
-    // @param string $flag (defines which queries should be loaded)
-    // @param int $id_game
+    /**
+     * load predefined SQL commands into DataSource class
+     *
+     * @param int $id_game
+     * @return void
+     */
     public static function init($id_game = null) {
 
         if (self::$DataSource === null) {
@@ -309,122 +312,6 @@ class SQLCommands {
         //create
         self::$DataSource->load_query('create_unit_for_zarea_user', "INSERT INTO $units_table (id_unit, id_user, id_zarea, count) VALUES (:id_unit, :id_user, :id_zarea, :count)");
 
-    }
-
-    private static function archiv() {
-
-        // unit info
-        self::$DataSource->load_query('get_all_unit_ids', "SELECT id FROM units");
-        self::$DataSource->load_query('get_unit_info', "SELECT id,name,abbr, price, tanksize, hitpoints, speed, id_type FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_units', "SELECT id,name,abbr FROM units WHERE id_type = " . TYPE_LAND . " OR id_type = " . TYPE_AIR);
-        self::$DataSource->load_query('get_sea_units', "SELECT id,name,abbr FROM units WHERE id_type = " . TYPE_SEA);
-        self::$DataSource->load_query('get_unit_hitpoints', "SELECT hitpoints FROM units WHERE id = :id_unit LIMIT 1");
-        self::$DataSource->load_query('get_unit_price', "SELECT price FROM units WHERE id = :id_unit LIMIT 1");
-        self::$DataSource->load_query('get_unit_speed', "SELECT speed FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_unit_type', "SELECT id_type FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_unit_hitbonus', "SELECT hitbonus FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_unit_hitchance', "SELECT hitchance FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_unit_killing_sequence', "SELECT killing_sequence FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_unit_bonus_kills', "SELECT bonus_kills FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_unit_killing_sequence_offset', "SELECT kill_sequ_offset AS killing_sequence_offset FROM units WHERE id = :id_unit");
-        self::$DataSource->load_query('get_land_unit_ship_takeover', "SELECT ship_takeover FROM units WHERE id = :id_unit");
-
-        // neutral units info
-        self::$DataSource->load_query('get_fix_losses_for_ress_prod', "SELECT id_ressource,productivity,id_unit,numberof FROM has_units WHERE id_ressource = :id_ressource AND productivity = :productivity AND type = 'losses'");
-        self::$DataSource->load_query('get_units_in_area_for_ress_prod', "SELECT id_ressource,productivity,id_unit,numberof FROM has_units WHERE id_ressource = :id_ressource AND productivity = :productivity AND type = 'strength'");
-
-
-        // traderoutes
-        $tr_table = "z" . $id_game . "_traderoutes";
-        //query
-        self::$DataSource->load_query('get_traderoutes_for_user', "SELECT id_traderoute1, value FROM $tr_table WHERE id_user = :id_user");
-
-        //moves
-        //query
-        self::$DataSource->load_query('get_LandMove_ids', "SELECT id AS id, id_user AS id_user FROM z" . $id_game . "_moves " .
-            "WHERE id_phase = " . PHASE_LANDMOVE . " AND round = :round AND status = 'correct' ORDER BY id ASC");
-        self::$DataSource->load_query('get_move_user', "SELECT id_user FROM z" . $id_game . "_moves WHERE id = :id_move");
-        self::$DataSource->load_query('get_ProductionMove_ids', "SELECT id AS id, id_user AS id_user FROM z" . $id_game . "_moves " .
-            "WHERE id_phase = " . PHASE_PRODUCTION . " AND round = :round AND status = 'correct' ORDER BY id ASC");
-        //delete
-        self::$DataSource->load_query('delete_route_by_move_id', "DELETE FROM z" . $id_game . "_route WHERE id_zmove = :id_move");
-        self::$DataSource->load_query('delete_moved_units_by_move_id', "DELETE FROM z" . $id_game . "_unit_moves WHERE id_zmove = :id_move");
-        self::$DataSource->load_query('delete_move', "DELETE FROM z" . $id_game . "_moves WHERE id = :id_move");
-        //update
-        self::$DataSource->load_query('set_move_illegal', "UPDATE $moves_table SET status = 'illegal', id_move_error = :flag WHERE id = :id_move");
-
-        // route info
-        self::$DataSource->load_query('get_target_area_id', "SELECT route.id_zarea AS id_area FROM z" . $id_game . "_route AS route, (SELECT MAX(steps) AS maxstep FROM z" . $id_game . "_route WHERE id_zmove = :id_move) AS maxsteps WHERE route.id_zmove = :id_move AND route.steps = maxsteps.maxstep");
-        self::$DataSource->load_query('get_start_area_id', "SELECT route.id_zarea AS id_area FROM z" . $id_game . "_route AS route, (SELECT MIN(steps) AS minstep FROM z" . $id_game . "_route WHERE id_zmove = :id_move) AS minsteps WHERE route.id_zmove = :id_move AND route.steps = minsteps.minstep");
-        self::$DataSource->load_query('get_production_area_id', "SELECT id_zarea AS id_area FROM $route_table WHERE id_zmove = :id_move AND steps IS NULL LIMIT 1");
-        self::$DataSource->load_query('get_production_sea_id', "SELECT id_zsea AS id_sea FROM $route_table WHERE id_zmove = :id_move AND steps IS NULL LIMIT 1");
-
-        // units
-        $units_table = "z" . $id_game . "_units";
-        // query
-        self::$DataSource->load_query('get_all_units_in_area', "SELECT id FROM $units_table WHERE id_zarea = :id_area");
-        self::$DataSource->load_query('get_all_zunit_info', "SELECT hitpoints, name, numberof, id_zarea, id_zsea, id_unit, id_type FROM $units_table WHERE id = :id");
-        self::$DataSource->load_query('get_number_of_units_in_area_by_id_unit', "SELECT id,numberof FROM $units_table WHERE id_zarea = :id_area AND id_unit = :id_unit LIMIT 1");
-        self::$DataSource->load_query('get_number_of_land_units_in_area', "SELECT id,numberof,id_unit FROM $units_table WHERE id_zarea = :id_area AND (id_type = " . TYPE_LAND . " OR id_type = " . TYPE_AIR . ") ORDER BY id_unit ASC");
-        self::$DataSource->load_query('get_ships_in_area', "SELECT id,tank,name,experience,dive_status,id_user,id_unit FROM $units_table WHERE id_zarea = :id_area");
-        self::$DataSource->load_query('check_ship_name', "SELECT id FROM $units_table WHERE name = :ship_name");
-        // insert
-        self::$DataSource->load_query('create_ship', "INSERT INTO $units_table (hitpoints,name,id_user,id_zarea,id_zsea,id_type,id_unit) VALUES (:hitpoints,:name,:id_user,:id_area,:id_sea,'" . TYPE_SEA . "',:id_unit)");
-        self::$DataSource->load_query('insert_land_units_in_area_by_id_unit', "INSERT INTO $units_table (numberof,id_user,id_zarea,id_type,id_unit) VALUES (:numberof, :id_user, :id_area, :id_type, :id_unit)");
-        // update
-        self::$DataSource->load_query('update_number_of_land_units_in_area_by_id_unit', "UPDATE $units_table SET numberof = :numberof WHERE id_zarea = :id_area AND id_unit = :id_unit");
-        self::$DataSource->load_query('update_ship_user_by_ship_id', "UPDATE $units_table SET id_user = :id_user WHERE id = :id_ship");
-        self::$DataSource->load_query('set_ship_destroyed_by_ship_id', "UPDATE $units_table SET hitpoints = 0 WHERE id = :id_ship");
-        //delete
-        self::$DataSource->load_query('delete_ship_by_ship_id', "DELETE FROM $units_table WHERE id = :id_ship");
-        self::$DataSource->load_query('delete_land_units_in_area_by_id_unit', "DELETE FROM $units_table WHERE id_zarea = :id_area AND id_unit = :id_unit");
-        self::$DataSource->load_query('delete_all_land_units_in_area', "DELETE FROM $units_table WHERE id_zarea = :id_area AND (id_type = " . TYPE_LAND . " OR id_type = " . TYPE_AIR . ")");
-
-        // moved units
-        $unit_moves_table = "z" . $id_game . "_unit_moves";
-        self::$DataSource->load_query('get_moved_land_units', "SELECT id,id_unit,numberof FROM z" . $id_game . "_unit_moves WHERE id_zmove = :id_move AND numberof > 0");
-        self::$DataSource->load_query('get_moved_unit_types', "SELECT id_unit FROM z" . $id_game . "_unit_moves WHERE id_zmove = :id_move GROUP BY id_unit");
-        self::$DataSource->load_query('get_produced_ship_name_by_move', "SELECT name FROM $unit_moves_table WHERE id_zmove = :id_move LIMIT 1");
-        self::$DataSource->load_query('get_produced_units_id_and_numberof', "SELECT id_unit, numberof, name FROM $unit_moves_table WHERE id_zmove = :id_move LIMIT 1");
-
-        // battle reports
-        $reports_table = "z" . $id_game . "_battle_reports";
-        $reports_table_user = "z" . $id_game . "_battle_reports_user";
-        $reports_table_units = "z" . $id_game . "_battle_reports_units";
-        // query
-        self::$DataSource->load_query('br_get_br_ids', "SELECT id, id_winner FROM $reports_table WHERE round = :round AND id_phase = :id_phase");
-        self::$DataSource->load_query('br_get_winner', "SELECT id, id_winner FROM $reports_table WHERE id = :id_battle LIMIT 1");
-        self::$DataSource->load_query('br_get_phase', "SELECT id,id_phase FROM $reports_table WHERE id = :id_battle LIMIT 1");
-
-        self::$DataSource->load_query('br_check_br_user', "SELECT id FROM $reports_table_user WHERE id_battle = :id_battle AND id_user = :id_user");
-        self::$DataSource->load_query('br_check_user_attacker', "SELECT id FROM $reports_table_user WHERE id_battle = :id_battle AND id_user = :id_user AND id_targetarea IS NOT NULL");
-        self::$DataSource->load_query('br_check_user_defender', "SELECT id FROM $reports_table_user WHERE id_battle = :id_battle AND id_user = :id_user AND id_targetarea IS NULL");
-        self::$DataSource->load_query('br_check_br_area', "SELECT id FROM $reports_table_user WHERE id_battle = :id_battle AND id_targetarea = :id_area");
-        self::$DataSource->load_query('br_get_br_user', "SELECT id_user, id_targetarea, id_finalarea FROM $reports_table_user WHERE id_battle = :id_battle");
-
-        self::$DataSource->load_query('br_get_user_units', "SELECT id_unit, numberof, type, battle_round FROM $reports_table_units WHERE id_battle = :id_battle AND id_user = :id_user");
-        self::$DataSource->load_query('br_get_user_start_units', "SELECT id_unit, numberof FROM $reports_table_units WHERE id_battle = :id_battle AND id_user = :id_user AND type = 'start'");
-        self::$DataSource->load_query('br_get_user_battle_line_units', "SELECT battle_round, id_unit, numberof FROM $reports_table_units WHERE id_battle = :id_battle AND id_user = :id_user AND type = 'battle_line' ORDER BY battle_round, id_unit ASC");
-        self::$DataSource->load_query('br_get_user_hitting_units', "SELECT battle_round, id_unit, numberof FROM $reports_table_units WHERE id_battle = :id_battle AND id_user = :id_user AND type = 'hits' ORDER BY battle_round, id_unit ASC");
-        self::$DataSource->load_query('br_get_user_lost_units', "SELECT battle_round, id_unit, numberof FROM $reports_table_units WHERE id_battle = :id_battle AND id_user = :id_user AND type = 'loss' ORDER BY battle_round, id_unit ASC");
-        self::$DataSource->load_query('br_get_user_healed_units', "SELECT id_unit, numberof FROM $reports_table_units WHERE id_battle = :id_battle AND id_user = :id_user AND type = 'heal'");
-
-        // insert
-        self::$DataSource->load_query('br_create_new_battle_report', "INSERT INTO $reports_table (round, id_phase) VALUES (:round, :phase)");
-        self::$DataSource->load_query('br_get_new_report_id', "SELECT MAX(id) AS id FROM $reports_table WHERE round = :round AND id_phase = :phase");
-        self::$DataSource->load_query('br_create_new_battle_report_user', "INSERT INTO $reports_table_user (id_battle,id_user,id_targetarea) VALUES (:id_battle, :id_user, :id_area)");
-        self::$DataSource->load_query('br_add_units_to_user', "INSERT INTO $reports_table_units (id_battle, id_user, battle_round, type, id_unit, numberof) VALUES (:id_battle, :id_user, :battle_round, 'start', :id_unit, :numberof)");
-        self::$DataSource->load_query('br_add_lost_units_to_user', "INSERT INTO $reports_table_units (id_battle, id_user, battle_round, type, id_unit, numberof) VALUES (:id_battle, :id_user, :battle_round, 'loss', :id_unit, :numberof)");
-        self::$DataSource->load_query('br_add_healed_units_to_user', "INSERT INTO $reports_table_units (id_battle, id_user, battle_round, type, id_unit, numberof) VALUES (:id_battle, :id_user, :battle_round, 'heal', :id_unit, :numberof)");
-        self::$DataSource->load_query('br_add_battle_line_units_to_user', "INSERT INTO $reports_table_units (id_battle, id_user, battle_round, type, id_unit, numberof) VALUES (:id_battle, :id_user, :battle_round, 'battle_line', :id_unit, :numberof)");
-        self::$DataSource->load_query('br_add_hitting_units_to_user', "INSERT INTO $reports_table_units (id_battle, id_user, battle_round, type, id_unit, numberof) VALUES (:id_battle, :id_user, :battle_round, 'hits', :id_unit, :numberof)");
-        // delete
-        self::$DataSource->load_query('delete_battle_report', "DELETE FROM $reports_table WHERE id = :id_battle");
-        self::$DataSource->load_query('delete_battle_report_user', "DELETE FROM $reports_table_user WHERE id_battle = :id_battle");
-        self::$DataSource->load_query('delete_battle_report_units', "DELETE FROM $reports_table_units WHERE id_battle = :id_battle");
-        // update
-        self::$DataSource->load_query('br_update_winner', "UPDATE $reports_table SET id_winner = :id_user WHERE id = :id_battle");
-        self::$DataSource->load_query('br_insert_final_area', "UPDATE $reports_table_user SET id_finalarea = :id_area WHERE id_battle = :id_battle AND id_user = :id_user");
     }
 
 }
