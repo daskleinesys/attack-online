@@ -306,11 +306,11 @@ class SQLCommands {
 
         // units info
         //query
-        self::$DataSource->load_query('get_land_units_for_zarea_user_unit', "SELECT id, id_unit, id_user, id_zarea, count FROM $units_table WHERE id_zarea = :id_zarea AND id_user = :id_user AND id_unit = :id_unit");
+        self::$DataSource->load_query('get_land_units_for_zarea_user_unit', "SELECT id, id_unit, id_user, id_zarea, numberof AS count FROM $units_table WHERE id_zarea = :id_zarea AND id_user = :id_user AND id_unit = :id_unit");
         //update
-        self::$DataSource->load_query('set_land_unit_count', "UPDATE $units_table SET count = :count WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_land_unit_count', "UPDATE $units_table SET numberof = :count WHERE id = :id_zunit");
         //create
-        self::$DataSource->load_query('create_unit_for_zarea_user', "INSERT INTO $units_table (id_unit, id_user, id_zarea, count) VALUES (:id_unit, :id_user, :id_zarea, :count)");
+        self::$DataSource->load_query('create_unit_for_zarea_user', "INSERT INTO $units_table (id_unit, id_user, id_zarea, numberof) VALUES (:id_unit, :id_user, :id_zarea, :count)");
 
     }
 
