@@ -313,22 +313,35 @@ class SQLCommands {
         self::$DataSource->load_query('create_unit_for_zarea_user', "INSERT INTO $units_table (id_unit, id_user, id_zarea, numberof) VALUES (:id_unit, :id_user, :id_zarea, :count)");
 
         // units info - ships
-        // TODO : write queries
         // query
-        self::$DataSource->load_query('get_ingame_ship_by_id', "");
-        self::$DataSource->load_query('get_ingame_ship_by_name', "");
-        self::$DataSource->load_query('get_all_ships_in_area_not_in_port_by_user', "");
-        self::$DataSource->load_query('get_all_ships_in_port_by_user', "");
+        self::$DataSource->load_query('get_ingame_ship_by_id',
+            "SELECT id, id_user, id_unit, id_zarea, tank, hitpoints, name, experience, dive_status, id_zarea_in_port FROM $units_table WHERE id = :id_zunit");
+        self::$DataSource->load_query('get_ingame_ship_by_name',
+            "SELECT id, id_user, id_unit, id_zarea, tank, hitpoints, name, experience, dive_status, id_zarea_in_port FROM $units_table WHERE name = :name");
+        self::$DataSource->load_query('get_all_ships_in_area_not_in_port_by_user',
+            "SELECT id FROM $units_table WHERE id_user = :id_user AND id_zarea = :id_zarea AND id_zarea_in_port IS NULL");
+        self::$DataSource->load_query('get_all_ships_in_port_by_user',
+            "SELECT id FROM $units_table WHERE id_user = :id_user AND id_zarea_in_port = :id_zarea_in_port");
         // update
-        self::$DataSource->load_query('set_ship_user', "");
-        self::$DataSource->load_query('set_ship_zarea', "");
-        self::$DataSource->load_query('set_ship_tank', "");
-        self::$DataSource->load_query('set_ship_hitpoints', "");
-        self::$DataSource->load_query('set_ship_experience', "");
-        self::$DataSource->load_query('set_ship_dive_status', "");
-        self::$DataSource->load_query('set_ship_in_port', "");
+        self::$DataSource->load_query('set_ship_user',
+            "UPDATE $units_table SET id_user = :id_user WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_ship_zarea',
+            "UPDATE $units_table SET id_zarea = :id_zarea WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_ship_tank',
+            "UPDATE $units_table SET tank = :tank WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_ship_hitpoints',
+            "UPDATE $units_table SET hitpoints = :hitpoints WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_ship_experience',
+            "UPDATE $units_table SET experience = :experience WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_ship_dive_status',
+            "UPDATE $units_table SET dive_status = :dive_status WHERE id = :id_zunit");
+        self::$DataSource->load_query('set_ship_in_port',
+            "UPDATE $units_table SET id_zarea_in_port = :id_zarea_in_port WHERE id = :id_zunit");
         // create
-        self::$DataSource->load_query('create_ship', "");
+        self::$DataSource->load_query('create_ship',
+            "INSERT INTO $units_table (tank, hitpoints, name, experience, dive_status, id_user, id_zarea, id_zarea_in_port, id_unit) 
+             VALUES (:tank, :hitpoints, :name, :experience, :dive_status, :id_user, :id_zarea, :id_zarea_in_port, :id_unit)"
+        );
     }
 
 }

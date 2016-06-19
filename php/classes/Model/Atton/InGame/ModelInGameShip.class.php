@@ -69,7 +69,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($id_game);
         $query = 'get_ingame_ship_by_id';
         $dict = array();
-        $dict[':id'] = $id;
+        $dict[':id_zunit'] = $id;
         $result = DataSource::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException("No ship by id $id found.");
