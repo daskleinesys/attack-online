@@ -203,6 +203,8 @@ class LogicLandMove extends PhaseLogic {
             // 4.b update country owner
             $area = ModelGameArea::getGameArea($this->id_game, $id_target_area);
             $area->setIdUser($id_attacker);
+            // 4.c check ships
+            // TODO : implement ship takeover or ship destruction
         }
 
         // 4. flag all moves as finished
@@ -227,7 +229,7 @@ class LogicLandMove extends PhaseLogic {
         // 2. roll alternating until no units left for one side
         // start with attacker, then alternatej
         while ($this->hasUnits($units_attacker)) {
-            // TODO : use unit settings from DB (killing sequence, kills, die)
+            // TODO : use unit settings from DB (killing sequence, kills, die) or GLOBAL SETTINGS
             // roll d6 for each non-airplane unit still left, hits if rolled lower or equal the number of units of that type (subtract 1 from roll if air-superiority)
             if ($this->checkHit($units_attacker[ID_INFANTRY], ($air_superiority === 1))) {
                 // ID_INFANTRY hit -> destroy ID_INFANTRY -> ID_TANK -> ID_ARTILLERY
