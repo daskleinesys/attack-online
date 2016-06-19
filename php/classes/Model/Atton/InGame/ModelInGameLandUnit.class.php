@@ -1,20 +1,16 @@
 <?php
 namespace AttOn\Model\Atton\InGame;
 
+use AttOn\Model\Atton\Interfaces\ModelInGameUnit;
 use AttOn\Model\Atton\ModelLandUnit;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\DataBase\SQLCommands;
 
-class ModelInGameLandUnit {
+class ModelInGameLandUnit extends ModelInGameUnit {
 
     private static $units = array(); // array(int id_game => array(int id_zarea => array(int id_user => array(int id_zunit => ModelInGameLandUnit))))
 
-    private $id;
-    private $id_unit;
-    private $id_user;
-    private $id_zarea;
     private $count;
-    private $id_game;
 
     /**
      * creates the model
@@ -27,13 +23,9 @@ class ModelInGameLandUnit {
      * @param $id_game int
      * @return ModelInGameLandUnit
      */
-    private function __construct($id, $id_unit, $id_user, $id_zarea, $count, $id_game) {
-        $this->id = intval($id);
-        $this->id_unit = intval($id_unit);
-        $this->id_user = intval($id_user);
-        $this->id_zarea = intval($id_zarea);
+    protected function __construct($id, $id_unit, $id_user, $id_zarea, $count, $id_game) {
+        parent::__construct($id, $id_user, $id_game, $id_unit, $id_zarea);
         $this->count = intval($count);
-        $this->id_game = intval($id_game);
     }
 
     /**
@@ -90,34 +82,6 @@ class ModelInGameLandUnit {
             $output[$id_unit] = self::getModelByIdZAreaUserUnit($id_game, $id_zarea, $id_user, $id_unit);
         }
         return $output;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId() {
-        return $this->id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIdUnit() {
-        return $this->id_unit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIdUser() {
-        return $this->id_user;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIdZArea() {
-        return $this->id_zarea;
     }
 
     /**
