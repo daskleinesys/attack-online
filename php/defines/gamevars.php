@@ -16,6 +16,13 @@ define('ID_INFANTRY', 1);
 define('ID_ARTILLERY', 2);
 define('ID_TANK', 3);
 define('ID_AIRCRAFT', 4);
+define('ID_SUBMARINE', 5);
+define('ID_DESTROYER', 6);
+define('ID_BATTLESHIP', 7);
+define('ID_CARRIER', 8);
+define('DIVE_STATUS_UP', 'up');
+define('DIVE_STATUS_DIVING', 'diving');
+define('DIVE_STATUS_SILENT', 'silent');
 
 // phases
 define('PHASE_LANDMOVE', 1);
