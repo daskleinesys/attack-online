@@ -1,13 +1,17 @@
 <?php
+
 namespace AttOn\View;
 
 use AttOn\Exceptions\MapException;
+use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
 use AttOn\Model\Atton\InGame\ModelInGameShip;
 use AttOn\Model\Atton\ModelLandUnit;
+use AttOn\Model\Atton\ModelShip;
 use AttOn\Model\DataBase\DataSource;
 use AttOn\Model\DataBase\SQLCommands;
 use AttOn\Model\Game\ModelGame;
+use AttOn\Model\User\ModelUser;
 
 class Map {
 
@@ -62,12 +66,39 @@ class Map {
 
             // check ships
             $shipCount = 0;
+            $shipViewData = array();
             if ((int)$country['area_type'] === TYPE_LAND) {
-                // TODO : implement
-                //$ships = ModelInGameShip::getShipsInPortByUser();
-            } else if ((int)$country['area_type'] === TYPE_SEA) {
-                // TODO : implement
-                //$ships = ModelInGameShip::getShipsInAreaNotInPortByUser();
+                $ships = ModelInGameShip::getShipsInPort($id_game, (int)$country['id_zarea']);
+            } else {
+                $ships = ModelInGameShip::getShipsInAreaNotInPort($id_game, (int)$country['id_zarea']);
+            }
+            while ($ships->hasNext()) {
+                /* @var $ship ModelInGameShip */
+                $ship = $ships->next();
+                $id_ship_owner = $ship->getIdUser();
+                if (!isset($shipViewData[$id_ship_owner])) {
+                    $shipViewData[$id_ship_owner] = array(
+                        'username' => ModelUser::getUser($id_ship_owner)->getLogin(),
+                        'ships' => array()
+                    );
+                }
+                $shipType = ModelShip::getModelById($ship->getIdUnit());
+                $currShipViewData = array(
+                    'name' => $ship->getName(),
+                    'type' => $shipType->getName(),
+                    'diveStatus' => $ship->getDiveStatus(),
+                    'experience' => $ship->getExperience()
+                );
+                if ((int)$country['area_type'] === TYPE_LAND) {
+                    $portToArea = ModelGameArea::getGameArea($id_game, $ship->getIdZArea());
+                    $currShipViewData['port'] = $portToArea->getName();
+                    $currShipViewData['portNumber'] = $portToArea->getNumber();
+                }
+                $shipViewData[$id_ship_owner]['ships'][] = $currShipViewData;
+                ++$shipCount;
+            }
+            if ($shipCount > 0) {
+                $country['ships'] = $shipViewData;
             }
             $country['shipCount'] = $shipCount;
 

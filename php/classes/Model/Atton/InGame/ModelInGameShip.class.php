@@ -153,6 +153,51 @@ class ModelInGameShip extends ModelInGameUnit {
         return new ModelIterator($models);
     }
 
+
+    /**
+     * returns all ships in area that are not destroyed
+     *
+     * @param $id_game int
+     * @param $id_zarea int
+     * @return ModelIterator
+     */
+    public static function getShipsInAreaNotInPort($id_game, $id_zarea) {
+        $models = array();
+        $query = 'get_all_ships_in_area_not_in_port';
+        $dict = array();
+        $dict[':id_zarea'] = $id_zarea;
+
+        // query units
+        SQLCommands::init($id_game);
+        $result = DataSource::Singleton()->epp($query, $dict);
+        foreach ($result as $ship) {
+            $models[] = self::getShipById($id_game, (int)$ship['id']);
+        }
+        return new ModelIterator($models);
+    }
+
+    /**
+     * returns all ships in area that are not destroyed
+     *
+     * @param $id_game int
+     * @param $id_zarea_in_port int
+     * @return ModelIterator
+     */
+    public static function getShipsInPort($id_game, $id_zarea_in_port) {
+        $models = array();
+        $query = 'get_all_ships_in_port';
+        $dict = array();
+        $dict[':id_zarea_in_port'] = $id_zarea_in_port;
+
+        // query units
+        SQLCommands::init($id_game);
+        $result = DataSource::Singleton()->epp($query, $dict);
+        foreach ($result as $ship) {
+            $models[] = self::getShipById($id_game, (int)$ship['id']);
+        }
+        return new ModelIterator($models);
+    }
+
     /**
      * creates ship
      *

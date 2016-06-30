@@ -48,18 +48,23 @@
                         <tr>
                             <th colspan="2">
                                 Schiffe<br>
-                                ({{ owner.username }}
+                                ({{ owner.username }})
                             </th>
                         </tr>
                         {% for ship in owner.ships %}
                             <tr>
-                                <td{% if not ship.port %} colspan="2"{% endif %}>
-                                    <strong>T{{ ship.name }}</strong><br>
-                                    ({{ ship.type }})
+                                <td>
+                                    <strong>{{ ship.name }}</strong><br>
+                                    ({{ ship.type }}{% if ship.diveStatus %} - {{ ship.diveStatus }}{% endif %})
+                                    {% if ship.port %}
+                                        <br><strong>{{ ship.port }} {{ ship.portNumber }}</strong>
+                                    {% endif %}
                                 </td>
-                                {% if ship.port %}
-                                    <td>Hafen {{ ship.port }}</td>
-                                {% endif %}
+                                <td>
+                                    {% if ship.experience > 0 %}
+                                        {% for i in 1..ship.experience %}*{% endfor %}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     {% endfor %}

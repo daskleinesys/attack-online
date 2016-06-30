@@ -238,7 +238,7 @@ class SQLCommands {
         $units_table = "z" . $id_game . "_units";
 
         // map
-        self::$DataSource->load_query('get_map_for_running_game', "SELECT areas.id, areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
+        self::$DataSource->load_query('get_map_for_running_game', "SELECT zareas.id AS id_zarea, areas.id, areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
             "resources.name AS resource, resources.label AS res_label, zareas.productivity AS prod, user.id AS id_user, user.user AS user, user.color AS color " .
             "FROM $areas_table AS zareas " .
             "LEFT JOIN resources AS resources ON (zareas.id_resource = resources.id) " .
@@ -250,7 +250,7 @@ class SQLCommands {
             "LEFT JOIN colors AS colors ON (colors.id = iig.id_color) " .
             "WHERE iig.id_game = $id_game" .
             ") AS user ON (zareas.id_user = user.id)");
-        self::$DataSource->load_query('get_map_for_new_game', "SELECT areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
+        self::$DataSource->load_query('get_map_for_new_game', "SELECT zareas.id AS id_zarea, areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
             "resources.name AS resource, resources.label AS res_label, zareas.productivity AS prod, " .
             "start.*" .
             "FROM $areas_table AS zareas " .
@@ -348,9 +348,13 @@ class SQLCommands {
         self::$DataSource->load_query('get_ingame_ship_by_name',
             "SELECT id, id_user, id_unit, id_zarea, tank, hitpoints, name, experience, dive_status, id_zarea_in_port FROM $units_table WHERE name = :name");
         self::$DataSource->load_query('get_all_ships_in_area_not_in_port_by_user',
-            "SELECT id FROM $units_table WHERE id_user = :id_user AND id_zarea = :id_zarea AND id_zarea_in_port IS NULL");
+            "SELECT id FROM $units_table WHERE id_user = :id_user AND id_zarea = :id_zarea AND id_zarea_in_port IS NULL AND name IS NOT NULL");
         self::$DataSource->load_query('get_all_ships_in_port_by_user',
-            "SELECT id FROM $units_table WHERE id_user = :id_user AND id_zarea_in_port = :id_zarea_in_port");
+            "SELECT id FROM $units_table WHERE id_user = :id_user AND id_zarea_in_port = :id_zarea_in_port AND name IS NOT NULL");
+        self::$DataSource->load_query('get_all_ships_in_area_not_in_port',
+            "SELECT id FROM $units_table WHERE id_zarea = :id_zarea AND id_zarea_in_port IS NULL AND name IS NOT NULL");
+        self::$DataSource->load_query('get_all_ships_in_port',
+            "SELECT id FROM $units_table WHERE id_zarea_in_port = :id_zarea_in_port AND name IS NOT NULL");
         // update
         self::$DataSource->load_query('set_ship_user',
             "UPDATE $units_table SET id_user = :id_user WHERE id = :id_zunit");
