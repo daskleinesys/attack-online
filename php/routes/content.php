@@ -1,7 +1,6 @@
 <?php
 namespace AttOn;
 
-use AttOn\Model\User\ModelUser;
 use AttOn\Tools\Autoloader;
 use AttOn\Tools\HeaderViewHelper;
 use AttOn\View\Content\Factories\GamesFactory;
@@ -10,7 +9,6 @@ use AttOn\View\Content\Factories\Interfaces\ContentFactory;
 use AttOn\View\Content\Factories\JoinGameFactory;
 use AttOn\View\Content\Factories\NewGameFactory;
 use AttOn\Exceptions\SessionException;
-use AttOn\View\Content\Operations\Interfaces\ContentOperation;
 use Logger;
 use Slim\Slim;
 
@@ -28,8 +26,17 @@ $app->map('/games(/:type)(/)', function ($type = null) use ($app, $debug, $logge
         'type' => $type
     );
     $factory = new GamesFactory();
-    $view = $factory->getOperation();
-    $view->run($data);
+    try {
+        $view = $factory->getOperation();
+        $view->run($data);
+    } catch (SessionException $ex) {
+        $data['errors'] = array(
+            'message' => $ex->getMessage()
+        );
+        HeaderViewHelper::parseCurrentUser($data);
+        $app->render('error.twig', $data);
+        return;
+    }
     HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('games');
@@ -48,8 +55,17 @@ $app->map('/gameinfo(/:id_game)(/)', function ($id_game = null) use ($app, $debu
         'id_game' => $id_game
     );
     $factory = new GameInfoFactory();
-    $view = $factory->getOperation();
-    $view->run($data);
+    try {
+        $view = $factory->getOperation();
+        $view->run($data);
+    } catch (SessionException $ex) {
+        $data['errors'] = array(
+            'message' => $ex->getMessage()
+        );
+        HeaderViewHelper::parseCurrentUser($data);
+        $app->render('error.twig', $data);
+        return;
+    }
     HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('gameinfo');
@@ -68,8 +84,17 @@ $app->map('/joingame(/:id_game)(/)', function ($id_game = null) use ($app, $debu
         'id_game' => $id_game
     );
     $factory = new JoinGameFactory();
-    $view = $factory->getOperation();
-    $view->run($data);
+    try {
+        $view = $factory->getOperation();
+        $view->run($data);
+    } catch (SessionException $ex) {
+        $data['errors'] = array(
+            'message' => $ex->getMessage()
+        );
+        HeaderViewHelper::parseCurrentUser($data);
+        $app->render('error.twig', $data);
+        return;
+    }
     HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('joingame');
@@ -77,8 +102,17 @@ $app->map('/joingame(/:id_game)(/)', function ($id_game = null) use ($app, $debu
 $app->get('/newgame(/)', function () use ($app, $debug, $logger) {
     $data = array();
     $factory = new NewGameFactory();
-    $view = $factory->getOperation();
-    $view->run($data);
+    try {
+        $view = $factory->getOperation();
+        $view->run($data);
+    } catch (SessionException $ex) {
+        $data['errors'] = array(
+            'message' => $ex->getMessage()
+        );
+        HeaderViewHelper::parseCurrentUser($data);
+        $app->render('error.twig', $data);
+        return;
+    }
     HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 });
@@ -95,28 +129,26 @@ $app->map('/:content/', function ($content) use ($app, $debug, $logger) {
         /* @var $factory ContentFactory */
         if ($factory->getName() === $content) {
             try {
-                $content_object = $factory->getOperation();
+                $view = $factory->getOperation();
+                $view->run($data);
             } catch (SessionException $ex) {
                 $logger->error($ex);
-                $data['user'] = ModelUser::getCurrentUser()->getViewData();
                 $data['errors'] = array(
                     'message' => $ex->getMessage()
                 );
+                HeaderViewHelper::parseCurrentUser($data);
                 $app->render('error.twig', $data);
                 return;
             }
         }
     }
+    HeaderViewHelper::parseCurrentUser($data);
 
     // render 404
-    if (!isset($content_object)) {
+    if (!isset($view)) {
         $app->notFound();
+        $app->render('404.twig', $data);
         return;
     }
-
-    // run operation
-    /* @var $content_object ContentOperation */
-    $content_object->run($data);
-    HeaderViewHelper::parseCurrentUser($data);
     $app->render('main.twig', $data);
 })->via('GET', 'POST')->name('content');

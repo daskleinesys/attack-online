@@ -3,6 +3,7 @@ namespace AttOn\View\Content\Factories\Interfaces;
 
 use AttOn\Model;
 use AttOn\Exceptions\SessionException;
+use AttOn\View\Content\Operations\Interfaces\ContentOperation;
 
 abstract class ContentFactory {
 
