@@ -721,7 +721,7 @@ div.imagemap div.landunits {
     display: none;
 }
 
-div.imagemap div.seaunits {
+div.imagemap div.ships {
     margin: 0px;
     padding: 0px;
     position: absolute;
@@ -742,7 +742,7 @@ img.landunits {
     padding: 0px;
 }
 
-img.seaunits {
+img.ships {
     margin: 0px;
     padding: 0px;
 }
@@ -827,6 +827,11 @@ body.show-resources {
 }
 body.show-landunits {
     div.imagemap div.landunits {
+        display: block;
+    }
+}
+body.show-ships {
+    div.imagemap div.ships {
         display: block;
     }
 }

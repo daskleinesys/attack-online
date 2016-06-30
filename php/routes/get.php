@@ -35,6 +35,8 @@ $app->get('/logout/', function () use ($app, $debug) {
 
 $app->get('/map/', function () use ($app, $debug) {
     $data = array();
+    HeaderViewHelper::parseCurrentUser($data);
+
     if (ModelGame::getCurrentGame() === null) {
         $data['errors'] = array(
             'message' => 'select a game first'
@@ -42,6 +44,7 @@ $app->get('/map/', function () use ($app, $debug) {
         $app->render('error.twig', $data);
         return;
     }
+
     try {
         $map = new Map();
         $map->run($data);
@@ -52,8 +55,6 @@ $app->get('/map/', function () use ($app, $debug) {
         $app->render('error.twig', $data);
         return;
     }
-
-    HeaderViewHelper::parseCurrentUser($data);
 
     $app->render('map.twig', $data);
 });

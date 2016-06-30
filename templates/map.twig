@@ -1,162 +1,203 @@
 <!DOCTYPE html>
 <html class="no-js" lang="de" dir="ltr">
-    <head>
-        {% include 'partials/head.twig' %}
-    </head>
-    <body id="top" class="layout_1 show-resources">
-        <div class="map" id="small_map">
+<head>
+    {% include 'partials/head.twig' %}
+</head>
+<body id="top" class="layout_1 show-resources">
+<div class="map" id="small_map">
 
-            <div class="imagemap">
-                {% for country in countryData %}
+    <div class="imagemap">
+        {% for country in countryData %}
 
-                    {# COUNTRY IMAGE #}
-                    <div class="type-{{country.area_type}} {{ (country.user) ? '' : 'is-empty' }}" style="top:{{country.postop}}px; left:{{country.posleft}}px; height:{{country.height}}px; width:{{country.width}}px; background-image:url({{absRefPrefix}}dist/images/countries/{{(country.color) ? country.color : 'empty'}}/{{country.number}}.gif)" id="{{country.number}}" >
-                    </div>
+            {# COUNTRY IMAGE #}
+            <div class="type-{{ country.area_type }} {{ (country.user) ? '' : 'is-empty' }}"
+                 style="top:{{ country.postop }}px; left:{{ country.posleft }}px; height:{{ country.height }}px; width:{{ country.width }}px; background-image:url({{ absRefPrefix }}dist/images/countries/{{ (country.color) ? country.color : 'empty' }}/{{ country.number }}.gif)"
+                 id="{{ country.number }}">
+            </div>
+            {# COUNTRY IMAGE END #}
 
-                    {# HOVER INFO BOX #}
-                    <div class="infobox" id="infobox_{{country.number}}" style="top:{{country.postop}}px; left:{{(country.posleft < 500) ? country.posleft + 100 : country.posleft - 150}}px;">
-                        <table>
+            {# HOVER INFO BOX #}
+            <div class="infobox" id="infobox_{{ country.number }}"
+                 style="top:{{ country.postop }}px; left:{{ (country.posleft < 500) ? country.posleft + 100 : country.posleft - 150 }}px;">
+                <table>
 
-                            <tr>
-                                <th>{{country.name}}</th><th>{{country.number}}</th>
-                            </tr>
+                    <tr>
+                        <th>{{ country.name }}</th>
+                        <th>{{ country.number }}</th>
+                    </tr>
 
-                            {% if country.user %}
-                                <tr>
-                                    <td>{{country.user}}</td>
-                                </tr>
-                                {# ship
-                                <tr>
-                                    <td>{{country.unit}}</td><td>{{howmanyships}}</td>
-                                </tr>
-                                ship #}
-                                {# shipatsea
-                                <tr>
-                                    <td>{{country.shipclass_atsea}}</td><td>{{howmanyships_atsea}}
-                                        <!-- BEGIN: otheruser -->
-                                        ({{howmanyships_atsea_otheruser}})
-                                        <!-- END: otheruser -->
-                                    </td>
-                                </tr>
-                                shipatsea #}
-                            {% endif %}
-
-                            {% for unit in country.units %}
-                                <tr>
-                                    <td>{{unit.name}}:</td><td>{{unit.count}}</td>
-                                </tr>
-                            {% endfor %}
-
-                            {% if country.resource %}
-                            <tr>
-                                <th>{{country.resource}}</th><th>{{country.prod}}</th>
-                            </tr>
-                            {% endif %}
-
-                            <tr><th colspan="2"></th></tr>
-
-                            {% if country.countrySelectOption %}
-                                <tr>
-                                    <td>Option</td><td>{{country.countrySelectOption}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Anzahl L&auml;nder</td><td>{{country.countrySelectCount}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Einheiten je Typ</td><td>{{country.countrySelectUnitCount}}</td>
-                                </tr>
-                            {% endif %}
-
-                            {% if country.traderoute %}
-                            <tr>
-                                <th>Handelsroute</th>
-                            </tr>
-                            <tr>
-                                <td>{{country.traderoute.area1.id}}</td><td>{{country.traderoute.area1.name}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{country.traderoute.area2.id}}</td><td>{{country.traderoute.area2.name}}</td>
-                            </tr>
-                            {% endif %}
-
-                        </table>
-                    </div>
-
-                    {# COUNTRY STATUS INFO #}
-                    {% if country.resource %}
-                    <div class="resource" style="top:{{country.yres}}px; left:{{country.xres}}px;">
-                        <img src="{{absRefPrefix}}dist/images/resources/{{country.res_label}}{{country.prod}}.gif" class="resource" alt="" />
-                    </div>
+                    {% if country.user %}
+                        <tr>
+                            <td colspan="2">{{ country.user }}</td>
+                        </tr>
                     {% endif %}
-                    {# status info
-                        {% if country.tank %}
-                        <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.number}}">
-                            <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
-                        </div>
-                        {% endif %}
-                        {% if country.traderoute %}
-                        <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.number}}">
-                            <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
-                        </div>
-                        {% endif %}
-                    #}
+
                     {% if country.units %}
-                    <div class="units" style="top:{{country.yres}}px; left:{{country.xres}}px;" >
-                        <div class="landunits">
-                            <img src="{{absRefPrefix}}dist/images/units/land/{{(country.unitCount) ? country.unitCount : '0'}}.gif" class="landunits" alt="" />
-                        </div>
-                        {# ships count
-                        <div class="seaunits" id="seaunit_{{country.number}}">
-                            <img src="{{absRefPrefix}}dist/images/units/sea/{{(country.shipCount) ? country.shipCount : '0'}}.gif" class="seaunits" alt="" />
-                        </div>
-                        #}
-                    </div>
-                    {% endif %}
-                    {# COUNTRY STATUS INFO END #}
-
-                {% endfor %}
-
-                <div class="transparent">
-                    <img src="{{absRefPrefix}}dist/images/transparent.gif" width="1000" height="400" border="0" alt="map" usemap="#imagemap" class="imagemap" />
-                    <map name="imagemap">
-                        {% for country in countryData %}
-                        <area shape="poly" coords="{{country.coords}}" href="#" alt="{{country.name}}" title="{{country.name}}" onmouseover="javascript:AttOn.HighlightSingleCountry({{country.number}})" onmouseout="javascript:AttOn.ClearHighlightSingleCountry({{country.number}})" onClick="AttOn.HighlightMultipleCountries({{country.number}}, new Array({{country.adjacentCountries}}))" />
+                        <tr>
+                            <th colspan="2">Landeinheiten</th>
+                        </tr>
+                        {% for unit in country.units %}
+                            <tr>
+                                <td>{{ unit.name }}</td>
+                                <td>{{ unit.count }}</td>
+                            </tr>
                         {% endfor %}
-                    </map>
+                    {% endif %}
+
+                    {% for owner in country.ships %}
+                        <tr>
+                            <th colspan="2">
+                                Schiffe<br>
+                                ({{ owner.username }}
+                            </th>
+                        </tr>
+                        {% for ship in owner.ships %}
+                            <tr>
+                                <td{% if not ship.port %} colspan="2"{% endif %}>
+                                    <strong>T{{ ship.name }}</strong><br>
+                                    ({{ ship.type }})
+                                </td>
+                                {% if ship.port %}
+                                    <td>Hafen {{ ship.port }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% if country.resource %}
+                        <tr>
+                            <th>{{ country.resource }}</th>
+                            <th>{{ country.prod }}</th>
+                        </tr>
+                    {% endif %}
+
+                    <tr>
+                        <th colspan="2"></th>
+                    </tr>
+
+                    {% if country.countrySelectOption %}
+                        <tr>
+                            <td>Option</td>
+                            <td>{{ country.countrySelectOption }}</td>
+                        </tr>
+                        <tr>
+                            <td>Anzahl Länder</td>
+                            <td>{{ country.countrySelectCount }}</td>
+                        </tr>
+                        <tr>
+                            <td>Einheiten je Typ</td>
+                            <td>{{ country.countrySelectUnitCount }}</td>
+                        </tr>
+                    {% endif %}
+
+                    {% if country.traderoute %}
+                        <tr>
+                            <th>Handelsroute</th>
+                        </tr>
+                        <tr>
+                            <td>{{ country.traderoute.area1.id }}</td>
+                            <td>{{ country.traderoute.area1.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ country.traderoute.area2.id }}</td>
+                            <td>{{ country.traderoute.area2.name }}</td>
+                        </tr>
+                    {% endif %}
+
+                </table>
+            </div>
+            {# HOVER INFO BOX END #}
+
+            {# COUNTRY STATUS INFO #}
+            {% if country.resource %}
+                <div class="resource" style="top:{{ country.yres }}px; left:{{ country.xres }}px;">
+                    <img src="{{ absRefPrefix }}dist/images/resources/{{ country.res_label }}{{ country.prod }}.gif" class="resource" alt=""/>
                 </div>
+            {% endif %}
+            {# status info
+                {% if country.tank %}
+                <div class="tank" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="tank_{{country.number}}">
+                    <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
+                </div>
+                {% endif %}
+                {% if country.traderoute %}
+                <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.number}}">
+                    <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
+                </div>
+                {% endif %}
+            #}
+            {% if country.units %}
+                <div class="units" style="top:{{ country.yres }}px; left:{{ country.xres }}px;">
+                    <div class="landunits">
+                        <img src="{{ absRefPrefix }}dist/images/units/land/{{ (country.unitCount) ? country.unitCount : '0' }}.gif" class="landunits"
+                             alt=""/>
+                    </div>
+                </div>
+            {% endif %}
+            {% if country.ships %}
+                <div class="units" style="top:{{ country.yres }}px; left:{{ country.xres }}px;">
+                    <div class="ships">
+                        <img src="{{ absRefPrefix }}dist/images/units/sea/{{ (country.shipCount) ? country.shipCount : '0' }}.gif" class="ships"
+                             alt=""/>
+                    </div>
+                </div>
+            {% endif %}
+            {# COUNTRY STATUS INFO END #}
 
-            </div>
+        {% endfor %}
 
-            <div class="map--toggle-status-display">
-                <form action="#">
-                    <ul>
-                        <li>
-                            <label>Status-Anzeige</label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="radio" name="display" onchange="$('body').removeClass('show-landunits').addClass('show-resources')" checked="checked" />
-                                Ressourcen
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="radio" name="display" onchange="$('body').removeClass('show-resources').addClass('show-landunits')" />
-                                Landeinheiten
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits')" />
-                                Nur L&auml;nder
-                            </label>
-                        </li>
-                    </ul>
-                </form>
-            </div>
-
+        <div class="transparent">
+            <img src="{{ absRefPrefix }}dist/images/transparent.gif" width="1000" height="400" border="0" alt="map" usemap="#imagemap"
+                 class="imagemap"/>
+            <map name="imagemap">
+                {% for country in countryData %}
+                    <area shape="poly" coords="{{ country.coords }}" href="#" alt="{{ country.name }}"
+                          onmouseover="AttOn.HighlightSingleCountry({{ country.number }})"
+                          onmouseout="AttOn.ClearHighlightSingleCountry({{ country.number }})"
+                          onClick="AttOn.HighlightMultipleCountries({{ country.number }}, [].push({{ country.adjacentCountries }}))"/>
+                {% endfor %}
+            </map>
         </div>
 
-        <script src="{{absRefPrefix}}vendor/requirejs/require.js" data-main="{{absRefPrefix}}dist/js/main"></script>
-    </body>
+    </div>
+
+    <div class="map--toggle-status-display">
+        <form action="#">
+            <ul>
+                <li>
+                    <label>Status-Anzeige</label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-landunits show-ships').addClass('show-resources')"
+                               checked="checked"/>
+                        Ressourcen
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-ships').addClass('show-landunits')"/>
+                        Landeinheiten
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits').addClass('show-ships')"/>
+                        Schiffe
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits show-ships')"/>
+                        Nur Länder
+                    </label>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+</div>
+
+<script src="{{ absRefPrefix }}vendor/requirejs/require.js" data-main="{{ absRefPrefix }}dist/js/main"></script>
+</body>
 </html>
