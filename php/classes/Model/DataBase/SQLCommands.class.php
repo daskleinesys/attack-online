@@ -231,10 +231,40 @@ class SQLCommands {
         self::$DataSource->load_query('drop_units_table', "DROP TABLE z" . $id_game . "_units", true);
 
         // define table-name
+        $areas_table = "z" . $id_game . "_areas";
         $moves_table = "z" . $id_game . "_moves";
         $moves_areas_table = "z" . $id_game . "_moves_areas";
         $moves_units_table = "z" . $id_game . "_moves_units";
         $units_table = "z" . $id_game . "_units";
+
+        // map
+        self::$DataSource->load_query('get_map_for_running_game', "SELECT areas.id, areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
+            "resources.name AS resource, resources.label AS res_label, zareas.productivity AS prod, user.id AS id_user, user.user AS user, user.color AS color " .
+            "FROM $areas_table AS zareas " .
+            "LEFT JOIN resources AS resources ON (zareas.id_resource = resources.id) " .
+            "LEFT JOIN areas AS areas ON (zareas.id_area = areas.id) " .
+            "LEFT JOIN (" .
+            "SELECT user.id AS id, user.login AS user, colors.color AS color " .
+            "FROM is_in_game AS iig " .
+            "LEFT JOIN user AS user ON (iig.id_user = user.id) " .
+            "LEFT JOIN colors AS colors ON (colors.id = iig.id_color) " .
+            "WHERE iig.id_game = $id_game" .
+            ") AS user ON (zareas.id_user = user.id)");
+        self::$DataSource->load_query('get_map_for_new_game', "SELECT areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, " .
+            "resources.name AS resource, resources.label AS res_label, zareas.productivity AS prod, " .
+            "start.*" .
+            "FROM $areas_table AS zareas " .
+            "LEFT JOIN resources AS resources ON (zareas.id_resource = resources.id) " .
+            "LEFT JOIN areas AS areas ON (zareas.id_area = areas.id) " .
+            "LEFT JOIN (" .
+            "SELECT user.login AS user, colors.color AS color, startreg.id_area, startreg.options AS countrySelectOption, optypes.units AS countrySelectUnitCount, optypes.countries AS countrySelectCount " .
+            "FROM is_in_game AS iig " .
+            "LEFT JOIN user AS user ON (iig.id_user = user.id) " .
+            "LEFT JOIN colors AS colors ON (colors.id = iig.id_color) " .
+            "INNER JOIN startregions AS startreg ON (startreg.id_set = iig.id_set) " .
+            "LEFT JOIN optiontypes AS optypes ON (optypes.id = startreg.id_optiontype) " .
+            "WHERE iig.id_game = $id_game" .
+            ") AS start ON (zareas.id_area = start.id_area)");
 
         // start moves
         self::$DataSource->load_query('get_start_move', "SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, areas.id_zarea, areas.step
@@ -284,7 +314,6 @@ class SQLCommands {
         self::$DataSource->load_query('flag_move_deleted', "UPDATE $moves_table SET deleted = 1 WHERE id = :id_move");
 
         // area info
-        $areas_table = "z" . $id_game . "_areas";
         // query
         self::$DataSource->load_query('get_zareas', "SELECT id FROM $areas_table WHERE id_user LIKE :id_user", true);
         self::$DataSource->load_query('get_zarea_for_area', "SELECT id FROM $areas_table WHERE id_area = :id_area", true);
