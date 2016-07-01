@@ -1,0 +1,46 @@
+{% include 'content/partials/currentgame.twig' %}
+
+<h1>Schiffe setzen</h1>
+
+<p>Hier könnt ihr eure Schiffe, die ihr zu Anfang der Partie habt, setzen.</p>
+
+{% if errors %}
+    <p class="error">{{ errors.message }}</p>
+{% endif %}
+
+{% if status %}
+    <p class="status">{{ status.message }}</p>
+{% endif %}
+
+<form method="post" action="{{ absRefPrefix }}setships/">
+
+    <ul>
+        <input type="submit" name="setships" value="Schiffe setzen"/>
+    </ul>
+
+    <hr>
+
+    {% if notCurrentPhase %}
+
+        <p class="info">
+            Achtung, du musst erst noch <a href="{{ absRefPrefix }}selectstart/">deine Länder wählen</a>.
+        </p>
+
+    {% elseif turnFixated %}
+
+        <p class="info">
+            Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Start-Schiffe gewählt haben und das Spiel beginnt.
+        </p>
+
+    {% else %}
+
+        <h2>Zug beenden</h2>
+        <p class="info">
+            Achtung, wenn du den folgenden Knopf drückst wird deine Flotte fixiert und du kannst sie nicht mehr ändern. Erst wenn alle
+            Spieler mit diesem Zug fertig sind startet das Spiel.
+        </p>
+        <input type="submit" name="fixate_start" value="Zug beenden"/>
+
+    {% endif %}
+
+</form>

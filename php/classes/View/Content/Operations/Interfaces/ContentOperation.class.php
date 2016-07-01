@@ -27,4 +27,11 @@ abstract class ContentOperation {
         return $data['turnFixated'] = ($igpi->getIsReadyForPhase((int)$id_phase)) ? true : false;
     }
 
+    protected function checkCurrentPhase(array &$data, $id_phase) {
+        $game = ModelGame::getCurrentGame();
+        if ($game->getIdPhase() !== (int)$id_phase) {
+            $data['notCurrentPhase'] = true;
+        }
+    }
+
 }

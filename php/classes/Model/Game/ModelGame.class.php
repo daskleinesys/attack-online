@@ -421,7 +421,7 @@ class ModelGame {
      */
     public function moveToNextPhase() {
         // TODO : add phases as development progresses
-        $phases = array(PHASE_LANDMOVE, /*PHASE_SEAMOVE, PHASE_TRADEROUTE, */PHASE_TROOPSMOVE, PHASE_PRODUCTION, PHASE_GAME_START, PHASE_SELECTSTART/*, PHASE_SETSHIPS*/);
+        $phases = array(PHASE_LANDMOVE, PHASE_SEAMOVE, /*PHASE_TRADEROUTE, */PHASE_TROOPSMOVE, PHASE_PRODUCTION, PHASE_GAME_START, PHASE_SELECTSTART, PHASE_SETSHIPS);
 
         // check which phase is next
         $add_round = false;

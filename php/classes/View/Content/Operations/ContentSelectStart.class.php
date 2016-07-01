@@ -9,7 +9,6 @@ use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelOptionType;
 use AttOn\Model\Atton\ModelStartRegion;
 use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelInGamePhaseInfo;
 use AttOn\Model\User\ModelIsInGameInfo;
 use AttOn\Model\User\ModelUser;
 
@@ -42,6 +41,7 @@ class ContentSelectStart extends Interfaces\ContentOperation {
 
         // parse moves
         $this->checkFixate($data, PHASE_SELECTSTART);
+        $this->checkCurrentPhase($data, PHASE_SELECTSTART);
         $this->parseOptions($data);
     }
 

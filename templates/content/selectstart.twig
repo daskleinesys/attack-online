@@ -2,14 +2,24 @@
 
 <h1>Startfelder wählen</h1>
 
-<p>Hier k&ouml;nnen die Startfelder ausgw&auml;hlt werden. Je nach Gruppe kann eine unterschiedliche Anzahl an L&auml;ndern gew&auml;hlt werden.</p>
+<p>Hier können die Startfelder ausgwählt werden. Je nach Gruppe kann eine unterschiedliche Anzahl an Ländern gewählt werden.</p>
+
+{% if errors %}
+    <br>
+    <p class="error">{{ errors.message }}</p>
+{% endif %}
+
+{% if status %}
+    <br>
+    <p class="status">{{ status.message }}</p>
+{% endif %}
 
 <form method="post" action="{{ absRefPrefix }}selectstart/">
 
     <ul>
         {% for option in options %}
             <li>
-                <strong>{{ option.countrySelectCount }} {{ (option.countrySelectCount == 1) ? 'Land' : 'L&auml;nder' }} w&auml;hlen
+                <strong>{{ option.countrySelectCount }} {{ (option.countrySelectCount == 1) ? 'Land' : 'Länder' }} wählen
                     // {{ option.countrySelectUnitCount }} Einheiten pro Einheiten-Typ und Land</strong>
                 <ul>
                     {% for area in option.areas %}
@@ -17,7 +27,7 @@
                         <li>
                             <label>
                                 <input type="checkbox" value="{{ area.id_area }}" id="area_{{ area.id_area }}"
-                                       name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (turnFixated) ? 'disabled' : '' }}> {{ area.number }} {{ area.name }}
+                                       name="countries_{{ option.number }}[]" {{ (area.checked) ? 'checked' : '' }} {{ (notCurrentPhase or turnFixated) ? 'disabled' : '' }}> {{ area.number }} {{ area.name }}
                             </label>
                         </li>
                         <li><br></li>
@@ -30,36 +40,33 @@
         {% endfor %}
     </ul>
 
-    {% if turnFixated %}
+    {% if notCurrentPhase %}
 
         <p>
-            Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Startfelder gew&auml;hlt haben und das Spiel beginnt.
+            Achtung, die Länder sind bereits fixiert. Setze als nächstes <a href="{{ absRefPrefix }}setships/">deine Schiffe</a>.
+        </p>
+        <br><br>
+
+    {% elseif turnFixated %}
+
+        <p>
+            Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Startfelder gewählt haben und das Spiel in die nächste Phase (Schiffe setzen) geht.
         </p>
         <br><br>
 
     {% else %}
 
-        <input type="submit" name="selectstart" value="Best&auml;tigen"/>
+        <input type="submit" name="selectstart" value="Bestätigen"/>
 
         <hr>
 
         <h2>Zug beenden</h2>
         <p>
-            Achtung, wenn du den folgenden Knopf dr&uuml;ckst werden die Startfelder fixiert und du kannst sie nicht mehr &auml;ndern. Erst wenn alle
-            Spieler mit diesem Zug fertig sind startet das Spiel.
+            Achtung, wenn du den folgenden Knopf drückst werden die Startfelder fixiert und du kannst sie nicht mehr ändern. Erst wenn alle
+            Spieler mit diesem Zug fertig sind geht das Spiel in die nächste Phase (Schiffe setzen).
         </p>
-        <input type="submit" name="fixate_start" value="Fertig"/>
+        <input type="submit" name="fixate_start" value="Zug beenden"/>
 
     {% endif %}
 
 </form>
-
-{% if errors %}
-    <br>
-    <p class="error">{{ errors.message }}</p>
-{% endif %}
-
-{% if status %}
-    <br>
-    <p class="status">{{ status.message }}</p>
-{% endif %}
