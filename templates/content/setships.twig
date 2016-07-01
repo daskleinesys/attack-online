@@ -12,35 +12,52 @@
     <p class="status">{{ status.message }}</p>
 {% endif %}
 
-<form method="post" action="{{ absRefPrefix }}setships/">
+{% if notCurrentPhase %}
+    <p class="info">
+        Achtung, du musst erst noch <a href="{{ absRefPrefix }}selectstart/">deine Länder wählen</a>.
+    </p>
+{% endif %}
 
+{% if turnFixated %}
+    <p class="info">
+        Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Start-Schiffe gewählt haben und das Spiel beginnt.
+    </p>
+{% endif %}
+
+{% if availableShips %}
+    <h2>Verfügbare Schiffe</h2>
     <ul>
-        <input type="submit" name="setships" value="Schiffe setzen"/>
+        <li>4 x U-Boot</li>
+        <li>4 x Zerstörer</li>
+        <li>2 x Schlachtschiff</li>
+        <li>2 x Flugzeugträger</li>
     </ul>
 
     <hr>
 
-    {% if notCurrentPhase %}
+    <h2>Schiff setzen</h2>
 
-        <p class="info">
-            Achtung, du musst erst noch <a href="{{ absRefPrefix }}selectstart/">deine Länder wählen</a>.
-        </p>
-
-    {% elseif turnFixated %}
-
-        <p class="info">
-            Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Start-Schiffe gewählt haben und das Spiel beginnt.
-        </p>
-
-    {% else %}
-
-        <h2>Zug beenden</h2>
-        <p class="info">
-            Achtung, wenn du den folgenden Knopf drückst wird deine Flotte fixiert und du kannst sie nicht mehr ändern. Erst wenn alle
-            Spieler mit diesem Zug fertig sind startet das Spiel.
-        </p>
+    <form method="post" action="{{ absRefPrefix }}setships/">
+        <ul>
+        </ul>
+        <input type="submit" name="setships" value="Schiffe setzen"/>
+    </form>
+{% elseif not turnFixated %}
+    <h2>Zug beenden</h2>
+    <p class="info">
+        Achtung, wenn du den folgenden Knopf drückst wird deine Flotte fixiert und du kannst sie nicht mehr ändern. Erst wenn alle
+        Spieler mit diesem Zug fertig sind startet das Spiel.
+    </p>
+    <form method="post" action="{{ absRefPrefix }}setships/">
         <input type="submit" name="fixate_start" value="Zug beenden"/>
+    </form>
+{% endif %}
 
-    {% endif %}
+{% if currentShips %}
+    <hr>
 
-</form>
+    <h2>Bereits gewählte Schiffe</h2>
+    <ul>
+
+    </ul>
+{% endif %}

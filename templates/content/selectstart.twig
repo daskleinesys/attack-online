@@ -5,13 +5,24 @@
 <p>Hier können die Startfelder ausgwählt werden. Je nach Gruppe kann eine unterschiedliche Anzahl an Ländern gewählt werden.</p>
 
 {% if errors %}
-    <br>
     <p class="error">{{ errors.message }}</p>
 {% endif %}
 
 {% if status %}
-    <br>
     <p class="status">{{ status.message }}</p>
+{% endif %}
+
+{% if notCurrentPhase %}
+    <p class="info">
+        Achtung, die Länder sind bereits fixiert. Setze als nächstes <a href="{{ absRefPrefix }}setships/">deine Schiffe</a>.
+    </p>
+{% endif %}
+
+{% if turnFixated %}
+    <p class="info">
+        Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Startfelder gewählt haben und das Spiel in die nächste Phase (Schiffe
+        setzen) geht.
+    </p>
 {% endif %}
 
 <form method="post" action="{{ absRefPrefix }}selectstart/">
@@ -40,21 +51,7 @@
         {% endfor %}
     </ul>
 
-    {% if notCurrentPhase %}
-
-        <p>
-            Achtung, die Länder sind bereits fixiert. Setze als nächstes <a href="{{ absRefPrefix }}setships/">deine Schiffe</a>.
-        </p>
-        <br><br>
-
-    {% elseif turnFixated %}
-
-        <p>
-            Achtung, du hast den Zug bereits fixiert. Warte bis alle Spieler die Startfelder gewählt haben und das Spiel in die nächste Phase (Schiffe setzen) geht.
-        </p>
-        <br><br>
-
-    {% else %}
+    {% if not notCurrentPhase and not turnFixated %}
 
         <input type="submit" name="selectstart" value="Bestätigen"/>
 

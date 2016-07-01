@@ -174,8 +174,21 @@ aside.right {
     color: white;
 }
 
-.error {
-    color: #FF0000;
+p.error,
+p.status,
+p.info {
+    margin: 14px 1px;
+
+    &.error {
+        color: #FF0000;
+    }
+    &.status {
+        color: #5f1515;
+    }
+    &.info {
+        color: #5f1515;
+        font-style: italic;
+    }
 }
 
 div#error {
