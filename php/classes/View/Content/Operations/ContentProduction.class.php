@@ -23,11 +23,6 @@ class ContentProduction extends ContentOperation {
         $data['template'] = $this->getTemplate();
         $this->addCurrentGameInfo($data);
 
-        $game = ModelGame::getCurrentGame();
-        if ($game->getIdPhase() !== PHASE_PRODUCTION) {
-            $data['notCurrentPhase'] = true;
-        }
-
         $this->handleInput($data);
         $this->showMoves($data);
         $this->showCurrentProduction($data);
@@ -35,6 +30,7 @@ class ContentProduction extends ContentOperation {
         if (!$this->checkFixate($data, PHASE_PRODUCTION)) {
             $this->showNewMove($data);
         }
+        $this->checkCurrentPhase($data, PHASE_PRODUCTION);
     }
 
     private function handleInput(array &$data) {

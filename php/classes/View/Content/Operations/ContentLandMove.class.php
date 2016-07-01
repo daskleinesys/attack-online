@@ -28,6 +28,7 @@ class ContentLandMove extends ContentOperation {
         if (!$this->checkFixate($data, PHASE_LANDMOVE)) {
             $this->showNewMove($data);
         }
+        $this->checkCurrentPhase($data, PHASE_LANDMOVE);
     }
 
     private function showMoves(array &$data) {
@@ -113,11 +114,6 @@ class ContentLandMove extends ContentOperation {
         }
         $data['startAreas'] = $startAreas;
         $data['destinationAreas'] = $destinationAreas;
-
-        $game = ModelGame::getCurrentGame();
-        if ($game->getIdPhase() !== PHASE_LANDMOVE) {
-            $data['notCurrentPhase'] = true;
-        }
     }
 
     private function handleInput(array &$data) {

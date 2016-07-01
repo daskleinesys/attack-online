@@ -31,7 +31,9 @@ abstract class ContentOperation {
         $game = ModelGame::getCurrentGame();
         if ($game->getIdPhase() !== (int)$id_phase) {
             $data['notCurrentPhase'] = true;
+            return true;
         }
+        return false;
     }
 
 }

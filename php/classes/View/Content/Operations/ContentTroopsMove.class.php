@@ -28,6 +28,7 @@ class ContentTroopsMove extends ContentOperation {
         if (!$this->checkFixate($data, PHASE_TROOPSMOVE)) {
             $this->showNewMove($data);
         }
+        $this->checkCurrentPhase($data, PHASE_TROOPSMOVE);
     }
 
     private function showMoves(array &$data) {
@@ -113,11 +114,6 @@ class ContentTroopsMove extends ContentOperation {
         }
         $data['startAreas'] = $startAreas;
         $data['destinationAreas'] = $destinationAreas;
-
-        $game = ModelGame::getCurrentGame();
-        if ($game->getIdPhase() !== PHASE_TROOPSMOVE) {
-            $data['notCurrentPhase'] = true;
-        }
     }
 
     private function handleInput(array &$data) {
