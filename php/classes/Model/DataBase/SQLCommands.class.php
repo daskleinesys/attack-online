@@ -273,6 +273,16 @@ class SQLCommands {
 				WHERE moves.id = :id_move", true);
         self::$DataSource->load_query('get_start_move_for_user', "SELECT moves.id FROM $moves_table AS moves WHERE moves.id_user = :id_user AND id_phase = :id_phase AND round = :round AND deleted = 0 LIMIT 1", true);
 
+        // set ship moves
+        self::$DataSource->load_query('get_set_ships_move', "
+            SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, in_port.id_zarea AS id_zarea_in_port, at_sea.id_zarea AS id_zarea, zship.id_zunit
+            FROM $moves_table AS moves
+            LEFT JOIN $moves_areas_table AS in_port ON (moves.id = in_port.id_zmove AND in_port.step = 0) 
+            LEFT JOIN $moves_areas_table AS at_sea ON (moves.id = at_sea.id_zmove AND at_sea.step = 1)
+            LEFT JOIN $moves_units_table AS zship ON (moves.id = zship.id_zmove)
+            WHERE moves.id = :id_move
+        ");
+
         // in-game moves
         self::$DataSource->load_query('get_land_move', "
             SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
@@ -301,6 +311,7 @@ class SQLCommands {
         self::$DataSource->load_query('create_move', "INSERT INTO $moves_table (id_user, id_phase, round) VALUES (:id_user, :id_phase, :round)", true);
         self::$DataSource->load_query('insert_area_for_move', "INSERT INTO $moves_areas_table (id_zmove, id_zarea, step) VALUES (:id_move, :id_zarea, :step)", true);
         self::$DataSource->load_query('insert_land_units_for_move', "INSERT INTO $moves_units_table (id_zmove, id_zunit, numberof) VALUES (:id_move, :id_zunit, :count)", true);
+        self::$DataSource->load_query('insert_ship_for_move', "INSERT INTO $moves_units_table (id_zmove, id_zunit) VALUES (:id_move, :id_zunit)", true);
 
         // select moves
         self::$DataSource->load_query('get_all_moves_for_phase_and_round', "SELECT id FROM $moves_table WHERE id_phase = :id_phase AND round = :round AND deleted = 0", true);
@@ -374,6 +385,10 @@ class SQLCommands {
         self::$DataSource->load_query('create_ship',
             "INSERT INTO $units_table (tank, hitpoints, name, experience, dive_status, id_user, id_zarea, id_zarea_in_port, id_unit) 
              VALUES (:tank, :hitpoints, :name, :experience, :dive_status, :id_user, :id_zarea, :id_zarea_in_port, :id_unit)"
+        );
+        // delete
+        self::$DataSource->load_query('delete_ship',
+            "DELETE FROM $units_table WHERE id = :id_zunit"
         );
     }
 

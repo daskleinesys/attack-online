@@ -27,20 +27,73 @@
 {% if availableShips %}
     <h2>Verfügbare Schiffe</h2>
     <ul>
-        <li>4 x U-Boot</li>
+        <li>3 x U-Boot</li>
         <li>4 x Zerstörer</li>
         <li>2 x Schlachtschiff</li>
-        <li>2 x Flugzeugträger</li>
+        <li>1 x Flugzeugträger</li>
     </ul>
 
     <hr>
 
-    <h2>Schiff setzen</h2>
+    <h2>neue Schiffe setzen</h2>
 
     <form method="post" action="{{ absRefPrefix }}setships/">
-        <ul>
-        </ul>
-        <input type="submit" name="setships" value="Schiffe setzen"/>
+        <table>
+            <tr>
+                <th>
+                    Typ
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Land
+                </th>
+                <th>
+                    Hafen
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <select name="type" size="1">
+                            <option value="" disabled selected>Schiffstyp wählen</option>
+                            <option value="5">U-Boot</option>
+                            <option value="6">Zerstörer</option>
+                            <option value="7">Schlachtschiff</option>
+                            <option value="8">Flugzeugträger</option>
+                        </select>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="text" name="name" placeholder="Schiffname">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <select name="zarea_in_port" size="1">
+                            <option value="" disabled selected>Land wählen</option>
+                            <option value="12">Mexico 12</option>
+                            <option value="13">Antilles Panama 13</option>
+                        </select>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <select name="zarea" size="1">
+                            <option value="" disabled selected>Hafen wählen</option>
+                            <option value="86">Gulf of Mexico 86</option>
+                            <option value="87">Carribean Sea 87</option>
+                        </select>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3"></th>
+                <td><input type="submit" name="setship" value="Schiff setzen"/></td>
+            </tr>
+        </table>
     </form>
 {% elseif not turnFixated %}
     <h2>Zug beenden</h2>
@@ -57,7 +110,71 @@
     <hr>
 
     <h2>Bereits gewählte Schiffe</h2>
-    <ul>
-
-    </ul>
+    <form method="post" action="{{ absRefPrefix }}setships/">
+        <table>
+            <tr>
+                <th>
+                    Typ
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Land
+                </th>
+                <th>
+                    Hafen
+                </th>
+                {% if not notCurrentPhase and not turnFixated %}
+                    <th>
+                        löschen
+                    </th>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>
+                    U-Boot
+                </td>
+                <td>
+                    TSS Ygthrasir
+                </td>
+                <td>
+                    Antilles Panama 13
+                </td>
+                <td>
+                    Caribbean Sea 87
+                </td>
+                {% if not notCurrentPhase and not turnFixated %}
+                    <td>
+                        <button type="submit" value="{{ move.id }}" name="delete">
+                            <img src="{{ absRefPrefix }}dist/images/kick.gif" alt="delete_mvoe"/>
+                        </button>
+                    </td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>
+                    Flugzeugträger
+                </td>
+                <td>
+                    TSS Karlox
+                </td>
+                <td>
+                    Antilles Panama 13
+                </td>
+                <td>
+                    Caribbean Sea 87
+                </td>
+                {% if not notCurrentPhase and not turnFixated %}
+                    <td>
+                        <button type="submit" value="{{ move.id }}" name="delete">
+                            <img src="{{ absRefPrefix }}dist/images/kick.gif" alt="delete_mvoe"/>
+                        </button>
+                    </td>
+                {% endif %}
+            </tr>
+        </table>
+    </form>
 {% endif %}
+
+<br><br>

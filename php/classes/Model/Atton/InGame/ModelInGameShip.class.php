@@ -232,6 +232,28 @@ class ModelInGameShip extends ModelInGameUnit {
         return self::getShipById((int)$id_game, (int)$id);
     }
 
+    /**
+     * permanently delete ship from database
+     *
+     * @param $id_game
+     * @param $id_zunit
+     * @throws NullPointerException
+     */
+    public static function deleteShip($id_game, $id_zunit) {
+        $id_game = (int)$id_game;
+        $id_zunit = (int) $id_zunit;
+        $ship = self::getShipById($id_game, $id_zunit);
+
+        SQLCommands::init((int)$id_game);
+        $query = 'delete_ship';
+        $dict = array();
+        $dict[':id_zunit'] = (int)$id_zunit;
+        DataSource::getInstance()->epp($query, $dict);
+
+        unset(self::$shipsById[$id_game][$id_zunit]);
+        unset(self::$shipsByName[$id_game][$ship->getName()]);
+    }
+
     private static function getShipHelper($id_game, array $result) {
         $unit_data = $result[0];
         $ship = new ModelInGameShip(

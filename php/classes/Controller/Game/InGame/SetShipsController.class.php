@@ -33,4 +33,14 @@ class SetShipsController extends PhaseController {
         $this->fixatePhase(true);
     }
 
+    public function createSetShipsMove() {
+
+        // TODO : implement
+
+        // 1. regex name --> done in controller
+        // 2. check if id_zarea_in_port belongs to user --> done in controller
+        // 3. check if zarea and id_zarea_in_port are adjacent --> done in controller
+        // 4. check if id_unit is a ship --> done in controller
+    }
+
 }
