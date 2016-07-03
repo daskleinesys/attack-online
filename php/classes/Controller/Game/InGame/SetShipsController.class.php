@@ -3,6 +3,9 @@ namespace AttOn\Controller\Game\InGame;
 
 use AttOn\Controller\Interfaces\PhaseController;
 use AttOn\Exceptions\ControllerException;
+use AttOn\Exceptions\ModelException;
+use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
 
 class SetShipsController extends PhaseController {
 
@@ -28,19 +31,68 @@ class SetShipsController extends PhaseController {
             return;
         }
 
-        // TODO : check if all ships are set
+        // check if all ships are set
+        // TODO : implement
+        throw new ControllerException('Set all ships first!');
 
         $this->fixatePhase(true);
     }
 
-    public function createSetShipsMove() {
+    /**
+     * creates new ship and corresponding move
+     *
+     * @param $id_unit int
+     * @param $name string
+     * @param $zarea_in_port int
+     * @param $zarea int
+     * @throws ControllerException
+     * @throws ModelException
+     */
+    public function setNewShip($id_unit, $name, $zarea_in_port, $zarea) {
+        // 1. regex name
+        $name = trim($name);
+        if (!preg_match("/^([a-zA-Z0-9]+[a-zA-Z0-9' -]+[a-zA-Z0-9']+){3,}?$/", $name)) {
+            throw new ControllerException('Invalid ship name. Only letters, numbers, spaces and -\' allowed');
+        }
 
+        // 2. check if id_zarea_in_port belongs to user
+        $port_area = ModelGameArea::getGameArea($this->id_game, (int)$zarea_in_port);
+        if ($port_area->getIdUser() !== $this->id_user) {
+            throw new ControllerException('Area doesn\'t belong to user.');
+        }
+
+        // 3. check if zarea and id_zarea_in_port are adjacent
+        if (!in_array((int)$zarea, $port_area->getAdjecents())) {
+            throw new ControllerException('Area not adjacent do port area.');
+        }
+
+        // 4. check if ship id is in still available ships
         // TODO : implement
 
-        // 1. regex name --> done in controller
-        // 2. check if id_zarea_in_port belongs to user --> done in controller
-        // 3. check if zarea and id_zarea_in_port are adjacent --> done in controller
-        // 4. check if id_unit is a ship --> done in controller
+        // 5. create new move
+        ModelSetShipsMove::createSetShipsMove($this->id_user, $this->id_game, (int)$zarea_in_port, (int)$zarea, (int)$id_unit, $name);
+    }
+
+    /**
+     * delete move and corresponding ship from database
+     *
+     * @param $id_move
+     */
+    public function deleteMove($id_move) {
+        // TODO : implement
+
+        // 1. check if it is a setship move from the active player
+        // 2. delete
+    }
+
+    public function getStillAvailableShips() {
+        // TODO : implement
+
+        // 1. get list of all StartShips
+
+        // 2. get list of all StartShipMoves and reduce list of Startships
+
+        // 3. return
     }
 
 }
