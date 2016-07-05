@@ -36,8 +36,12 @@ class SetShipsController extends PhaseController {
         }
 
         // check if all ships are set
-        // TODO : implement
-        throw new ControllerException('Set all ships first!');
+        $ships = $this->getStillAvailableShips();
+        foreach ($ships as $id => $numberof) {
+            if ($numberof > 0) {
+                throw new ControllerException('Set all ships first!');
+            }
+        }
 
         $this->fixatePhase(true);
     }
