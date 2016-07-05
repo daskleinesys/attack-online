@@ -36,8 +36,8 @@ class SetShipsController extends PhaseController {
         }
 
         // check if all ships are set
-        $ships = $this->getStillAvailableShips();
-        foreach ($ships as $id => $numberof) {
+        $stillAvailableShips = $this->getStillAvailableShips();
+        foreach ($stillAvailableShips as $id => $numberof) {
             if ($numberof > 0) {
                 throw new ControllerException('Set all ships first!');
             }
@@ -75,7 +75,12 @@ class SetShipsController extends PhaseController {
         }
 
         // 4. check if ship id is in still available ships
-        // TODO : implement
+        $stillAvailableShips = $this->getStillAvailableShips();
+        if (!isset($stillAvailableShips[$id_unit])) {
+            throw new ControllerException('No ships of this type available.');
+        } else if ($stillAvailableShips[$id_unit] <= 0) {
+            throw new ControllerException('No ships of this type available anymore.');
+        }
 
         // 5. create new move
         ModelSetShipsMove::createSetShipsMove($this->id_user, $this->id_game, (int)$zarea_in_port, (int)$zarea, (int)$id_unit, $name);
@@ -85,12 +90,17 @@ class SetShipsController extends PhaseController {
      * delete move and corresponding ship from database
      *
      * @param $id_move
+     * @throws ControllerException
+     * @throws NullPointerException
      */
     public function deleteMove($id_move) {
-        // TODO : implement
-
         // 1. check if it is a setship move from the active player
+        $move = ModelSetShipsMove::getSetShipsMove($this->id_game, $id_move);
+        if ($move->getIdUser() !== $this->id_user) {
+            throw new ControllerException('Unable to delete move from another player.');
+        }
         // 2. delete
+        ModelSetShipsMove::deleteSetShipsMove($move);
     }
 
     /**
