@@ -4,8 +4,12 @@ namespace AttOn\Controller\Game\InGame;
 use AttOn\Controller\Interfaces\PhaseController;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\ModelException;
+use AttOn\Exceptions\NullPointerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\InGame\ModelInGameShip;
 use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
+use AttOn\Model\Atton\ModelStartShips;
+use AttOn\Model\Game\ModelGame;
 
 class SetShipsController extends PhaseController {
 
@@ -85,14 +89,33 @@ class SetShipsController extends PhaseController {
         // 2. delete
     }
 
+    /**
+     * get list of all ships that are still placebale
+     *
+     * @return array - array(int id_unit => int numberof)
+     */
     public function getStillAvailableShips() {
-        // TODO : implement
-
         // 1. get list of all StartShips
+        try {
+            $startShips = ModelStartShips::getStartShipsForPlayers(ModelGame::getGame($this->id_game)->getNumberOfPlayers())->getShips();
+        } catch (NullPointerException $ex) {
+            return array();
+        }
 
         // 2. get list of all StartShipMoves and reduce list of Startships
+        $moves = ModelSetShipsMove::getSetShipMovesForUser($this->id_user, $this->id_game);
+        while ($moves->hasNext()) {
+            /** @var $move ModelSetShipsMove */
+            $move = $moves->next();
+            $ship = ModelInGameShip::getShipById($this->id_game, $move->getIdZunit());
+            $id_unit = $ship->getIdUnit();
+            if (isset($startShips[$id_unit])) {
+                --$startShips[$id_unit];
+            }
+        }
 
         // 3. return
+        return $startShips;
     }
 
 }
