@@ -3,6 +3,9 @@ namespace AttOn\View\Content\Operations;
 
 use AttOn\Controller\Game\InGame\SetShipsController;
 use AttOn\Exceptions\ControllerException;
+use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\ModelArea;
+use AttOn\Model\Atton\ModelShip;
 use AttOn\Model\Game\ModelGame;
 use AttOn\Model\User\ModelUser;
 
@@ -37,8 +40,39 @@ class ContentSetShips extends Interfaces\ContentOperation {
         $data['currentShips'] = array('gotcha');
 
         // show still available ships
-        // TODO : implement
-        $data['availableShips'] = array('test');
+        $data['availableShips'] = array();
+        $stillAvailableShips = $this->moveController->getStillAvailableShips();
+        foreach ($stillAvailableShips as $id_unit => $count) {
+            $data['availableShips'][] = array(
+                'id' => $id_unit,
+                'count' => $count,
+                'name' => ModelShip::getModelById($id_unit)->getName()
+            );
+        }
+
+        // show available countries
+        $data['availableZAreasInPort'] = array();
+        $data['availableZAreasAtSea'] = array();
+        $iterator = ModelGameArea::iterator(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+        while ($iterator->hasNext()) {
+            /** @var ModelGameArea $zArea */
+            $zArea = $iterator->next();
+            $data['availableZAreasInPort'][] = array(
+                'id_zarea_in_port' => $zArea->getId(),
+                'name' => $zArea->getName(),
+                'number' => $zArea->getNumber()
+            );
+        }
+        $iterator = ModelArea::iterator(TYPE_SEA);
+        while ($iterator->hasNext()) {
+            /** @var ModelArea $area */
+            $area = $iterator->next();
+            $data['availableZAreasAtSea'][] = array(
+                'id_zarea_at_sea' => ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId())->getId(),
+                'name' => $area->getName(),
+                'number' => $area->getNumber()
+            );
+        }
 
         $this->checkFixate($data, PHASE_SETSHIPS);
         $this->checkCurrentPhase($data, PHASE_SETSHIPS);

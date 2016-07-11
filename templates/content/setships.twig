@@ -27,10 +27,9 @@
 {% if availableShips %}
     <h2>Verfügbare Schiffe</h2>
     <ul>
-        <li>3 x U-Boot</li>
-        <li>4 x Zerstörer</li>
-        <li>2 x Schlachtschiff</li>
-        <li>1 x Flugzeugträger</li>
+        {% for ship in availableShips %}
+        <li>{{ ship.count }} x {{ ship.name }}</li>
+        {% endfor %}
     </ul>
 
     <hr>
@@ -58,10 +57,9 @@
                     <label>
                         <select name="unit" size="1">
                             <option value="" disabled selected>Schiffstyp wählen</option>
-                            <option value="5">U-Boot</option>
-                            <option value="6">Zerstörer</option>
-                            <option value="7">Schlachtschiff</option>
-                            <option value="8">Flugzeugträger</option>
+                            {% for ship in availableShips %}
+                                <option value="{{ ship.id }}">{{ ship.name }}</option>
+                            {% endfor %}
                         </select>
                     </label>
                 </td>
@@ -74,8 +72,9 @@
                     <label>
                         <select name="zarea_in_port" size="1">
                             <option value="" disabled selected>Land wählen</option>
-                            <option value="12">Mexico 12</option>
-                            <option value="13">Antilles Panama 13</option>
+                            {% for zarea in availableZAreasInPort %}
+                                <option value="{{ zarea.id_zarea_in_port }}">{{ zarea.name }} {{ zarea.number }}</option>
+                            {% endfor %}
                         </select>
                     </label>
                 </td>
@@ -83,8 +82,9 @@
                     <label>
                         <select name="zarea" size="1">
                             <option value="" disabled selected>Hafen wählen</option>
-                            <option value="86">Gulf of Mexico 86</option>
-                            <option value="87">Carribean Sea 87</option>
+                            {% for zarea in availableZAreasAtSea %}
+                                <option value="{{ zarea.id_zarea_at_sea }}">{{ zarea.name }} {{ zarea.number }}</option>
+                            {% endfor %}
                         </select>
                     </label>
                 </td>
