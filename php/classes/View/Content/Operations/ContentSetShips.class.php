@@ -4,6 +4,8 @@ namespace AttOn\View\Content\Operations;
 use AttOn\Controller\Game\InGame\SetShipsController;
 use AttOn\Exceptions\ControllerException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
+use AttOn\Model\Atton\InGame\ModelInGameShip;
+use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
 use AttOn\Model\Atton\ModelArea;
 use AttOn\Model\Atton\ModelShip;
 use AttOn\Model\Game\ModelGame;
@@ -36,13 +38,32 @@ class ContentSetShips extends Interfaces\ContentOperation {
         }
 
         // show already set ships
-        // TODO : implement
-        $data['currentShips'] = array('gotcha');
+        $data['currentShips'] = array();
+        $iterator = ModelSetShipsMove::getSetShipMovesForUser(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+        while ($iterator->hasNext()) {
+            /** @var ModelSetShipsMove $move */
+            $move = $iterator->next();
+            $zShip = ModelInGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdZunit());
+            $id_ship = $zShip->getIdUnit();
+            $ship = ModelShip::getModelById($id_ship);
+            $zAreaInPort = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZareaInPort());
+            $zAreaAtSea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZarea());
+            $data['currentShips'][] = array(
+                'id' => $move->getId(),
+                'ship_type' => $ship->getName(),
+                'ship_name' => $zShip->getName(),
+                'zarea_in_port' => $zAreaInPort->getName() . ' ' . $zAreaInPort->getNumber(),
+                'zarea_at_sea' => $zAreaAtSea->getName() . ' ' . $zAreaAtSea->getNumber()
+            );
+        }
 
         // show still available ships
         $data['availableShips'] = array();
         $stillAvailableShips = $this->moveController->getStillAvailableShips();
         foreach ($stillAvailableShips as $id_unit => $count) {
+            if ($count <= 0) {
+                continue;
+            }
             $data['availableShips'][] = array(
                 'id' => $id_unit,
                 'count' => $count,

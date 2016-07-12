@@ -131,18 +131,19 @@
                     </th>
                 {% endif %}
             </tr>
+            {% for move in currentShips %}
             <tr>
                 <td>
-                    U-Boot
+                    {{ move.ship_type }}
                 </td>
                 <td>
-                    TSS Ygthrasir
+                    {{ move.ship_name }}
                 </td>
                 <td>
-                    Antilles Panama 13
+                    {{ move.zarea_in_port }}
                 </td>
                 <td>
-                    Caribbean Sea 87
+                    {{ move.zarea_at_sea }}
                 </td>
                 {% if not notCurrentPhase and not turnFixated %}
                     <td>
@@ -152,27 +153,7 @@
                     </td>
                 {% endif %}
             </tr>
-            <tr>
-                <td>
-                    Flugzeugträger
-                </td>
-                <td>
-                    TSS Karlox
-                </td>
-                <td>
-                    Antilles Panama 13
-                </td>
-                <td>
-                    Caribbean Sea 87
-                </td>
-                {% if not notCurrentPhase and not turnFixated %}
-                    <td>
-                        <button type="submit" value="{{ move.id }}" name="delete">
-                            <img src="{{ absRefPrefix }}dist/images/kick.gif" alt="delete_mvoe"/>
-                        </button>
-                    </td>
-                {% endif %}
-            </tr>
+            {% endfor %}
         </table>
     </form>
 {% endif %}
