@@ -3,6 +3,7 @@ namespace AttOn\View\Content\Operations;
 
 use AttOn\Controller\Game\InGame\SetShipsController;
 use AttOn\Exceptions\ControllerException;
+use AttOn\Exceptions\ModelException;
 use AttOn\Model\Atton\InGame\ModelGameArea;
 use AttOn\Model\Atton\InGame\ModelInGameShip;
 use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
@@ -104,6 +105,10 @@ class ContentSetShips extends Interfaces\ContentOperation {
         try {
             $this->moveController->setNewShip($_POST['unit'], $_POST['name'], $_POST['zarea_in_port'], $_POST['zarea']);
         } catch (ControllerException $ex) {
+            $data['errors'] = array(
+                'message' => $ex->getMessage()
+            );
+        } catch (ModelException $ex) {
             $data['errors'] = array(
                 'message' => $ex->getMessage()
             );

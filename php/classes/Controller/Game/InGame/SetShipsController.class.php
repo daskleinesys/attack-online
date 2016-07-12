@@ -59,7 +59,7 @@ class SetShipsController extends PhaseController {
     public function setNewShip($id_unit, $name, $zarea_in_port, $zarea) {
         // 1. regex name
         $name = trim($name);
-        if (!preg_match("/^([a-zA-Z0-9]+[a-zA-Z0-9' -]+[a-zA-Z0-9']+){3,}?$/", $name)) {
+        if (!preg_match("/^([a-zA-Z0-9]+[a-zA-Z0-9' -]+[a-zA-Z0-9']+){1,}?$/", $name)) {
             throw new ControllerException('Invalid ship name. Only letters, numbers, spaces and -\' allowed');
         }
 
