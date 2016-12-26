@@ -132,4 +132,34 @@ class SetShipsController extends PhaseController {
         return $startShips;
     }
 
+    /**
+     * validate move and throw ControllerException if move is not valid
+     *
+     * @param ModelSetShipsMove $move
+     * @throws ControllerException
+     */
+    public function validateSetShipsMove(ModelSetShipsMove $move) {
+        // 1. check if id_zarea_in_port belongs to user
+        $port_area = ModelGameArea::getGameArea($this->id_game, $move->getIdZareaInPort());
+        if ($port_area->getIdUser() !== $move->getIdUser()) {
+            throw new ControllerException('Area doesn\'t belong to user.');
+        }
+
+        // 2. check if zarea and id_zarea_in_port are adjacent
+        if (!in_array($move->getIdZarea(), $port_area->getAdjecents())) {
+            throw new ControllerException('Area not adjacent do port area.');
+        }
+
+        // 3. check if ship id is in still available ships
+        $stillAvailableShips = $this->getStillAvailableShips();
+        $id_zunit = $move->getIdZunit();
+        $ship = ModelInGameShip::getShipById($this->id_game, $id_zunit);
+        $id_unit = $ship->getIdUnit();
+        if (!isset($stillAvailableShips[$id_unit])) {
+            throw new ControllerException('No ships of this type available.');
+        } else if ($stillAvailableShips[$id_unit] < 0) {
+            throw new ControllerException('No ships of this type available anymore.');
+        }
+    }
+
 }

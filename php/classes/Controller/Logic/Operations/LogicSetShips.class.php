@@ -1,8 +1,11 @@
 <?php
 namespace AttOn\Controller\Logic\Operations;
 
+use AttOn\Controller\Game\InGame\SetShipsController;
 use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
+use AttOn\Exceptions\ControllerException;
 use AttOn\Exceptions\LogicException;
+use AttOn\Model\Atton\InGame\ModelInGameShip;
 use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
 
 class LogicSetShips extends PhaseLogic {
@@ -32,15 +35,33 @@ class LogicSetShips extends PhaseLogic {
         $this->startProcessing();
 
         try {
+            $controllerForUser = array();
+            $controller = null;
+
             // run through moves for each user and validate
             $iter = ModelSetShipsMove::iterator($this->id_game);
             while ($iter->hasNext()) {
-                // TODO : implement
-                throw new \LogicException('implement!');
-            }
+                /* @var $move ModelSetShipsMove */
+                $move = $iter->next();
+                $id_user = $move->getIdUser();
 
-            // add all ships
-            // TODO : implement
+                // validate moves
+                if (!isset($controllerForUser[$id_user])) {
+                    $controllerForUser[$id_user] = $controller = new SetShipsController($id_user, $this->id_game);
+                }
+                try {
+                    $controller->validateSetShipsMove($move);
+                } catch (ControllerException $ex) {
+                    $this->logger->error($ex);
+                    $move->flagMoveDeleted();
+                    ModelInGameShip::deleteShip($this->id_game, $move->getIdZunit());
+                    continue;
+                }
+
+                $ship = ModelInGameShip::getShipById($this->id_game, $move->getIdZunit());
+                $ship->setIdZarea($move->getIdZarea());
+                $ship->setIdZareaInPort($move->getIdZareaInPort());
+            }
 
             $this->finishProcessing();
         } catch (\Exception $ex) {
