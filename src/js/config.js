@@ -3,7 +3,7 @@ require.config({
         urlArgs : 'noCache=' + (new Date()).getTime(),
 
         // libs
-        jquery : '../../vendor/jquery/dist/jquery.min'
+        jquery : '../../bower_components/jquery/dist/jquery.min'
     },
 
     shim : {

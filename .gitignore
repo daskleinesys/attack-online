@@ -2,6 +2,7 @@
 /dist/js
 /dist/css
 /.sass-cache
+/bower_components
 /node_modules
 /vendor
 

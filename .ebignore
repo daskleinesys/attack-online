@@ -1,5 +1,6 @@
 # BUILT FILES
 /.sass-cache
+/bower_components
 /node_modules
 
 # SRC FILES

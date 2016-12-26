@@ -1,16 +1,16 @@
 {
-  "name": "Attack Online",
+  "name": "attack-online",
   "version": "0.1.0",
   "authors": [
     "daskleinesys <thomas.schagerl@gmx.net>"
   ],
-  "description": "Boardgame Attack played online",
+  "description": "Browsergame based on boardgame Attack. Not an exact clone.",
   "main": "Gruntfile.js",
   "moduleType": [
     "amd"
   ],
   "license": "MIT",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
@@ -20,10 +20,8 @@
     "tests"
   ],
   "devDependencies": {
-    "jquery": "~2.2.0",
-    "bootstrap-sass": "^3.3.6"
-  },
-  "dependencies": {
-    "requirejs": "~2.1.22"
+    "jquery": "~3",
+    "bootstrap-sass": "~3",
+    "requirejs": "~2"
   }
 }

@@ -1,96 +1,101 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.initConfig({
 
-        requirejs : {
-            default : {
-                options : {
-                    baseUrl : 'src/js',
-                    mainConfigFile : 'src/js/config.js',
-                    name : 'main',
-                    out : 'dist/js/main.js',
-                    findNestedDependencies : true,
-                    generateSourceMaps : true,
-                    preserveLicenseComments : false,
-                    optimize : 'uglify2'
+        requirejs: {
+            default: {
+                options: {
+                    baseUrl: 'src/js',
+                    mainConfigFile: 'src/js/config.js',
+                    name: 'main',
+                    out: 'dist/js/main.js',
+                    findNestedDependencies: true,
+                    generateSourceMaps: true,
+                    preserveLicenseComments: false,
+                    optimize: 'uglify2',
+                    paths : {
+                        requireLib : '../../bower_components/requirejs/require'
+                    },
+                    include : 'requireLib'
                 }
             }
         },
-        
+
         modernizr: {
             dist: {
-                "dest" : "dist/js/modernizr.js",
-                "parseFiles": true,
-                "customTests": [],
-                "devFile": "src/js/modernizr.js",
-                "outputFile": "dist/js/modernizr.js",
-                "tests": [],
-                "options": [
-                    "setClasses"
+                dest: 'dist/js/modernizr.js',
+                parseFiles: true,
+                customTests: [],
+                devFile: 'src/js/modernizr.js',
+                outputFile: 'dist/js/modernizr.js',
+                tests: [],
+                options: [
+                    'setClasses'
                 ],
-                "uglify": true
+                uglify: true
             }
         },
 
-        compass : {
-            default : {
-                options : {
-                    require : 'compass/import-once/activate',
+        compass: {
+            default: {
+                options: {
+                    require: 'compass/import-once/activate',
 
-                    sassDir : 'src/sass',
-                    cssDir : 'dist/css',
+                    sassDir: 'src/sass',
+                    cssDir: 'dist/css',
 
-                    imagesDir : 'dist/images',
-                    fontsDir : 'dist/fonts',
+                    imagesDir: 'dist/images',
+                    fontsDir: 'dist/fonts',
 
-                    relativeAssets : true,
+                    relativeAssets: true,
                     // force : true,
-                    sourcemap : true
+                    sourcemap: true
                 }
             }
         },
 
-        postcss : {
-            default : {
-                options : {
-                    map : {
-                        prev : 'dist/css/main.css.map'
+        postcss: {
+            default: {
+                options: {
+                    map: {
+                        prev: 'dist/css/main.css.map'
                     },
-                    processors : [require('autoprefixer-core')({
-                        browsers : 'last 1 version'
+                    processors: [require('autoprefixer')({
+                        browsers: 'last 1 version'
                     })]
                 },
-                src : 'dist/css/main.css'
+                src: 'dist/css/main.css'
             }
         },
 
-        watch : {
-            scripts : {
-                files : ['src/js/**/*.js', 'vendor/**/*.js'],
-                tasks : ['js'],
-                options : {
-                    spawn : false,
+        watch: {
+            scripts: {
+                files: ['src/js/**/*.js', 'vendor/**/*.js'],
+                tasks: ['js'],
+                options: {
+                    spawn: false
                 }
             },
-            styles : {
-                files : ['src/sass/**/*.scss', 'vendor/**/*.scss'],
-                tasks : ['css'],
-                options : {
-                    spawn : false
+            styles: {
+                files: ['src/sass/**/*.scss', 'vendor/**/*.scss'],
+                tasks: ['css'],
+                options: {
+                    spawn: false
                 }
             }
         }
 
     });
 
-    grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-compass');
-    grunt.loadNpmTasks('grunt-postcss');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks("grunt-modernizr");
-    
+    grunt.loadNpmTasks('grunt-modernizr');
+    grunt.loadNpmTasks('grunt-postcss');
+
     grunt.registerTask('default', ['js', 'css', 'modernizr:dist']);
     grunt.registerTask('js', ['requirejs:default']);
     grunt.registerTask('css', ['compass:default', 'postcss:default']);
-    
+
 };
