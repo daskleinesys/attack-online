@@ -401,7 +401,7 @@ ALTER TABLE `games`
 --
 ALTER TABLE `game_area_has_default_units`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_ressource` (`id_ressource`),
+  ADD KEY `id_resource` (`id_resource`),
   ADD KEY `id_unit` (`id_unit`);
 
 --
@@ -665,7 +665,7 @@ ALTER TABLE `area_is_adjacent`
 -- Constraints for table `areas`
 --
 ALTER TABLE `areas`
-  ADD CONSTRAINT `areas_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id`),
+  ADD CONSTRAINT `areas_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id`);
 --
 -- Constraints for table `games`
 --
@@ -702,9 +702,9 @@ ALTER TABLE `areas_get_resources`
 -- Constraints for table `start_set_has_areas`
 --
 ALTER TABLE `start_set_has_areas`
-  ADD CONSTRAINT `start_set_has_areas_area` FOREIGN KEY (`id_area`) REFERENCES `areas` (`areas`),
-  ADD CONSTRAINT `start_set_has_areas_optiontype` FOREIGN KEY (`id_optiontype`) REFERENCES `areas` (`option_types`),
-  ADD CONSTRAINT `start_set_has_areas_set` FOREIGN KEY (`id_set`) REFERENCES `areas` (`start_set`);
+  ADD CONSTRAINT `start_set_has_areas_area` FOREIGN KEY (`id_area`) REFERENCES `areas` (`id`),
+  ADD CONSTRAINT `start_set_has_areas_optiontype` FOREIGN KEY (`id_optiontype`) REFERENCES `option_types` (`id`),
+  ADD CONSTRAINT `start_set_has_areas_set` FOREIGN KEY (`id_set`) REFERENCES `start_sets` (`id`);
 --
 -- Constraints for table `start_ships`
 --
