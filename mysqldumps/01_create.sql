@@ -98,7 +98,7 @@ CREATE TABLE `games` (
 DROP TABLE IF EXISTS `game_area_has_default_units`;
 CREATE TABLE `game_area_has_default_units` (
   `id` int(11) NOT NULL,
-  `id_ressource` int(11) NOT NULL,
+  `id_resource` int(11) NOT NULL,
   `productivity` int(11) NOT NULL,
   `id_unit` int(11) NOT NULL,
   `numberof` int(11) NOT NULL,
@@ -650,6 +650,7 @@ ALTER TABLE `game_move_has_units`
 --
 ALTER TABLE `game_units`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- Constraints for dumped tables
 --
@@ -660,6 +661,97 @@ ALTER TABLE `game_units`
 ALTER TABLE `area_is_adjacent`
   ADD CONSTRAINT `area_is_adjacent_area1` FOREIGN KEY (`id_area1`) REFERENCES `areas` (`id`),
   ADD CONSTRAINT `area_is_adjacent_area2` FOREIGN KEY (`id_area2`) REFERENCES `areas` (`id`);
+--
+-- Constraints for table `areas`
+--
+ALTER TABLE `areas`
+  ADD CONSTRAINT `areas_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id`),
+--
+-- Constraints for table `games`
+--
+ALTER TABLE `games`
+  ADD CONSTRAINT `games_creator` FOREIGN KEY (`id_creator`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `games_phase` FOREIGN KEY (`id_phase`) REFERENCES `phases` (`id`);
+--
+-- Constraints for table `game_area_has_default_units`
+--
+ALTER TABLE `game_area_has_default_units`
+  ADD CONSTRAINT `game_area_has_default_units_resource` FOREIGN KEY (`id_resource`) REFERENCES `resources` (`id`),
+  ADD CONSTRAINT `game_area_has_default_units_unit` FOREIGN KEY (`id_unit`) REFERENCES `units` (`id`);
+--
+-- Constraints for table `user_in_game_phase_info`
+--
+ALTER TABLE `user_in_game_phase_info`
+  ADD CONSTRAINT `user_in_game_phase_info_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `user_in_game_phase_info_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
+  ADD CONSTRAINT `user_in_game_phase_info_phase` FOREIGN KEY (`id_phase`) REFERENCES `phases` (`id`);
+--
+-- Constraints for table `user_is_in_game`
+--
+ALTER TABLE `user_is_in_game`
+  ADD CONSTRAINT `user_is_in_game_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `user_is_in_game_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
+  ADD CONSTRAINT `user_is_in_game_color` FOREIGN KEY (`id_color`) REFERENCES `colors` (`id`),
+  ADD CONSTRAINT `user_is_in_game_set` FOREIGN KEY (`id_set`) REFERENCES `start_sets` (`id`);
+--
+-- Constraints for table `areas_get_resources`
+--
+ALTER TABLE `areas_get_resources`
+  ADD CONSTRAINT `areas_get_resources_resource` FOREIGN KEY (`id_resource`) REFERENCES `resources` (`id`);
+--
+-- Constraints for table `start_set_has_areas`
+--
+ALTER TABLE `start_set_has_areas`
+  ADD CONSTRAINT `start_set_has_areas_area` FOREIGN KEY (`id_area`) REFERENCES `areas` (`areas`),
+  ADD CONSTRAINT `start_set_has_areas_optiontype` FOREIGN KEY (`id_optiontype`) REFERENCES `areas` (`option_types`),
+  ADD CONSTRAINT `start_set_has_areas_set` FOREIGN KEY (`id_set`) REFERENCES `areas` (`start_set`);
+--
+-- Constraints for table `start_ships`
+--
+ALTER TABLE `start_ships`
+  ADD CONSTRAINT `start_ships_unit` FOREIGN KEY (`id_unit`) REFERENCES `units` (`id`);
+--
+-- Constraints for table `units`
+--
+ALTER TABLE `units`
+  ADD CONSTRAINT `units_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id`);
+--
+-- Constraints for table `game_areas`
+--
+ALTER TABLE `game_areas`
+  ADD CONSTRAINT `game_areas_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
+  ADD CONSTRAINT `game_areas_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `game_areas_area` FOREIGN KEY (`id_area`) REFERENCES `areas` (`id`),
+  ADD CONSTRAINT `game_areas_resource` FOREIGN KEY (`id_resource`) REFERENCES `resources` (`id`);
+--
+-- Constraints for table `game_moves`
+--
+ALTER TABLE `game_moves`
+  ADD CONSTRAINT `game_moves_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
+  ADD CONSTRAINT `game_moves_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `game_moves_phase` FOREIGN KEY (`id_phase`) REFERENCES `phases` (`id`);
+--
+-- Constraints for table `game_move_has_areas`
+--
+ALTER TABLE `game_move_has_areas`
+  ADD CONSTRAINT `game_move_has_areas_game_move` FOREIGN KEY (`id_game_move`) REFERENCES `game_moves` (`id`),
+  ADD CONSTRAINT `game_move_has_areas_game_area` FOREIGN KEY (`id_game_area`) REFERENCES `game_areas` (`id`);
+--
+-- Constraints for table `game_move_has_units`
+--
+ALTER TABLE `game_move_has_units`
+  ADD CONSTRAINT `game_move_has_units_game_move` FOREIGN KEY (`id_game_move`) REFERENCES `game_moves` (`id`),
+  ADD CONSTRAINT `game_move_has_units_game_unit` FOREIGN KEY (`id_game_unit`) REFERENCES `game_units` (`id`);
+--
+-- Constraints for table `game_units`
+--
+ALTER TABLE `game_units`
+  ADD CONSTRAINT `game_units_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
+  ADD CONSTRAINT `game_units_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `game_units_game_area` FOREIGN KEY (`id_game_area`) REFERENCES `game_areas` (`id`),
+  ADD CONSTRAINT `game_units_game_area_in_port` FOREIGN KEY (`id_game_area_in_port`) REFERENCES `game_areas` (`id`),
+  ADD CONSTRAINT `game_units_unit` FOREIGN KEY (`id_unit`) REFERENCES `units` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
