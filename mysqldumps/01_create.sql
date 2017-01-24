@@ -185,7 +185,7 @@ DROP TABLE IF EXISTS `areas_get_resources`;
 CREATE TABLE `areas_get_resources` (
   `id` int(11) NOT NULL,
   `id_resource` int(11) NOT NULL,
-  `productivity` int(11) NOT NULL,
+  `res_power` int(11) NOT NULL,
   `economy` enum('poor','weak','normal','strong','none') NOT NULL DEFAULT 'poor',
   `count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
