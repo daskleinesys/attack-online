@@ -73,4 +73,11 @@ include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'rout
 $app->view->setData(array('debug' => $debug, 'nomerge' => $nomerge, 'absRefPrefix' => ABS_REF_PREFIX));
 Tools\CheckSessions::checkCookies();
 Tools\CheckSessions::checkCurrentGame();
-$app->run();
+
+// RUN SLIM APP
+try {
+    $app->run();
+} catch (\Exception $e) {
+    $logger->fatal($e->getMessage());
+    $app->render('error.twig');
+}
