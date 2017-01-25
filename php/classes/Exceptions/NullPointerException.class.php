@@ -1,4 +1,4 @@
 <?php
-namespace AttOn\Exceptions;
+namespace Attack\Exceptions;
 
 class NullPointerException extends \Exception {}

@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Model\Atton;
+namespace Attack\Model\Atton;
 
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\Iterator\ModelIterator;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\Iterator\ModelIterator;
 
 class ModelEconomy {
 

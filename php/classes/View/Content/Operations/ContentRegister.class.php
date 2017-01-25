@@ -1,10 +1,10 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\User\UserActions;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\UserCreationException;
-use AttOn\View\Content\Operations\Interfaces\ContentOperation;
+use Attack\Controller\User\UserActions;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\UserCreationException;
+use Attack\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentRegister extends ContentOperation {
 

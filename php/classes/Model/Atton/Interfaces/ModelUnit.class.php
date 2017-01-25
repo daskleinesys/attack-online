@@ -1,6 +1,6 @@
 <?php
 
-namespace AttOn\Model\Atton\Interfaces;
+namespace Attack\Model\Atton\Interfaces;
 
 abstract class ModelUnit {
 

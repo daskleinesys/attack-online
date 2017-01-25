@@ -1,5 +1,5 @@
 <?php
-namespace AttOn;
+namespace Attack;
 
 /******************************************
  * game settings also defined in database *

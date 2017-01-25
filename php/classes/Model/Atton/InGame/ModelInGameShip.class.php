@@ -1,15 +1,15 @@
 <?php
-namespace AttOn\Model\Atton\InGame;
+namespace Attack\Model\Atton\InGame;
 
-use AttOn\Exceptions\DataSourceException;
-use AttOn\Exceptions\ModelException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\Interfaces\ModelInGameUnit;
-use AttOn\Model\Atton\ModelShip;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
-use AttOn\Model\Iterator\ModelIterator;
-use AttOn\Model\User\ModelUser;
+use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\ModelException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\Interfaces\ModelInGameUnit;
+use Attack\Model\Atton\ModelShip;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
+use Attack\Model\Iterator\ModelIterator;
+use Attack\Model\User\ModelUser;
 
 class ModelInGameShip extends ModelInGameUnit {
 

@@ -1,5 +1,5 @@
 <?php
-namespace AttOn;
+namespace Attack;
 
 // db vars
 define('DB_HOST', 'localhost');

@@ -1,10 +1,10 @@
 <?php
-namespace AttOn\Model\Atton;
+namespace Attack\Model\Atton;
 
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\Interfaces\ModelUnit;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\Iterator\ModelIterator;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\Interfaces\ModelUnit;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\Iterator\ModelIterator;
 
 class ModelShip extends ModelUnit {
 

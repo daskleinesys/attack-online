@@ -1,7 +1,7 @@
 <?php
-namespace AttOn\Controller\Interfaces;
+namespace Attack\Controller\Interfaces;
 
-use AttOn\Model\User\ModelInGamePhaseInfo;
+use Attack\Model\User\ModelInGamePhaseInfo;
 
 abstract class PhaseController extends ConstrictedController {
 

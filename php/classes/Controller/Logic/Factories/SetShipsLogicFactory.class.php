@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Controller\Logic\Factories;
+namespace Attack\Controller\Logic\Factories;
 
-use AttOn\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
-use AttOn\Controller\Logic\Operations\LogicSetShips;
+use Attack\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
+use Attack\Controller\Logic\Operations\LogicSetShips;
 
 class SetShipsLogicFactory implements LogicFactoryInterface {
 

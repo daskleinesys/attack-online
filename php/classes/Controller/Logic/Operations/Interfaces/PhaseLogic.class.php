@@ -1,9 +1,9 @@
 <?php
-namespace AttOn\Controller\Logic\Operations\Interfaces;
+namespace Attack\Controller\Logic\Operations\Interfaces;
 
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelInGamePhaseInfo;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelInGamePhaseInfo;
 
 abstract class PhaseLogic {
 	protected $id_game;

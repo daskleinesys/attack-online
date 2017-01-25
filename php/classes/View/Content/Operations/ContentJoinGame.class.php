@@ -1,11 +1,11 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\User\UserGameInteraction;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
-use AttOn\Exceptions\JoinUserException;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Controller\User\UserGameInteraction;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
+use Attack\Exceptions\JoinUserException;
+use Attack\Exceptions\NullPointerException;
 
 class ContentJoinGame extends Interfaces\ContentOperation {
 

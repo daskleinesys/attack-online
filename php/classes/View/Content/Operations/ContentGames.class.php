@@ -1,12 +1,12 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\User\UserGameInteraction;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Controller\User\UserGameInteraction;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\NullPointerException;
 
 class ContentGames extends Interfaces\ContentOperation {
 

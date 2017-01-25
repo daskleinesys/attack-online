@@ -1,13 +1,13 @@
 <?php
-namespace AttOn\Controller\User;
+namespace Attack\Controller\User;
 
-use AttOn\Controller\Interfaces\ConstrictedController;
+use Attack\Controller\Interfaces\ConstrictedController;
 use Logger;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Exceptions\JoinUserException;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Model\User\ModelUser;
+use Attack\Model\Game\ModelGame;
+use Attack\Exceptions\JoinUserException;
+use Attack\Exceptions\ControllerException;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Model\User\ModelUser;
 
 class UserGameInteraction extends ConstrictedController {
 

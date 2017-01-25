@@ -1,7 +1,7 @@
 <?php
-namespace AttOn\Model\DataBase;
+namespace Attack\Model\DataBase;
 
-use AttOn\Exceptions\DataSourceException;
+use Attack\Exceptions\DataSourceException;
 
 class DataSource {
 

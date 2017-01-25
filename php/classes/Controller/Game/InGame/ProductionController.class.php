@@ -1,13 +1,13 @@
 <?php
-namespace AttOn\Controller\Game\InGame;
+namespace Attack\Controller\Game\InGame;
 
-use AttOn\Controller\Interfaces\PhaseController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\Moves\ModelProductionMove;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Tools\UserViewHelper;
+use Attack\Controller\Interfaces\PhaseController;
+use Attack\Exceptions\ControllerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\Moves\ModelProductionMove;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\ModelGame;
+use Attack\Tools\UserViewHelper;
 
 class ProductionController extends PhaseController {
 
@@ -37,8 +37,8 @@ class ProductionController extends PhaseController {
      * @param array $units
      * @return ModelProductionMove
      * @throws ControllerException
-     * @throws \AttOn\Exceptions\ModelException
-     * @throws \AttOn\Exceptions\NullPointerException
+     * @throws \Attack\Exceptions\ModelException
+     * @throws \Attack\Exceptions\NullPointerException
      */
     public function createProductionMove($id_zarea, $units) {
         $id_zarea = (int)$id_zarea;
@@ -86,7 +86,7 @@ class ProductionController extends PhaseController {
      * @param int $id_move
      * @return void
      * @throws ControllerException
-     * @throws \AttOn\Exceptions\NullPointerException
+     * @throws \Attack\Exceptions\NullPointerException
      */
     public function deleteProductionMove($id_move) {
         $id_move = intval($id_move);

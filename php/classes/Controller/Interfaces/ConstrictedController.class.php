@@ -1,10 +1,10 @@
 <?php
-namespace AttOn\Controller\Interfaces;
+namespace Attack\Controller\Interfaces;
 
-use AttOn\Model\User\ModelUser;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Exceptions\GameAdministrationException;
+use Attack\Model\User\ModelUser;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Exceptions\GameAdministrationException;
 
 abstract class ConstrictedController {
 

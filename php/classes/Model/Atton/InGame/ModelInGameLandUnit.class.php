@@ -1,10 +1,10 @@
 <?php
-namespace AttOn\Model\Atton\InGame;
+namespace Attack\Model\Atton\InGame;
 
-use AttOn\Model\Atton\Interfaces\ModelInGameUnit;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
+use Attack\Model\Atton\Interfaces\ModelInGameUnit;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
 
 class ModelInGameLandUnit extends ModelInGameUnit {
 

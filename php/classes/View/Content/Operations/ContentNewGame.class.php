@@ -1,11 +1,11 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\Game\GamesModeration;
-use AttOn\Exceptions\GameCreationException;
-use AttOn\Exceptions\JoinUserException;
-use AttOn\Model\Atton\ModelColor;
-use AttOn\Model\User\ModelUser;
+use Attack\Controller\Game\GamesModeration;
+use Attack\Exceptions\GameCreationException;
+use Attack\Exceptions\JoinUserException;
+use Attack\Model\Atton\ModelColor;
+use Attack\Model\User\ModelUser;
 
 class ContentNewGame extends Interfaces\ContentOperation {
 

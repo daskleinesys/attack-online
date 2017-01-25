@@ -1,7 +1,7 @@
 <?php
-namespace AttOn\Tools;
+namespace Attack\Tools;
 
-spl_autoload_register(array('AttOn\Tools\Autoloader', 'autoload'));
+spl_autoload_register(array('Attack\Tools\Autoloader', 'autoload'));
 
 class Autoloader {
 
@@ -15,13 +15,13 @@ class Autoloader {
         $path = explode('\\', $className);
 
         if (isset($path[0]) === false) {
-            return false;
+            return;
         }
 
         $filename = array_slice($path, -1, 1);
 
-        if ($path[0] !== 'AttOn') {
-            return false;
+        if ($path[0] !== 'Attack') {
+            return;
         } else {
             $path = array_slice($path, 1, -1);
         }

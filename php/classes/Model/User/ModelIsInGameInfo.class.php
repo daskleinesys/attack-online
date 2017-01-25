@@ -1,15 +1,15 @@
 <?php
-namespace AttOn\Model\User;
+namespace Attack\Model\User;
 
-use AttOn\Model\Atton\ModelColor;
-use AttOn\Model\Atton\ModelStartingSet;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\Iterator\ModelIterator;
-use AttOn\Exceptions\DataSourceException;
-use AttOn\Exceptions\JoinUserException;
-use AttOn\Exceptions\GameAdministrationException;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Model\Atton\ModelColor;
+use Attack\Model\Atton\ModelStartingSet;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\Iterator\ModelIterator;
+use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\JoinUserException;
+use Attack\Exceptions\GameAdministrationException;
+use Attack\Exceptions\NullPointerException;
 
 class ModelIsInGameInfo {
 

@@ -1,9 +1,9 @@
 <?php
-namespace AttOn\View\Content\Factories\Interfaces;
+namespace Attack\View\Content\Factories\Interfaces;
 
-use AttOn\Model;
-use AttOn\Exceptions\SessionException;
-use AttOn\View\Content\Operations\Interfaces\ContentOperation;
+use Attack\Model;
+use Attack\Exceptions\SessionException;
+use Attack\View\Content\Operations\Interfaces\ContentOperation;
 
 abstract class ContentFactory {
 

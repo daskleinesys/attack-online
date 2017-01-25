@@ -1,15 +1,15 @@
 <?php
-namespace AttOn\Controller\Logic\Operations;
+namespace Attack\Controller\Logic\Operations;
 
-use AttOn\Controller\Game\InGame\ProductionController;
-use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\LogicException;
-use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\Moves\ModelProductionMove;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Tools\UserViewHelper;
+use Attack\Controller\Game\InGame\ProductionController;
+use Attack\Controller\Logic\Operations\Interfaces\PhaseLogic;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\LogicException;
+use Attack\Model\Atton\InGame\ModelInGameLandUnit;
+use Attack\Model\Atton\InGame\Moves\ModelProductionMove;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Tools\UserViewHelper;
 
 class LogicProduction extends PhaseLogic {
     private $logger;

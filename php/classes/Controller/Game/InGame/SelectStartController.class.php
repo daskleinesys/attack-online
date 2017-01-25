@@ -1,13 +1,13 @@
 <?php
-namespace AttOn\Controller\Game\InGame;
+namespace Attack\Controller\Game\InGame;
 
-use AttOn\Controller\Interfaces\PhaseController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\Moves\ModelSelectStartMove;
-use AttOn\Model\Atton\ModelOptionType;
-use AttOn\Model\Atton\ModelStartRegion;
-use AttOn\Model\User\ModelIsInGameInfo;
+use Attack\Controller\Interfaces\PhaseController;
+use Attack\Exceptions\ControllerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\Moves\ModelSelectStartMove;
+use Attack\Model\Atton\ModelOptionType;
+use Attack\Model\Atton\ModelStartRegion;
+use Attack\Model\User\ModelIsInGameInfo;
 
 class SelectStartController extends PhaseController {
 

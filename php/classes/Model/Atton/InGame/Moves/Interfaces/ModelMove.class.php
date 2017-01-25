@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Model\Atton\InGame\Moves\Interfaces;
+namespace Attack\Model\Atton\InGame\Moves\Interfaces;
 
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
 
 abstract class ModelMove {
 

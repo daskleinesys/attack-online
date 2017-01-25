@@ -1,15 +1,15 @@
 <?php
-namespace AttOn\Controller\Logic\Operations;
+namespace Attack\Controller\Logic\Operations;
 
-use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
-use AttOn\Exceptions\LogicException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\Moves\ModelSelectStartMove;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Atton\ModelOptionType;
-use AttOn\Model\Atton\ModelStartRegion;
-use AttOn\Model\User\ModelIsInGameInfo;
+use Attack\Controller\Logic\Operations\Interfaces\PhaseLogic;
+use Attack\Exceptions\LogicException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameLandUnit;
+use Attack\Model\Atton\InGame\Moves\ModelSelectStartMove;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Atton\ModelOptionType;
+use Attack\Model\Atton\ModelStartRegion;
+use Attack\Model\User\ModelIsInGameInfo;
 
 class LogicSelectStart extends PhaseLogic {
 

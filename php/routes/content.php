@@ -1,14 +1,14 @@
 <?php
-namespace AttOn;
+namespace Attack;
 
-use AttOn\Tools\Autoloader;
-use AttOn\Tools\HeaderViewHelper;
-use AttOn\View\Content\Factories\GamesFactory;
-use AttOn\View\Content\Factories\GameInfoFactory;
-use AttOn\View\Content\Factories\Interfaces\ContentFactory;
-use AttOn\View\Content\Factories\JoinGameFactory;
-use AttOn\View\Content\Factories\NewGameFactory;
-use AttOn\Exceptions\SessionException;
+use Attack\Tools\Autoloader;
+use Attack\Tools\HeaderViewHelper;
+use Attack\View\Content\Factories\GamesFactory;
+use Attack\View\Content\Factories\GameInfoFactory;
+use Attack\View\Content\Factories\Interfaces\ContentFactory;
+use Attack\View\Content\Factories\JoinGameFactory;
+use Attack\View\Content\Factories\NewGameFactory;
+use Attack\Exceptions\SessionException;
 use Logger;
 use Slim\Slim;
 

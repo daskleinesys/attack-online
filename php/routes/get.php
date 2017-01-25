@@ -1,12 +1,12 @@
 <?php
-namespace AttOn;
+namespace Attack;
 
-use AttOn\Controller\CronMain;
-use AttOn\Controller\User\UserActions;
-use AttOn\Exceptions\MapException;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Tools\HeaderViewHelper;
-use AttOn\View\Map;
+use Attack\Controller\CronMain;
+use Attack\Controller\User\UserActions;
+use Attack\Exceptions\MapException;
+use Attack\Model\Game\ModelGame;
+use Attack\Tools\HeaderViewHelper;
+use Attack\View\Map;
 use Logger;
 use Slim\Slim;
 

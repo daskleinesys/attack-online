@@ -1,9 +1,9 @@
 <?php
-namespace AttOn\Tools;
+namespace Attack\Tools;
 
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\User\ModelIsInGameInfo;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\User\ModelIsInGameInfo;
 
 class UserViewHelper {
 

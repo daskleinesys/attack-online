@@ -1,17 +1,17 @@
 <?php
 
-namespace AttOn\View;
+namespace Attack\View;
 
-use AttOn\Exceptions\MapException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\ModelInGameShip;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Atton\ModelShip;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
+use Attack\Exceptions\MapException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameLandUnit;
+use Attack\Model\Atton\InGame\ModelInGameShip;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Atton\ModelShip;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
 
 class Map {
 

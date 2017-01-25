@@ -1,12 +1,12 @@
 <?php
-namespace AttOn\Model\User;
+namespace Attack\Model\User;
 
-use AttOn\Exceptions\DataSourceException;
-use Atton\Exceptions\LoginException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Exceptions\UserCreationException;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\Iterator\ModelIterator;
+use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\LoginException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Exceptions\UserCreationException;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\Iterator\ModelIterator;
 
 class ModelUser {
 

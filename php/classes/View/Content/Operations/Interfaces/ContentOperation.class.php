@@ -1,10 +1,10 @@
 <?php
-namespace AttOn\View\Content\Operations\Interfaces;
+namespace Attack\View\Content\Operations\Interfaces;
 
-use AttOn\Model\Atton\ModelPhase;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelInGamePhaseInfo;
-use AttOn\Model\User\ModelUser;
+use Attack\Model\Atton\ModelPhase;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelInGamePhaseInfo;
+use Attack\Model\User\ModelUser;
 
 abstract class ContentOperation {
 

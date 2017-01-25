@@ -1,5 +1,5 @@
 <?php
-namespace AttOn\Model\Iterator\Interfaces;
+namespace Attack\Model\Iterator\Interfaces;
 
 interface AttonIterator {
 

@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Controller\Logic\Factories;
+namespace Attack\Controller\Logic\Factories;
 
-use AttOn\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
-use AttOn\Controller\Logic\Operations\LogicSelectStart;
+use Attack\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
+use Attack\Controller\Logic\Operations\LogicSelectStart;
 
 class SelectStartLogicFactory implements LogicFactoryInterface {
 

@@ -1,5 +1,5 @@
 <?php
-namespace AttOn;
+namespace Attack;
 
 use Logger;
 use Slim\Slim;

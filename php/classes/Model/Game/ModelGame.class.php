@@ -1,23 +1,23 @@
 <?php
-namespace AttOn\Model\Game;
+namespace Attack\Model\Game;
 
-use AttOn\Exceptions\ModelException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\ModelArea;
-use AttOn\Model\Atton\ModelColor;
-use AttOn\Model\Atton\ModelEconomy;
-use AttOn\Model\Atton\ModelPhase;
-use AttOn\Model\Atton\ModelStartingSet;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
-use AttOn\Model\Iterator\ModelIterator;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Model\User\ModelInGamePhaseInfo;
-use AttOn\Model\User\ModelUser;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Exceptions\GameCreationException;
-use AttOn\Exceptions\DataSourceException;
-use AttOn\Exceptions\GameAdministrationException;
+use Attack\Exceptions\ModelException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\ModelArea;
+use Attack\Model\Atton\ModelColor;
+use Attack\Model\Atton\ModelEconomy;
+use Attack\Model\Atton\ModelPhase;
+use Attack\Model\Atton\ModelStartingSet;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
+use Attack\Model\Iterator\ModelIterator;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Model\User\ModelInGamePhaseInfo;
+use Attack\Model\User\ModelUser;
+use Attack\Exceptions\NullPointerException;
+use Attack\Exceptions\GameCreationException;
+use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\GameAdministrationException;
 use Logger;
 
 class ModelGame {

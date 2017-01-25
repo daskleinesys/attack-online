@@ -1,12 +1,12 @@
 <?php
-namespace AttOn\Controller;
+namespace Attack\Controller;
 
-use AttOn\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
-use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\LogicException;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Tools\Autoloader;
+use Attack\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
+use Attack\Controller\Logic\Operations\Interfaces\PhaseLogic;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\LogicException;
+use Attack\Model\Game\ModelGame;
+use Attack\Tools\Autoloader;
 
 class CronMain {
 

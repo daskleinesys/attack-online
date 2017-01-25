@@ -1,9 +1,9 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\User\UserActions;
-use AttOn\Exceptions\ControllerException;
-use AttOn\View\Content\Operations\Interfaces\ContentOperation;
+use Attack\Controller\User\UserActions;
+use Attack\Exceptions\ControllerException;
+use Attack\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentVerify extends ContentOperation {
 

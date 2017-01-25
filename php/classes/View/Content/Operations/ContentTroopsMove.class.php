@@ -1,16 +1,16 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\Game\InGame\TroopsMoveController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\Moves\ModelTroopsMove;
-use AttOn\Model\Atton\ModelArea;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
-use AttOn\View\Content\Operations\Interfaces\ContentOperation;
+use Attack\Controller\Game\InGame\TroopsMoveController;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\Moves\ModelTroopsMove;
+use Attack\Model\Atton\ModelArea;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
+use Attack\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentTroopsMove extends ContentOperation {
 

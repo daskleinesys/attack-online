@@ -1,7 +1,7 @@
 <?php
-namespace AttOn;
+namespace Attack;
 
-use AttOn\Tools\HeaderViewHelper;
+use Attack\Tools\HeaderViewHelper;
 use Slim\Slim;
 use Slim\Views\Twig;
 

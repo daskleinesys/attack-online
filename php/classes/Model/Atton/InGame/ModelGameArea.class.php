@@ -1,11 +1,11 @@
 <?php
-namespace AttOn\Model\Atton\InGame;
+namespace Attack\Model\Atton\InGame;
 
-use AttOn\Model\Atton\ModelArea;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
-use AttOn\Model\Iterator\ModelIterator;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Model\Atton\ModelArea;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
+use Attack\Model\Iterator\ModelIterator;
+use Attack\Exceptions\NullPointerException;
 
 class ModelGameArea {
 

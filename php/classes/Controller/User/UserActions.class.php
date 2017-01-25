@@ -1,11 +1,11 @@
 <?php
-namespace AttOn\Controller\User;
+namespace Attack\Controller\User;
 
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\DataSourceException;
-use Atton\Exceptions\LoginException;
-use AttOn\Exceptions\UserCreationException;
-use AttOn\Model\User\ModelUser;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\LoginException;
+use Attack\Exceptions\UserCreationException;
+use Attack\Model\User\ModelUser;
 
 class UserActions {
 

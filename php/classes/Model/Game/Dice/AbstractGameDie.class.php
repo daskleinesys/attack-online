@@ -1,5 +1,5 @@
 <?php
-namespace AttOn\Model\Game\Dice;
+namespace Attack\Model\Game\Dice;
 
 abstract class AbstractGameDie {
 

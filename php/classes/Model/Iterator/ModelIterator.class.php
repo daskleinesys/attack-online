@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Model\Iterator;
+namespace Attack\Model\Iterator;
 
-use AttOn\Model\Iterator\Interfaces\AttonIterator;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Model\Iterator\Interfaces\AttonIterator;
+use Attack\Exceptions\NullPointerException;
 
 class ModelIterator implements AttonIterator {
 

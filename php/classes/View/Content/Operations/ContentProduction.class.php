@@ -1,17 +1,17 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\Game\InGame\ProductionController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\Moves\ModelProductionMove;
-use AttOn\Model\Atton\ModelArea;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
-use AttOn\Tools\UserViewHelper;
-use AttOn\View\Content\Operations\Interfaces\ContentOperation;
+use Attack\Controller\Game\InGame\ProductionController;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\Moves\ModelProductionMove;
+use Attack\Model\Atton\ModelArea;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
+use Attack\Tools\UserViewHelper;
+use Attack\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentProduction extends ContentOperation {
 

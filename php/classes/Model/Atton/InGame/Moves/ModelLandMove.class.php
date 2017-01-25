@@ -1,15 +1,15 @@
 <?php
-namespace AttOn\Model\Atton\InGame\Moves;
+namespace Attack\Model\Atton\InGame\Moves;
 
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\Moves\Interfaces\ModelMove;
-use AttOn\Exceptions\ModelException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\DataBase\SQLCommands;
-use AttOn\Model\Iterator\ModelIterator;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameLandUnit;
+use Attack\Model\Atton\InGame\Moves\Interfaces\ModelMove;
+use Attack\Exceptions\ModelException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\DataBase\SQLCommands;
+use Attack\Model\Iterator\ModelIterator;
 
 class ModelLandMove extends ModelMove {
 

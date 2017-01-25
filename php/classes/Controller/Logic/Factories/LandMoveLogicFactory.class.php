@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Controller\Logic\Factories;
+namespace Attack\Controller\Logic\Factories;
 
-use AttOn\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
-use AttOn\Controller\Logic\Operations\LogicLandMove;
+use Attack\Controller\Logic\Factories\Interfaces\LogicFactoryInterface;
+use Attack\Controller\Logic\Operations\LogicLandMove;
 
 class LandMoveLogicFactory implements LogicFactoryInterface {
 

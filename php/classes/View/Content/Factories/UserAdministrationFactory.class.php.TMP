@@ -1,6 +1,6 @@
 <?php
-namespace AttOn\View\Content\Factories;
-use AttOn\View\Content\Operations;
+namespace Attack\View\Content\Factories;
+use Attack\View\Content\Operations;
 
 class UserAdministrationFactory extends Interfaces\ContentFactory {
 

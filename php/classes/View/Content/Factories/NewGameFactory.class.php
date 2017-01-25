@@ -1,7 +1,7 @@
 <?php
-namespace AttOn\View\Content\Factories;
+namespace Attack\View\Content\Factories;
 
-use AttOn\View\Content\Operations;
+use Attack\View\Content\Operations;
 
 class NewGameFactory extends Interfaces\ContentFactory {
 

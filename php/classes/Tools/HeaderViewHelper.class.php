@@ -1,9 +1,9 @@
 <?php
-namespace AttOn\Tools;
+namespace Attack\Tools;
 
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Model\User\ModelUser;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Model\User\ModelUser;
 
 class HeaderViewHelper {
 

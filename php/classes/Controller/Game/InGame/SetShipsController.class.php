@@ -1,15 +1,15 @@
 <?php
-namespace AttOn\Controller\Game\InGame;
+namespace Attack\Controller\Game\InGame;
 
-use AttOn\Controller\Interfaces\PhaseController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\ModelException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameShip;
-use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
-use AttOn\Model\Atton\ModelStartShips;
-use AttOn\Model\Game\ModelGame;
+use Attack\Controller\Interfaces\PhaseController;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\ModelException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameShip;
+use Attack\Model\Atton\InGame\Moves\ModelSetShipsMove;
+use Attack\Model\Atton\ModelStartShips;
+use Attack\Model\Game\ModelGame;
 
 class SetShipsController extends PhaseController {
 

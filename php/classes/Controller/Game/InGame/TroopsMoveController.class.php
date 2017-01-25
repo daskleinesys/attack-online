@@ -1,14 +1,14 @@
 <?php
-namespace AttOn\Controller\Game\InGame;
+namespace Attack\Controller\Game\InGame;
 
-use AttOn\Controller\Interfaces\PhaseController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\NullPointerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\Moves\ModelTroopsMove;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Game\ModelGame;
+use Attack\Controller\Interfaces\PhaseController;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\NullPointerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameLandUnit;
+use Attack\Model\Atton\InGame\Moves\ModelTroopsMove;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\ModelGame;
 
 class TroopsMoveController extends PhaseController {
 

@@ -1,11 +1,11 @@
 <?php
-namespace AttOn\Model\User;
+namespace Attack\Model\User;
 
-use AttOn\Model\Atton\ModelPhase;
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Model\Iterator\ModelIterator;
-use AttOn\Exceptions\DataSourceException;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Model\Atton\ModelPhase;
+use Attack\Model\DataBase\DataSource;
+use Attack\Model\Iterator\ModelIterator;
+use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\NullPointerException;
 
 class ModelInGamePhaseInfo {
 

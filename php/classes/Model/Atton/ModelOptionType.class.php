@@ -1,8 +1,8 @@
 <?php
-namespace AttOn\Model\Atton;
+namespace Attack\Model\Atton;
 
-use AttOn\Model\DataBase\DataSource;
-use AttOn\Exceptions\NullPointerException;
+use Attack\Model\DataBase\DataSource;
+use Attack\Exceptions\NullPointerException;
 
 class ModelOptionType {
 

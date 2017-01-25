@@ -1,5 +1,5 @@
 <?php
-namespace AttOn\Model\Game\Dice;
+namespace Attack\Model\Game\Dice;
 
 class DieSix extends AbstractGameDie {
 

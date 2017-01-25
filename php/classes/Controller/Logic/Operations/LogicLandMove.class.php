@@ -1,16 +1,16 @@
 <?php
-namespace AttOn\Controller\Logic\Operations;
+namespace Attack\Controller\Logic\Operations;
 
-use AttOn\Controller\Game\InGame\LandMoveController;
-use AttOn\Controller\Logic\Operations\Interfaces\PhaseLogic;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\LogicException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameLandUnit;
-use AttOn\Model\Atton\InGame\Moves\ModelLandMove;
-use AttOn\Model\Atton\ModelLandUnit;
-use AttOn\Model\Game\Dice\DieSix;
-use AttOn\Model\Game\ModelGame;
+use Attack\Controller\Game\InGame\LandMoveController;
+use Attack\Controller\Logic\Operations\Interfaces\PhaseLogic;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\LogicException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameLandUnit;
+use Attack\Model\Atton\InGame\Moves\ModelLandMove;
+use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\Dice\DieSix;
+use Attack\Model\Game\ModelGame;
 
 class LogicLandMove extends PhaseLogic {
     private $logger;

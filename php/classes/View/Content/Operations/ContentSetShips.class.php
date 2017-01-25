@@ -1,16 +1,16 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\Game\InGame\SetShipsController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Exceptions\ModelException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\ModelInGameShip;
-use AttOn\Model\Atton\InGame\Moves\ModelSetShipsMove;
-use AttOn\Model\Atton\ModelArea;
-use AttOn\Model\Atton\ModelShip;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
+use Attack\Controller\Game\InGame\SetShipsController;
+use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\ModelException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\ModelInGameShip;
+use Attack\Model\Atton\InGame\Moves\ModelSetShipsMove;
+use Attack\Model\Atton\ModelArea;
+use Attack\Model\Atton\ModelShip;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
 
 class ContentSetShips extends Interfaces\ContentOperation {
 

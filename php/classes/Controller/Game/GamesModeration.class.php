@@ -1,13 +1,13 @@
 <?php
-namespace AttOn\Controller\Game;
+namespace Attack\Controller\Game;
 
-use AttOn\Controller\Interfaces\ConstrictedController;
-use AttOn\Exceptions\GameAdministrationException;
-use AttOn\Exceptions\GameCreationException;
-use AttOn\Exceptions\JoinUserException;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelUser;
-use AttOn\Model\User\ModelIsInGameInfo;
+use Attack\Controller\Interfaces\ConstrictedController;
+use Attack\Exceptions\GameAdministrationException;
+use Attack\Exceptions\GameCreationException;
+use Attack\Exceptions\JoinUserException;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelUser;
+use Attack\Model\User\ModelIsInGameInfo;
 
 class GamesModeration extends ConstrictedController {
 

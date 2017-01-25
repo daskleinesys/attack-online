@@ -1,10 +1,10 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Model\User\ModelUser;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Model\User\ModelUser;
 
 class ContentOverview extends Interfaces\ContentOperation {
 

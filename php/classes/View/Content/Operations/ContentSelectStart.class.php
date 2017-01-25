@@ -1,16 +1,16 @@
 <?php
-namespace AttOn\View\Content\Operations;
+namespace Attack\View\Content\Operations;
 
-use AttOn\Controller\Game\InGame\SelectStartController;
-use AttOn\Exceptions\ControllerException;
-use AttOn\Model\Atton\InGame\ModelGameArea;
-use AttOn\Model\Atton\InGame\Moves\ModelSelectStartMove;
-use AttOn\Model\Atton\ModelArea;
-use AttOn\Model\Atton\ModelOptionType;
-use AttOn\Model\Atton\ModelStartRegion;
-use AttOn\Model\Game\ModelGame;
-use AttOn\Model\User\ModelIsInGameInfo;
-use AttOn\Model\User\ModelUser;
+use Attack\Controller\Game\InGame\SelectStartController;
+use Attack\Exceptions\ControllerException;
+use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Atton\InGame\Moves\ModelSelectStartMove;
+use Attack\Model\Atton\ModelArea;
+use Attack\Model\Atton\ModelOptionType;
+use Attack\Model\Atton\ModelStartRegion;
+use Attack\Model\Game\ModelGame;
+use Attack\Model\User\ModelIsInGameInfo;
+use Attack\Model\User\ModelUser;
 
 class ContentSelectStart extends Interfaces\ContentOperation {
 

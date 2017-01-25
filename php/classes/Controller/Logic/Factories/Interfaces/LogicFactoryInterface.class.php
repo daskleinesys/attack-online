@@ -1,5 +1,5 @@
 <?php
-namespace AttOn\Controller\Logic\Factories\Interfaces;
+namespace Attack\Controller\Logic\Factories\Interfaces;
 
 interface LogicFactoryInterface {
 
