@@ -2,6 +2,7 @@
 namespace Attack\Model\Atton;
 
 use Attack\Database\SQLConnector;
+use Attack\Exceptions\DatabaseException;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -66,14 +67,17 @@ class ModelArea {
      * returns an iterator for areas
      *
      * @param $id_type int
-     * @throws SQLConnectorException
      * @return ModelIterator
+     * @throws DatabaseException
      */
     public static function iterator($id_type = null) {
         $models = array();
-        $query = 'get_areas_for_type';
+        $query = 'get_all_areas';
         $dict = array();
-        $dict[':id_type'] = ($id_type == null) ? '%' : $id_type;
+        if ($id_type != null) {
+            $query = 'get_areas_by_type';
+            $dict[':id_type'] =  $id_type;
+        }
 
         // query phases
         $result = SQLConnector::Singleton()->epp($query, $dict);
@@ -136,8 +140,8 @@ class ModelArea {
             return $this->adjecents;
         }
 
-        // load a2a
-        $query = 'get_a2a';
+        // load adjacent_areas
+        $query = 'get_adjacent_areas_for_area';
         $dict = array(':id_area' => $this->id);
         $result = SQLConnector::getInstance()->epp($query, $dict);
         foreach ($result as $line) {
@@ -149,7 +153,7 @@ class ModelArea {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = SQLConnector::Singleton()->epp('get_all_area_info', array(':id_area' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_area_by_id', array(':id_area' => $this->id));
         if (empty($result)) {
             return false;
         }

@@ -84,30 +84,12 @@ class ModelGame {
      */
     public static function iterator($status, $id_user = null) {
         $games = array();
-
-        $dict = array();
-        switch ($status) {
-            case GAME_STATUS_ALL:
-                $query = 'get_all_game_ids';
-                break;
-            case GAME_STATUS_DONE:
-                $query = 'get_done_game_ids';
-                break;
-            case GAME_STATUS_NEW:
-                $query = 'get_new_game_ids';
-                break;
-            case GAME_STATUS_RUNNING:
-                $query = 'get_running_game_ids';
-                break;
-            case GAME_STATUS_STARTED:
-                $query = 'get_started_game_ids';
-                break;
-            default:
-                $query = '';
-                break;
-        }
+        $query = 'get_games_by_status';
+        $dict = array(
+            ':status' => $status
+        );
         if ($id_user != null) {
-            $query .= '_for_user';
+            $query .= 'get_games_by_status_and_user';
             $dict[':id_user'] = intval($id_user);
         }
         $result = SQLConnector::Singleton()->epp($query, $dict);
@@ -143,9 +125,9 @@ class ModelGame {
         $dict[':players'] = $players;
         $dict[':id_creator'] = $id_creator;
         if (empty($password)) {
-            $query = 'create_game_without_pw';
+            $query = 'insert_game';
         } else {
-            $query = 'create_game_with_pw';
+            $query = 'insert_game_with_password';
             $dict[':password'] = $password;
         }
 
@@ -341,10 +323,10 @@ class ModelGame {
         $dict[':id_game'] = $this->id;
         if ($password === null) {
             $this->pw_protected = false;
-            $query = 'delete_game_password';
+            $query = 'set_game_password_null';
         } else {
             $this->pw_protected = true;
-            $query = 'update_game_password';
+            $query = 'set_game_password';
             $dict[':password'] = $password;
         }
         SQLConnector::Singleton()->epp($query, $dict);
@@ -602,7 +584,7 @@ class ModelGame {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = SQLConnector::Singleton()->epp('get_full_game_info', array(':id_game' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_game_by_id', array(':id_game' => $this->id));
         if (empty($result)) {
             return false;
         }

@@ -96,7 +96,7 @@ class SQLCommands {
         self::setQuery('set_user_password', "UPDATE $table_user SET password = SHA(:password) WHERE id = :id_user");
         self::setQuery('set_user_token', "UPDATE $table_user SET token = :token WHERE id = :id_user");
 
-        // register new user
+        // new user
         self::setQuery('check_if_login_exists', "SELECT id FROM $table_user WHERE login = :login");
         self::setQuery('check_if_email_exists', "SELECT id FROM $table_user WHERE email = :email");
         self::setQuery('insert_user', "INSERT INTO $table_user (name, lastname, login, password, email, verify) VALUES (:name, :lastname, :login, SHA(:password), :email, SHA(:verify))");
@@ -145,129 +145,92 @@ class SQLCommands {
             WHERE players.count = players_done.count AND games.processing = 0
         ");
 
-        // TODO : continue streamlining queries
+
         /****************
          * game queries *
          ****************/
 
-        // update general game info
-        self::setQuery('delete_game_password', "UPDATE $table_games SET password = NULL WHERE id = :id_game");
-        self::setQuery('update_game_password', "UPDATE $table_games SET password = SHA(:password) WHERE id = :id_game");
-        self::setQuery('set_game_status', "UPDATE $table_games SET status = :status WHERE id = :id_game");
-
-        // delete game
-        self::setQuery('delete_game_iig', "DELETE FROM $table_user_is_in_game WHERE id_game = :id_game");
-        self::setQuery('delete_game', "DELETE FROM $table_games WHERE id = :id_game");
-
-        // join game
-        self::setQuery('check_game_password', "SELECT id FROM $table_games WHERE id = :id_game AND password = SHA(:password)");
-
-        // new game
-        self::setQuery('create_game_without_pw', "INSERT INTO $table_games (name, players, id_creator) VALUES (:game_name, :players, :id_creator)");
-        self::setQuery('create_game_with_pw', "INSERT INTO $table_games (name, players, id_creator, password) VALUES (:game_name, :players, :id_creator, SHA(:password))");
-        self::setQuery('get_starting_sets', "SELECT id,name,players FROM $table_start_sets WHERE players LIKE :players");
-        self::setQuery('get_starting_set', "SELECT id,name,players FROM $table_start_sets WHERE id = :id_set");
-
         // games
-        self::setQuery('get_all_game_ids', "SELECT id FROM $table_games ORDER BY id ASC");
-        self::setQuery('get_done_game_ids', "SELECT id FROM $table_games WHERE status = '" . GAME_STATUS_DONE . "' ORDER BY id ASC");
-        self::setQuery('get_new_game_ids', "SELECT id FROM $table_games WHERE status = '" . GAME_STATUS_NEW . "' ORDER BY id ASC");
-        self::setQuery('get_started_game_ids', "SELECT id FROM $table_games WHERE status = '" . GAME_STATUS_STARTED . "' ORDER BY id ASC");
-        self::setQuery('get_running_game_ids', "SELECT id FROM $table_games WHERE status = '" . GAME_STATUS_RUNNING . "' ORDER BY id ASC");
-
-        self::setQuery('get_all_game_ids_for_user', "SELECT id_game AS id FROM $table_user_is_in_game WHERE id_user = :id_user ORDER BY id_game ASC");
-        self::setQuery('get_done_game_ids_for_user', "
-            SELECT iig.id_game AS id
-            FROM $table_user_is_in_game AS iig
-                LEFT JOIN $table_games ON (games.id = iig.id_game)
-            WHERE games.status = '" . GAME_STATUS_DONE . "' AND iig.id_user = :id_user
-            ORDER BY iig.id_game ASC
-        ");
-        self::setQuery('get_new_game_ids_for_user', "
-            SELECT iig.id_game AS id 
-            FROM $table_user_is_in_game AS iig 
-                LEFT JOIN $table_games ON (games.id = iig.id_game) 
-            WHERE games.status = '" . GAME_STATUS_NEW . "' AND iig.id_user = :id_user 
-            ORDER BY iig.id_game ASC
-        ");
-        self::setQuery('get_started_game_ids_for_user', "
-            SELECT iig.id_game AS id 
-            FROM $table_user_is_in_game AS iig 
-                LEFT JOIN $table_games ON (games.id = iig.id_game) 
-            WHERE games.status = '" . GAME_STATUS_STARTED . "' AND iig.id_user = :id_user 
-            ORDER BY iig.id_game ASC
-        ");
-        self::setQuery('get_running_game_ids_for_user', "
-            SELECT iig.id_game AS id 
-            FROM $table_user_is_in_game AS iig 
-                LEFT JOIN $table_games ON (games.id = iig.id_game) 
-            WHERE games.status = '" . GAME_STATUS_RUNNING . "' AND iig.id_user = :id_user 
-            ORDER BY iig.id_game ASC
-        ");
-
-
-        /*************
-         * game info *
-         *************/
-
-        // query
+        self::setQuery('get_game_by_id', "SELECT id, name, players, id_creator, password, status, id_phase, round, processing FROM $table_games WHERE id = :id_game");
+        self::setQuery('get_all_games', "SELECT * FROM $table_games ORDER BY id ASC");
+        self::setQuery('get_games_by_status', "SELECT * FROM $table_games WHERE status = :status ORDER BY id ASC");
+        self::setQuery('get_games_by_status_and_user', "SELECT * FROM $table_games WHERE status = :status AND id_user = :id_user ORDER BY id ASC");
+        self::setQuery('check_game_password', "SELECT id FROM $table_games WHERE id = :id_game AND password = SHA(:password)");
         self::setQuery('check_game_name', "SELECT id FROM $table_games WHERE name = :name");
-        self::setQuery('get_full_game_info', "SELECT id, name, players, id_creator, password, status, id_phase, round, processing FROM $table_games WHERE id = :id_game");
-        self::setQuery('get_game_status', "SELECT status FROM $table_games WHERE id = :id_game");
-        self::setQuery('get_processing_state', "SELECT processing FROM $table_games WHERE id = :id_game LIMIT 1");
-        self::setQuery('get_round_phase_info_id_game', "
-            SELECT games.id_phase AS id_phase, games.round, phases.name AS phase, phases.label, games.name AS name, games.status FROM $table_games 
-                LEFT JOIN phases AS phases ON (games.id_phase=phases.id)
-            WHERE games.id = :id_game
-        ");
 
-        // update
+        // update game
+        self::setQuery('set_game_password_null', "UPDATE $table_games SET password = NULL WHERE id = :id_game");
+        self::setQuery('set_game_password', "UPDATE $table_games SET password = SHA(:password) WHERE id = :id_game");
+        self::setQuery('set_game_status', "UPDATE $table_games SET status = :status WHERE id = :id_game");
         self::setQuery('set_game_phase', "UPDATE $table_games SET id_phase = :id_phase WHERE id = :id_game");
         self::setQuery('set_game_round', "UPDATE $table_games SET round = :round WHERE id = :id_game");
         self::setQuery('set_game_processing', "UPDATE $table_games SET processing = 1 WHERE id = :id_game");
         self::setQuery('set_game_processing_done', "UPDATE $table_games SET processing = 0 WHERE id = :id_game");
+        self::setQuery('delete_game', "DELETE FROM $table_games WHERE id = :id_game");
+
+        // new game
+        self::setQuery('insert_game', "INSERT INTO $table_games (name, players, id_creator) VALUES (:game_name, :players, :id_creator)");
+        self::setQuery('insert_game_with_password', "INSERT INTO $table_games (name, players, id_creator, password) VALUES (:game_name, :players, :id_creator, SHA(:password))");
+        self::setQuery('get_all_start_sets', "SELECT * FROM $table_start_sets WHERE players = :players");
+        self::setQuery('get_start_set_by_id', "SELECT * $table_start_sets WHERE id = :id_set");
+
+
+        /***************
+         * game phases *
+         ***************/
 
         // phase info
-        self::setQuery('get_phase_info', "SELECT id, name, label, id_type FROM $table_phases WHERE id = :id_phase LIMIT 1");
-        self::setQuery('get_all_phases', "SELECT id, name, label FROM $table_phases ORDER BY id ASC");
-        self::setQuery('get_phase_name', "SELECT name FROM $table_phases WHERE id = :id_phase");
+        self::setQuery('get_phase_by_id', "SELECT * FROM $table_phases WHERE id = :id_phase");
+        self::setQuery('get_all_phases', "SELECT * FROM $table_phases ORDER BY id ASC");
 
-        // area_is_adjacent
-        self::setQuery('get_area_is_adjacent', "SELECT id_area2 AS id_adjacent_area FROM $table_area_is_adjacent WHERE id_area1 = :id_area");
+
+        /*********
+         * areas *
+         *********/
 
         // area info
-        self::setQuery('get_all_area_ids', "SELECT id FROM $table_areas");
-        self::setQuery('get_areas_for_type', "SELECT id FROM $table_areas WHERE id_type LIKE :id_type");
-        self::setQuery('get_all_area_info', "SELECT id,name,number,coords_small,x,y,x2,y2,xres,yres,height,width,tanksize,id_type,zone,economy FROM $table_areas WHERE id = :id_area");
-        self::setQuery('get_area_name', "SELECT id,name FROM $table_areas WHERE id = :id_area LIMIT 1");
-        self::setQuery('get_area_infos', "SELECT id AS id, number, tanksize, id_type FROM $table_areas WHERE id = :id_area LIMIT 1");
-        self::setQuery('get_area_type', "SELECT id_type FROM $table_areas WHERE id = :id_area LIMIT 1");
-        self::setQuery('get_adjacent_areas', "SELECT id_area2 AS id_area FROM $table_area_is_adjacent WHERE id_area1 = :id_area");
+        self::setQuery('get_all_areas', "SELECT * FROM $table_areas");
+        self::setQuery('get_areas_by_type', "SELECT * FROM $table_areas WHERE id_type = :id_type");
+        self::setQuery('get_area_by_id', "SELECT * FROM $table_areas WHERE id = :id_area");
+        self::setQuery('get_adjacent_areas_for_area', "SELECT id_area2 as id_adjacent_area FROM $table_area_is_adjacent WHERE id_area1 = :id_area");
+
+
+        /**********
+         * colors *
+         **********/
 
         // color info
-        self::setQuery('get_color', "SELECT id,name,key FROM $table_colors WHERE id = :id_color");
-        self::setQuery('get_colors', "SELECT id,name,key FROM $table_colors");
-        self::setQuery('get_all_colors', "SELECT id FROM $table_colors");
-        self::setQuery('check_free_color', "SELECT id FROM $table_user_is_in_game WHERE id_game = :id_game AND id_color = :id_color");
-        self::setQuery('get_free_colors_for_game', "SELECT id AS id, key AS color FROM $table_colors WHERE id NOT IN (SELECT id_color FROM $table_user_is_in_game WHERE id_game= :id_game)");
+        self::setQuery('get_all_colors', "SELECT * FROM $table_colors");
+        self::setQuery('get_color_by_id', "SELECT id,name,key FROM $table_colors WHERE id = :id_color");
+
+
+        /*************
+         * resources *
+         *************/
 
         // ressource info
-        self::setQuery('get_resources', "SELECT * FROM $table_resources");
-        self::setQuery('get_resource', "SELECT * FROM $table_resources WHERE id = :id_resource");
-        self::setQuery('get_resource_allocation', "SELECT id, id_resource, res_power, economy, count FROM $table_areas_get_resources WHERE economy = :economy");
+        self::setQuery('get_areas_get_resources_by_economy', "SELECT * FROM $table_areas_get_resources WHERE economy = :economy");
+
+
+        /**************
+         * start sets *
+         **************/
 
         // select-start
-        self::setQuery('get_startregions_for_set', "SELECT id, id_area, id_optiontype, id_set, option_group FROM $table_start_set_has_areas WHERE id_set = :id_set ORDER BY option_group ASC");
-        self::setQuery('get_option_types', "SELECT id, units, countries FROM $table_option_types");
+        self::setQuery('get_start_set_areas_by_set', "SELECT * FROM $table_start_set_has_areas WHERE id_set = :id_set ORDER BY option_group ASC");
+        self::setQuery('get_option_types', "SELECT * FROM $table_option_types");
 
         // start ships
-        self::setQuery('get_start_ships_for_players', "SELECT * FROM $table_start_ships WHERE players = :players");
+        self::setQuery('get_start_ships_by_players', "SELECT * FROM $table_start_ships WHERE players = :players");
+
+
+        /*********
+         * units *
+         *********/
 
         // unit info
-        self::setQuery('get_land_unit', "SELECT * FROM $table_units WHERE id = :id_unit");
-        self::setQuery('get_all_land_units', "SELECT * FROM $table_units WHERE id_type = " . TYPE_LAND . " OR id_type = " . TYPE_AIR);
-        self::setQuery('get_ship', "SELECT * FROM $table_units WHERE id = :id_unit");
-        self::setQuery('get_all_ships', "SELECT * FROM $table_units WHERE id_type = " . TYPE_SEA);
+        self::setQuery('get_unit_by_id', "SELECT * FROM $table_units WHERE id = :id_unit");
+        self::setQuery('get_units_by_type', "SELECT * FROM $table_units WHERE id_type = :id_type");
 
 
         /*******
@@ -393,30 +356,21 @@ class SQLCommands {
          *******************/
 
         // query
-        self::setQuery('get_zareas', "SELECT id FROM $table_game_areas WHERE id_game = :id_game AND id_user = :id_user");
-        self::setQuery('get_zarea_for_area', "SELECT id FROM $table_game_areas WHERE id_game = :id_game AND id_area = :id_area");
-        self::setQuery('get_all_zarea_info', "SELECT * FROM $table_game_areas WHERE id = :id_game_area");
-        self::setQuery('get_zarea_infos', "SELECT * FROM $table_game_areas WHERE id_game = :id_game AND id_area = :id_area");
-        self::setQuery('get_zarea_user', "SELECT id_user FROM $table_game_areas WHERE id = :id_game_area");
-        self::setQuery('get_zarea_ressource_productivity', "SELECT id_ressource, productivity FROM $table_game_areas WHERE id = :id_game_area");
-        self::setQuery('get_all_empty_zareas_id_ress_prod', "
-            SELECT game_areas.id, game_areas.id_ressource, game_areas.productivity
-            FROM $table_game_areas AS game_areas 
-                LEFT JOIN $table_areas AS areas ON (areas.id = game_areas.id_area) 
-            WHERE game_areas.id_user IS NULL AND areas.id_type = " . TYPE_LAND
-        );
-        self::setQuery('get_area_production_for_user', "SELECT id_ressource, productivity FROM $table_game_areas WHERE id_game = :id_game AND id_user = :id_user");
+        self::setQuery('get_game_area_by_id', "SELECT * FROM $table_game_areas WHERE id = :id_game_area");
+        self::setQuery('get_game_area_by_area', "SELECT * FROM $table_game_areas WHERE id_game = :id_game AND id_area = :id_area");
+        self::setQuery('get_all_game_areas', "SELECT * FROM $table_game_areas WHERE id_game = :id_game");
+        self::setQuery('get_game_areas_by_user', "SELECT * FROM $table_game_areas WHERE id_game = :id_game AND id_user = :id_user");
 
         // update
-        self::setQuery('update_area_user_by_area', "UPDATE $table_game_areas SET id_user = :id_user WHERE id = :id_game_area");
-        self::setQuery('update_zarea_id_user', "UPDATE $table_game_areas SET id_user = :id_user WHERE id = :id_game_area");
-        self::setQuery('update_zarea_id_resource', "UPDATE $table_game_areas SET id_resource = :id_resource WHERE id = :id_game_area");
-        self::setQuery('update_zarea_productivity', "UPDATE $table_game_areas SET productivity = :productivity WHERE id = :id_game_area");
+        self::setQuery('set_game_area_user', "UPDATE $table_game_areas SET id_user = :id_user WHERE id = :id_game_area");
+        self::setQuery('set_game_area_resource', "UPDATE $table_game_areas SET id_resource = :id_resource WHERE id = :id_game_area");
+        self::setQuery('set_game_area_productivity', "UPDATE $table_game_areas SET productivity = :productivity WHERE id = :id_game_area");
 
         // create
-        self::setQuery('create_zarea', "INSERT INTO $table_game_areas (id_game, id_user, id_area, id_resource, productivity) VALUES (:id_game, :id_user, :id_area, :id_resource, :productivity)");
+        self::setQuery('insert_game_area', "INSERT INTO $table_game_areas (id_game, id_user, id_area, id_resource, productivity) VALUES (:id_game, :id_user, :id_area, :id_resource, :productivity)");
 
 
+        // TODO : continue streamlining queries
         /************************
          * game land units info *
          ************************/

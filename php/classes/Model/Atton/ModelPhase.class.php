@@ -101,7 +101,7 @@ class ModelPhase {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = SQLConnector::Singleton()->epp('get_phase_info', array(':id_phase' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_phase_by_id', array(':id_phase' => $this->id));
         if (empty($result)) {
             return false;
         }

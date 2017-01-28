@@ -2,6 +2,7 @@
 namespace Attack\Model\Atton;
 
 use Attack\Database\SQLConnector;
+use Attack\Exceptions\DatabaseException;
 use Attack\Model\Iterator\ModelIterator;
 
 class ModelEconomy {
@@ -13,9 +14,8 @@ class ModelEconomy {
     /**
      * returns an economy model
      *
-     * @param $id int
-     * @param $id int
-     * @return ModelArea
+     * @param $id_resource int
+     * @param $res_power int
      */
     private function __construct($id_resource, $res_power) {
         $this->id_resource = intval($id_resource);
@@ -24,14 +24,15 @@ class ModelEconomy {
 
     /**
      * returns an iterator for economy models
-     * @param $economy_type string/enum
+     *
+     * @param $economy_type string - enum(poor,weak,normal,strong)
      * @param $random_order boolean - set true to get random order
-     * @throws SQLConnectorException
+     * @throws DatabaseException
      * @return ModelIterator
      */
     public static function iterator($economy_type, $random_order = true) {
         $models = array();
-        $query = 'get_resource_allocation';
+        $query = 'get_areas_get_resources_by_economy';
         $dict = array();
         $dict[':economy'] = $economy_type;
 

@@ -47,7 +47,7 @@ class ModelStartRegion {
             return self::$regions[$id_set];
         }
 
-        $query = 'get_startregions_for_set';
+        $query = 'get_start_set_areas_by_set';
         $dict[':id_set'] = $id_set;
         $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {

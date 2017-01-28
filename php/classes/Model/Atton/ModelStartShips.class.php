@@ -39,7 +39,7 @@ class ModelStartShips {
         }
 
         // check if there is a game
-        $query = 'get_start_ships_for_players';
+        $query = 'get_start_ships_by_players';
         $dict = array(':players' => $players);
         $result = SQLConnector::Singleton()->epp($query, $dict);
         if (empty($result)) {

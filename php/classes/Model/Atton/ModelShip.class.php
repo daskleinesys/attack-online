@@ -31,7 +31,7 @@ class ModelShip extends ModelUnit {
         if (isset(self::$units[$id_unit])) {
             return self::$units[$id_unit];
         }
-        $query = 'get_ship';
+        $query = 'get_unit_by_id';
         $dict = array(':id_unit' => $id_unit);
         $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
@@ -57,10 +57,13 @@ class ModelShip extends ModelUnit {
      */
     public static function iterator() {
         $models = array();
-        $query = 'get_all_ships';
+        $query = 'get_units_by_type';
+        $dict = array(
+            ':id_type' => TYPE_SEA
+        );
 
         // query units
-        $result = SQLConnector::Singleton()->epp($query);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $unit) {
             $id_unit = $unit['id_unit'];

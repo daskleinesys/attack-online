@@ -2,6 +2,7 @@
 namespace Attack\Model\Atton;
 
 use Attack\Database\SQLConnector;
+use Attack\Exceptions\DatabaseException;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -46,16 +47,18 @@ class ModelStartingSet {
     }
 
     /**
-     * returns an iterator for all colors
+     * returns an iterator for all start sets
      *
-     * @throws SQLConnectorException,NullPointerException
+     * @param null $players
+     * @param bool $random_order
      * @return ModelIterator
+     * @throws NullPointerException
      */
-    public static function iterator($players = null, $random_order = false) {
+    public static function iterator($players, $random_order = false) {
         $models = array();
-        $query = 'get_starting_sets';
+        $query = 'get_all_start_sets';
         $dict = array();
-        $dict[':players'] = ($players === null) ? '%' : intval($players);
+        $dict[':players'] = intval($players);
 
         // query phases
         $result = SQLConnector::Singleton()->epp($query, $dict);
@@ -99,7 +102,7 @@ class ModelStartingSet {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = SQLConnector::Singleton()->epp('get_starting_set', array(':id_set' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_start_set_by_id', array(':id_set' => $this->id));
         if (empty($result)) {
             return false;
         }

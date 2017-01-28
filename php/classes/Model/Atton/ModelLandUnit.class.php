@@ -10,15 +10,8 @@ class ModelLandUnit extends ModelUnit {
 
     private static $units = array(); // array(id_unit => ModelLandUnit)
 
-    private $killing_sequence;
-    private $kill_sequence_offset;
-    private $ship_takeover;
-
-    protected function __construct($id, $name, $abbreviation, $price, $speed, $id_type, $killing_sequence, $kill_sequence_offset, $ship_takeover) {
+    protected function __construct($id, $name, $abbreviation, $price, $speed, $id_type) {
         parent::__construct($id, $name, $abbreviation, $price, $speed, $id_type);
-        $this->killing_sequence = $killing_sequence;
-        $this->kill_sequence_offset = intval($kill_sequence_offset);
-        $this->ship_takeover = intval($ship_takeover);
     }
 
     /**
@@ -33,7 +26,7 @@ class ModelLandUnit extends ModelUnit {
         if (isset(self::$units[$id_unit])) {
             return self::$units[$id_unit];
         }
-        $query = 'get_land_unit';
+        $query = 'get_unit_by_id';
         $dict = array(':id_unit' => $id_unit);
         $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
@@ -46,10 +39,7 @@ class ModelLandUnit extends ModelUnit {
             $unit['abbreviation'],
             $unit['price'],
             $unit['speed'],
-            $unit['id_type'],
-            $unit['killing_sequence'],
-            $unit['kill_sequence_offset'],
-            $unit['ship_takeover']
+            $unit['id_type']
         );
         return self::$units[$id_unit];
     }
@@ -61,10 +51,13 @@ class ModelLandUnit extends ModelUnit {
      */
     public static function iterator() {
         $models = array();
-        $query = 'get_all_land_units';
+        $query = 'get_units_by_type';
+        $dict = array(
+            ':id_type' => TYPE_LAND
+        );
 
         // query units
-        $result = SQLConnector::Singleton()->epp($query);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $unit) {
             $id_unit = $unit['id'];
@@ -72,27 +65,6 @@ class ModelLandUnit extends ModelUnit {
         }
 
         return new ModelIterator($models);
-    }
-
-    /**
-     * @return string
-     */
-    public function getKillingSequence() {
-        return $this->killing_sequence;
-    }
-
-    /**
-     * @return int
-     */
-    public function getKillSequenceOffset() {
-        return $this->kill_sequence_offset;
-    }
-
-    /**
-     * @return int
-     */
-    public function getShipTakeover() {
-        return $this->ship_takeover;
     }
 
 }

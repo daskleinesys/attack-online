@@ -1,6 +1,7 @@
 <?php
 namespace Attack\Model\Atton\InGame;
 
+use Attack\Exceptions\DatabaseException;
 use Attack\Model\Atton\ModelArea;
 use Attack\Database\SQLConnector;
 use Attack\Database\SQLCommands;
@@ -16,7 +17,6 @@ class ModelGameArea {
     // member vars
     private $id_game; // int
     private $id; // int
-    private $tank; // int
     private $id_user; // int
     private $id_area; // int
     private $id_resource; // int
@@ -76,9 +76,11 @@ class ModelGameArea {
             return self::$game_areas_for_area[$id_game][$id_area];
         }
 
-        SQLCommands::init($id_game);
-        $query = 'get_zarea_for_area';
-        $dict = array(':id_area' => $id_area);
+        $query = 'get_game_area_by_area';
+        $dict = array(
+            ':id_game' => $id_game,
+            ':id_area' => $id_area
+        );
         $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('No corresponding area found.');
@@ -93,24 +95,29 @@ class ModelGameArea {
      *
      * @param $id_user int
      * @param $id_game int
-     * @throws SQLConnectorException
+     * @throws DatabaseException
      * @return ModelIterator
      */
     public static function iterator($id_user = null, $id_game) {
         $id_game = intval($id_game);
-        SQLCommands::init($id_game);
 
         $models = array();
-        $query = 'get_zareas';
-        $dict = array();
-        $dict[':id_user'] = ($id_user == null) ? '%' : intval($id_user);
+        $query = 'get_all_game_areas';
+        $dict = array(
+            ':id_game' => $id_game
+        );
+
+        if ($id_user != null) {
+            $query = 'get_game_areas_by_user';
+            $dict[':id_user'] = intval($id_user);
+        }
 
         // query phases
-        $result = SQLConnector::Singleton()->epp($query,$dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $area) {
             $id_game_area = $area['id'];
-            $models[] = self::getGameArea($id_game,$id_game_area);
+            $models[] = self::getGameArea($id_game, $id_game_area);
         }
 
         return new ModelIterator($models);
@@ -136,16 +143,14 @@ class ModelGameArea {
      * creates a game-area or updates all infos if already created
      *
      * @param $id_game int
-     * @param $tank int
      * @param $id_user int
      * @param $id_area int
      * @param $id_resource
      * @param $productivity int
      * @return ModelGameArea
      */
-    public static function setGameArea($id_game, $tank, $id_user, $id_area, $id_resource, $productivity) {
+    public static function setGameArea($id_game, $id_user, $id_area, $id_resource, $productivity) {
         $id_game = intval($id_game);
-        $tank = intval($tank);
         $id_user = intval($id_user);
         $id_area = intval($id_area);
         $id_resource = intval($id_resource);
@@ -153,16 +158,14 @@ class ModelGameArea {
 
         if (self::checkArea($id_game, $id_area)) {
             $area = self::getGameAreaForArea($id_game, $id_area);
-            $area->setTank($tank);
             $area->setIdUser($id_user);
             $area->setIdResource($id_resource);
             $area->setProductivity($productivity);
             return $area;
         } else {
-            SQLCommands::init($id_game);
-            $query = 'create_zarea';
+            $query = 'insert_game_area';
             $dict = array();
-            $dict[':tank'] = $tank;
+            $dict[':id_game'] = $id_game;
             $dict[':id_user'] = $id_user;
             $dict[':id_area'] = $id_area;
             $dict[':id_resource'] = $id_resource;
@@ -173,32 +176,15 @@ class ModelGameArea {
     }
 
     /**
-     * sets the tank
-     *
-     * @return void
-     */
-    public function setTank($tank) {
-        SQLCommands::init($this->id_game);
-        $tank = intval($tank);
-        $query = 'update_zarea_tank';
-        $dict = array();
-        $dict[':id_zarea'] = $this->id;
-        $dict[':tank'] = $tank;
-        $this->tank = $tank;
-        SQLConnector::Singleton()->epp($query, $dict);
-    }
-
-    /**
      * sets the user that owns this game-area
      *
      * @return void
      */
     public function setIdUser($id_user) {
-        SQLCommands::init($this->id_game);
         $id_user = intval($id_user);
-        $query = 'update_zarea_id_user';
+        $query = 'set_game_area_user';
         $dict = array();
-        $dict[':id_zarea'] = $this->id;
+        $dict[':id_game_area'] = $this->id;
         $dict[':id_user'] = $id_user;
         SQLConnector::Singleton()->epp($query, $dict);
         $this->id_user = $id_user;
@@ -210,11 +196,10 @@ class ModelGameArea {
      * @return void
      */
     public function setIdResource($id_resource) {
-        SQLCommands::init($this->id_game);
         $id_resource = intval($id_resource);
-        $query = 'update_zarea_id_resource';
+        $query = 'set_game_area_resource';
         $dict = array();
-        $dict[':id_zarea'] = $this->id;
+        $dict[':id_game_area'] = $this->id;
         $dict[':id_resource'] = $id_resource;
         $this->id_resource = $id_resource;
         SQLConnector::Singleton()->epp($query, $dict);
@@ -227,11 +212,10 @@ class ModelGameArea {
      * @return void
      */
     public function setProductivity($productivity) {
-        SQLCommands::init($this->id_game);
         $productivity = intval($productivity);
-        $query = 'update_zarea_productivity';
+        $query = 'set_game_area_productivity';
         $dict = array();
-        $dict[':id_zarea'] = $this->id;
+        $dict[':id_game_area'] = $this->id;
         $dict[':productivity'] = $productivity;
         $this->productivity = $productivity;
         SQLConnector::Singleton()->epp($query, $dict);
@@ -295,13 +279,6 @@ class ModelGameArea {
     /**
      * @return int
      */
-    public function getTank() {
-        return $this->tank;
-    }
-
-    /**
-     * @return int
-     */
     public function getIdUser() {
         return $this->id_user;
     }
@@ -336,15 +313,12 @@ class ModelGameArea {
     }
 
     private function fill_member_vars() {
-        SQLCommands::init($this->id_game);
-        // check if there is a game
-        $result = SQLConnector::Singleton()->epp('get_all_zarea_info', array(':id_zarea' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_game_area_by_id', array(':id_game_area' => $this->id));
         if (empty($result)) {
             return false;
         }
         $data = $result[0];
 
-        $this->tank = (int) $data['tank'];
         $this->id_user = (int) $data['id_user'];
         $this->id_area = (int) $data['id_area'];
         $this->id_resource = (int) $data['id_resource'];

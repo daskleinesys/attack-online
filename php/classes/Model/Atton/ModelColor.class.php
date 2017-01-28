@@ -94,7 +94,7 @@ class ModelColor {
 
 	private function fill_member_vars() {
 		// check if there is a game
-		$result = SQLConnector::Singleton()->epp('get_color', array(':id_color' => $this->id));
+		$result = SQLConnector::Singleton()->epp('get_color_by_id', array(':id_color' => $this->id));
 		if (empty($result)) {
             return false;
         }
