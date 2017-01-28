@@ -89,6 +89,19 @@ class SQLCommands {
         self::setQuery('check_user_login', "SELECT id FROM $table_user WHERE login = :username AND password = SHA(:password)");
         self::setQuery('check_user_token', "SELECT id FROM $table_user WHERE token = :token");
         self::setQuery('get_all_users', "SELECT * FROM $table_user ORDER BY id ASC");
+        self::setQuery('get_user_by_status', "SELECT * FROM $table_user WHERE status = :status ORDER BY id ASC");
+        self::setQuery('get_user_by_status_game', "
+            SELECT user.*
+            FROM $table_user user
+                LEFT JOIN $table_user_is_in_game iig ON (user.id = iig.id_user)
+            WHERE iig.id_game = :id_game AND user.status = :status ORDER BY user.id ASC
+        ");
+        self::setQuery('get_user_by_game', "
+            SELECT user.*
+            FROM $table_user user
+                LEFT JOIN $table_user_is_in_game iig ON (user.id = iig.id_user)
+            WHERE iig.id_game = :id_game ORDER BY user.id ASC
+        ");
 
         // update user
         self::setQuery('set_user_status', "UPDATE $table_user SET status = :status WHERE id = :id_user");

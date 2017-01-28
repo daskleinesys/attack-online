@@ -14,7 +14,7 @@ class ModelUser {
     private static $current_user = null;
 
     // list of all user models
-    private static $users = array();
+    private static $users = [];
 
     // pre-filled member_vars
     private $id = 0; // int
@@ -69,37 +69,25 @@ class ModelUser {
      *
      * @param string $status - define for user status
      * @param int $id_game
-     * @param string $orderby - ('login','name','lastname','email','status')
-     * @param bool $direction - true == asc, false == desc
      * @throws DatabaseException
      * @return ModelIterator
      */
-    public static function iterator($status, $id_game = null, $orderby = null, $direction = true) {
+    public static function iterator($status = null, $id_game = null) {
         $users = array();
-        $query = 'get_users';
+        $query = 'get_all_users';
         $dict = array();
 
         // select status
-        if ($status == STATUS_USER_ALL) $dict[':status'] = '%';
-        else $dict[':status'] = $status;
-
-        // select game
-        if ($id_game != null) {
-            $query .= '_for_game';
+        if ($status !== STATUS_USER_ALL && $status != null && $id_game != null) {
+            $query = 'get_user_by_status_game';
+            $dict[':status'] = $status;
             $dict[':id_game'] = intval($id_game);
-        }
-
-        // order by
-        if ($orderby != null) {
-            $query .= '_ord_' . $orderby;
-        } else $query .= '_ord_id';
-
-        // asc/desc
-        if ($direction) {
-            $query .= '_asc';
-        }
-        else {
-            $query .= '_desc';
+        } else if ($status !== STATUS_USER_ALL && $status != null) {
+            $query = 'get_user_by_status';
+            $dict[':status'] = $status;
+        } else if ($id_game != null) {
+            $query = 'get_user_by_game';
+            $dict[':id_game'] = intval($id_game);
         }
 
         // query user
@@ -423,7 +411,7 @@ class ModelUser {
     }
 
     private function fill_member_vars() {
-        $result = SQLConnector::Singleton()->epp('get_all_users', array(':id_user' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_user_by_id', array(':id_user' => $this->id));
         if (empty($result)) {
             return false;
         }
