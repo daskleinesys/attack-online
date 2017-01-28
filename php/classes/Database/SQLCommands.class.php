@@ -370,23 +370,22 @@ class SQLCommands {
         self::setQuery('insert_game_area', "INSERT INTO $table_game_areas (id_game, id_user, id_area, id_resource, productivity) VALUES (:id_game, :id_user, :id_area, :id_resource, :productivity)");
 
 
-        // TODO : continue streamlining queries
         /************************
          * game land units info *
          ************************/
 
         // query
-        self::setQuery('get_land_units_for_zarea_user_unit', "
-            SELECT id, id_unit, id_user, id_game_area, numberof AS count 
+        self::setQuery('get_game_land_units_by_area_user_unit', "
+            SELECT *, numberof AS count 
             FROM $table_game_units 
             WHERE id_game_area = :id_game_area AND id_user = :id_user AND id_unit = :id_unit
         ");
 
         // update
-        self::setQuery('set_land_unit_count', "UPDATE $table_game_units SET numberof = :count WHERE id = :id_game_unit");
+        self::setQuery('set_game_land_unit_count', "UPDATE $table_game_units SET numberof = :count WHERE id = :id_game_unit");
 
         // create
-        self::setQuery('create_unit_for_zarea_user', "INSERT INTO $table_game_units (numberof, id_user, id_game_area, id_unit) VALUES (:count, :id_user, :id_game_area, :id_unit)");
+        self::setQuery('insert_game_land_unit', "INSERT INTO $table_game_units (numberof, id_user, id_game_area, id_unit) VALUES (:count, :id_user, :id_game_area, :id_unit)");
 
 
         /*******************
@@ -394,60 +393,60 @@ class SQLCommands {
          *******************/
 
         // query
-        self::setQuery('get_ingame_ship_by_id', "
+        self::setQuery('get_game_ship_by_id', "
             SELECT * 
             FROM $table_game_units 
             WHERE id = :id_game_unit
         ");
-        self::setQuery('get_ingame_ship_by_name', "
+        self::setQuery('get_game_ship_by_name', "
             SELECT game_units.*
             FROM $table_game_units AS game_units
                 LEFT JOIN $table_game_areas AS game_areas ON (game_areas.id = game_units.id_game_area)
             WHERE game_areas.id_game = :id_game AND game_units.name = :name
             LIMIT 1
         ");
-        self::setQuery('get_all_ships_in_area_not_in_port_by_user', "
-            SELECT game_units.id
+        self::setQuery('get_all_game_ships_not_in_port_by_area_user', "
+            SELECT game_units.*
             FROM $table_game_units AS game_units
                 LEFT JOIN $table_units AS units ON (units.id = game_units.id_unit)
             WHERE id_user = :id_user AND id_game_area = :id_game_area AND id_game_area_in_port IS NULL AND units.id_type = " . TYPE_SEA
         );
-        self::setQuery('get_all_ships_in_port_by_user', "
-            SELECT game_units.id
+        self::setQuery('get_all_game_ships_by_port_user', "
+            SELECT game_units.*
             FROM $table_game_units AS game_units
                 LEFT JOIN $table_units AS units ON (units.id = game_units.id_unit)
             WHERE id_user = :id_user AND id_game_area_in_port = :id_game_area_in_port AND units.id_type = " . TYPE_SEA
         );
-        self::setQuery('get_all_ships_in_area_not_in_port', "
-            SELECT game_units.id
+        self::setQuery('get_all_game_ships_not_in_port_by_area', "
+            SELECT game_units.*
             FROM $table_game_units AS game_units
                 LEFT JOIN $table_units AS units ON (units.id = game_units.id_unit)
             WHERE id_game_area = :id_game_area AND id_game_area_in_port IS NULL AND units.id_type = " . TYPE_SEA
         );
-        self::setQuery('get_all_ships_in_port', "
-            SELECT game_units.id
+        self::setQuery('get_all_ships_by_port', "
+            SELECT game_units.*
             FROM $table_game_units AS game_units
                 LEFT JOIN $table_units AS units ON (units.id = game_units.id_unit)
             WHERE id_game_area_in_port = :id_game_area_in_port AND units.id_type = " . TYPE_SEA
         );
 
         // update
-        self::setQuery('set_ship_user', "UPDATE $table_game_units SET id_user = :id_user WHERE id = :id_game_unit");
-        self::setQuery('set_ship_zarea', "UPDATE $table_game_units SET id_game_area = :id_game_area WHERE id = :id_game_unit");
-        self::setQuery('set_ship_tank', "UPDATE $table_game_units SET tank = :tank WHERE id = :id_game_unit");
-        self::setQuery('set_ship_hitpoints', "UPDATE $table_game_units SET hitpoints = :hitpoints WHERE id = :id_game_unit");
-        self::setQuery('set_ship_experience', "UPDATE $table_game_units SET experience = :experience WHERE id = :id_game_unit");
-        self::setQuery('set_ship_dive_status', "UPDATE $table_game_units SET dive_status = :dive_status WHERE id = :id_game_unit");
-        self::setQuery('set_ship_in_port', "UPDATE $table_game_units SET id_game_area_in_port = :id_game_area_in_port WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_user', "UPDATE $table_game_units SET id_user = :id_user WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_game_area', "UPDATE $table_game_units SET id_game_area = :id_game_area WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_tank', "UPDATE $table_game_units SET tank = :tank WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_hitpoints', "UPDATE $table_game_units SET hitpoints = :hitpoints WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_experience', "UPDATE $table_game_units SET experience = :experience WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_dive_status', "UPDATE $table_game_units SET dive_status = :dive_status WHERE id = :id_game_unit");
+        self::setQuery('set_game_ship_port', "UPDATE $table_game_units SET id_game_area_in_port = :id_game_area_in_port WHERE id = :id_game_unit");
 
         // create
-        self::setQuery('create_ship', "
+        self::setQuery('insert_game_ship', "
             INSERT INTO $table_game_units (tank, hitpoints, name, experience, dive_status, id_user, id_game_area, id_game_area_in_port, id_unit) 
             VALUES (:tank, :hitpoints, :name, :experience, :dive_status, :id_user, :id_game_area, :id_game_area_in_port, :id_unit)
         ");
 
         // delete
-        self::setQuery('delete_ship', "DELETE FROM $table_game_units WHERE id = :id_game_unit");
+        self::setQuery('delete_game_ship', "DELETE FROM $table_game_units WHERE id = :id_game_unit");
     }
 
 }

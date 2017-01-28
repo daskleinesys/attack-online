@@ -7,7 +7,7 @@ abstract class ModelInGameUnit {
     protected $id;
     protected $id_user;
     protected $id_unit;
-    protected $id_zarea;
+    protected $id_game_area;
     protected $id_game;
 
     /**
@@ -17,15 +17,14 @@ abstract class ModelInGameUnit {
      * @param $id_user int
      * @param $id_game int
      * @param $id_unit int
-     * @param $id_zarea int
-     * @return ModelInGameUnit
+     * @param $id_game_area int
      */
-    protected function __construct($id, $id_user, $id_game, $id_unit, $id_zarea) {
+    protected function __construct($id, $id_user, $id_game, $id_unit, $id_game_area) {
         $this->id = intval($id);
         $this->id_user = intval($id_user);
         $this->id_game = intval($id_game);
         $this->id_unit = intval($id_unit);
-        $this->id_zarea = intval($id_zarea);
+        $this->id_game_area = intval($id_game_area);
     }
 
     /**
@@ -50,10 +49,10 @@ abstract class ModelInGameUnit {
     }
 
     /**
-     * @return int id_zarea
+     * @return int id_game_area
      */
     public function getIdZArea() {
-        return $this->id_zarea;
+        return $this->id_game_area;
     }
 
     /**

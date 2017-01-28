@@ -7,7 +7,6 @@ use Attack\Model\Atton\InGame\ModelInGameShip;
 use Attack\Model\Atton\InGame\Moves\Interfaces\ModelMove;
 use Attack\Exceptions\NullPointerException;
 use Attack\Database\SQLConnector;
-use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Model\User\ModelUser;
 
@@ -29,7 +28,6 @@ class ModelSetShipsMove extends ModelMove {
      * @param $id_zarea_in_port int
      * @param $id_zarea int
      * @param $id_zunit int
-     * @return ModelSetShipsMove
      */
     protected function __construct($id_user, $id_game, $id_move, $deleted, $id_zarea_in_port, $id_zarea, $id_zunit) {
         parent::__construct($id_user, $id_game, PHASE_SETSHIPS, $id_move, 0, $deleted);
@@ -51,7 +49,6 @@ class ModelSetShipsMove extends ModelMove {
             return self::$moves[$id_game][$id_move];
         }
 
-        SQLCommands::init(intval($id_game));
         $query = 'get_set_ships_move';
         $dict = array();
         $dict[':id_move'] = intval($id_move);
@@ -72,7 +69,6 @@ class ModelSetShipsMove extends ModelMove {
      * @throws NullPointerException
      */
     public static function getSetShipMovesForUser($id_user, $id_game) {
-        SQLCommands::init(intval($id_game));
         $query = 'get_specific_moves';
         $dict = array();
         $dict[':id_user'] = intval($id_user);
@@ -98,7 +94,6 @@ class ModelSetShipsMove extends ModelMove {
      * @return ModelIterator
      */
     public static function iterator($id_game) {
-        SQLCommands::init(intval($id_game));
         $query = 'get_all_moves_for_phase_and_round';
         $dict = array();
         $dict[':id_phase'] = PHASE_SETSHIPS;
@@ -131,10 +126,9 @@ class ModelSetShipsMove extends ModelMove {
         $id_zarea_in_port = (int)$id_zarea_in_port;
         $id_zarea = (int)$id_zarea;
         $id_unit = (int)$id_unit;
-        SQLCommands::init($id_game);
 
         // 1. check if name is available
-        $query = 'get_ingame_ship_by_name';
+        $query = 'get_game_ship_by_name';
         $dict = array();
         $dict[':name'] = $name;
         $result = SQLConnector::Singleton()->epp($query, $dict);
@@ -185,7 +179,6 @@ class ModelSetShipsMove extends ModelMove {
     public static function deleteSetShipsMove(ModelSetShipsMove $move) {
         $id_game = $move->getIdGame();
         $id_move = $move->getId();
-        SQLCommands::init($id_game);
 
         // 1. delete ship from DB
         ModelInGameShip::deleteShip($id_game, $move->getIdZunit());
