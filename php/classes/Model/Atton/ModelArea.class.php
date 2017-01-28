@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -66,7 +66,7 @@ class ModelArea {
      * returns an iterator for areas
      *
      * @param $id_type int
-     * @throws DataSourceException
+     * @throws SQLConnectorException
      * @return ModelIterator
      */
     public static function iterator($id_type = null) {
@@ -76,7 +76,7 @@ class ModelArea {
         $dict[':id_type'] = ($id_type == null) ? '%' : $id_type;
 
         // query phases
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $area) {
             $id_area = $area['id'];
@@ -139,7 +139,7 @@ class ModelArea {
         // load a2a
         $query = 'get_a2a';
         $dict = array(':id_area' => $this->id);
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         foreach ($result as $line) {
             $this->adjecents[] = $line['id_adjacent_area'];
         }
@@ -149,7 +149,7 @@ class ModelArea {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = DataSource::Singleton()->epp('get_all_area_info', array(':id_area' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_all_area_info', array(':id_area' => $this->id));
         if (empty($result)) {
             return false;
         }

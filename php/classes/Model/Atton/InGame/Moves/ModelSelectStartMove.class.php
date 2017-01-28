@@ -3,8 +3,8 @@ namespace Attack\Model\Atton\InGame\Moves;
 
 use Attack\Model\Atton\InGame\Moves\Interfaces\ModelMove;
 use Attack\Exceptions\NullPointerException;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Model\User\ModelUser;
 
@@ -48,7 +48,7 @@ class ModelSelectStartMove extends ModelMove {
         $query = 'get_start_move';
         $dict = array();
         $dict[':id_move'] = intval($id_move);
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Move not found');
         }
@@ -83,7 +83,7 @@ class ModelSelectStartMove extends ModelMove {
         $dict[':id_user'] = intval($id_user);
         $dict[':id_phase'] = PHASE_SELECTSTART;
         $dict[':round'] = 0;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         ModelUser::getUser($id_user);
         if (empty($result)) {
             $id_move = self::createSelectStartMove($id_user, $id_game);
@@ -107,7 +107,7 @@ class ModelSelectStartMove extends ModelMove {
         $dict[':id_phase'] = PHASE_SELECTSTART;
         $dict[':round'] = 0;
 
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         $moves = array();
         foreach ($result as $move) {
             $id_move = $move['id'];
@@ -131,8 +131,8 @@ class ModelSelectStartMove extends ModelMove {
         $dict[':id_user'] = intval($id_user);
         $dict[':id_phase'] = PHASE_SELECTSTART;
         $dict[':round'] = 0;
-        DataSource::Singleton()->epp($query, $dict);
-        $id_move = DataSource::getInstance()->getLastInsertId();
+        SQLConnector::Singleton()->epp($query, $dict);
+        $id_move = SQLConnector::getInstance()->getLastInsertId();
         return (int)$id_move;
     }
 
@@ -166,14 +166,14 @@ class ModelSelectStartMove extends ModelMove {
         if (isset($this->regions[$option_number])) {
             unset($this->regions[$option_number]);
             $query = 'delete_move_areas_for_step';
-            DataSource::Singleton()->epp($query, $dict);
+            SQLConnector::Singleton()->epp($query, $dict);
         }
 
         // insert areas
         $query = 'insert_area_for_move';
         foreach ($zareas as $id_zarea) {
             $dict[':id_zarea'] = $id_zarea;
-            DataSource::getInstance()->epp($query, $dict);
+            SQLConnector::getInstance()->epp($query, $dict);
         }
         $this->regions[$option_number] = $zareas;
     }

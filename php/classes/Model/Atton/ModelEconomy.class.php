@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 
 class ModelEconomy {
@@ -26,7 +26,7 @@ class ModelEconomy {
      * returns an iterator for economy models
      * @param $economy_type string/enum
      * @param $random_order boolean - set true to get random order
-     * @throws DataSourceException
+     * @throws SQLConnectorException
      * @return ModelIterator
      */
     public static function iterator($economy_type, $random_order = true) {
@@ -36,7 +36,7 @@ class ModelEconomy {
         $dict[':economy'] = $economy_type;
 
         // query phases
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $alloc) {
             $id_res = $alloc['id_resource'];

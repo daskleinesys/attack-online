@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -49,7 +49,7 @@ class ModelColor {
 	/**
 	 * returns an iterator for all colors
      *
-	 * @throws DataSourceException
+	 * @throws SQLConnectorException
 	 * @return ModelIterator
 	 */
 	public static function iterator() {
@@ -58,8 +58,8 @@ class ModelColor {
 
 		// query phases
 		try {
-			$result = DataSource::Singleton()->epp($query);
-		} catch (DataSourceException $ex) {
+			$result = SQLConnector::Singleton()->epp($query);
+		} catch (SQLConnectorException $ex) {
 			throw $ex;
 		}
 
@@ -94,7 +94,7 @@ class ModelColor {
 
 	private function fill_member_vars() {
 		// check if there is a game
-		$result = DataSource::Singleton()->epp('get_color', array(':id_color' => $this->id));
+		$result = SQLConnector::Singleton()->epp('get_color', array(':id_color' => $this->id));
 		if (empty($result)) {
             return false;
         }

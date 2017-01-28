@@ -1,8 +1,8 @@
 <?php
 namespace Attack\Model\Atton\InGame\Moves\Interfaces;
 
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 
 abstract class ModelMove {
 
@@ -96,7 +96,7 @@ abstract class ModelMove {
         SQLCommands::init(intval($this->id_game));
         $query = 'flag_move_deleted';
         $dict = array(':id_move' => $this->id);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->deleted = true;
     }
 

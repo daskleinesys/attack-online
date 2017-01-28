@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -48,7 +48,7 @@ class ModelStartingSet {
     /**
      * returns an iterator for all colors
      *
-     * @throws DataSourceException,NullPointerException
+     * @throws SQLConnectorException,NullPointerException
      * @return ModelIterator
      */
     public static function iterator($players = null, $random_order = false) {
@@ -58,7 +58,7 @@ class ModelStartingSet {
         $dict[':players'] = ($players === null) ? '%' : intval($players);
 
         // query phases
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         if (empty($result)) {
             throw new NullPointerException('This number of players is not supported.');
@@ -99,7 +99,7 @@ class ModelStartingSet {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = DataSource::Singleton()->epp('get_starting_set', array(':id_set' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_starting_set', array(':id_set' => $this->id));
         if (empty($result)) {
             return false;
         }

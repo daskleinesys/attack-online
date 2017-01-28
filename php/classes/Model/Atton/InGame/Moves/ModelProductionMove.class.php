@@ -7,8 +7,8 @@ use Attack\Model\Atton\InGame\ModelGameArea;
 use Attack\Model\Atton\InGame\ModelInGameLandUnit;
 use Attack\Model\Atton\InGame\Moves\Interfaces\ModelMove;
 use Attack\Model\Atton\ModelLandUnit;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 
 class ModelProductionMove extends ModelMove {
@@ -55,7 +55,7 @@ class ModelProductionMove extends ModelMove {
         $dict = array();
         $dict [':id_move'] = intval($id_move);
         $dict [':id_phase'] = PHASE_PRODUCTION;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Move not found');
         }
@@ -92,7 +92,7 @@ class ModelProductionMove extends ModelMove {
             $dict[':id_user'] = intval($id_user);
         }
 
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         $moves = array();
         foreach ($result as $move) {
             $moves[] = self::getProductionMove((int)$id_game, (int)$move['id']);
@@ -122,8 +122,8 @@ class ModelProductionMove extends ModelMove {
         $dict [':id_user'] = intval($id_user);
         $dict [':id_phase'] = PHASE_PRODUCTION;
         $dict [':round'] = $round;
-        DataSource::Singleton()->epp($query, $dict);
-        $id_move = DataSource::getInstance()->getLastInsertId();
+        SQLConnector::Singleton()->epp($query, $dict);
+        $id_move = SQLConnector::getInstance()->getLastInsertId();
 
         try {
             // INSERT MOVE STEPS
@@ -133,7 +133,7 @@ class ModelProductionMove extends ModelMove {
             $dict [':id_move'] = intval($id_move);
             $dict [':step'] = intval(1);
             $dict [':id_zarea'] = intval($id_zarea);
-            DataSource::Singleton()->epp($query, $dict);
+            SQLConnector::Singleton()->epp($query, $dict);
 
             // INSERT UNITS
             foreach ($units as $id_unit => $count) {
@@ -144,7 +144,7 @@ class ModelProductionMove extends ModelMove {
                 $dict [':id_zunit'] = $zUnit->getId();
                 $dict [':id_move'] = intval($id_move);
                 $dict [':count'] = intval($count);
-                DataSource::Singleton()->epp($query, $dict);
+                SQLConnector::Singleton()->epp($query, $dict);
             }
         } catch (ModelException $ex) {
             self::flagMoveDeleted();

@@ -8,8 +8,8 @@ use Attack\Model\Atton\InGame\ModelInGameLandUnit;
 use Attack\Model\Atton\InGame\ModelInGameShip;
 use Attack\Model\Atton\ModelLandUnit;
 use Attack\Model\Atton\ModelShip;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 
@@ -30,7 +30,7 @@ class Map {
         else {
             throw new MapException('invalid game selected: ' . $id_game);
         }
-        $result = DataSource::getInstance()->epp($query);
+        $result = SQLConnector::getInstance()->epp($query);
 
         $countryData = array();
         foreach ($result as $country) {

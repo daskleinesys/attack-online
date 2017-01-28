@@ -1,13 +1,13 @@
 <?php
 namespace Attack\Model\Atton\InGame;
 
-use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\ModelException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Atton\Interfaces\ModelInGameUnit;
 use Attack\Model\Atton\ModelShip;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Model\User\ModelUser;
 
@@ -70,7 +70,7 @@ class ModelInGameShip extends ModelInGameUnit {
         $query = 'get_ingame_ship_by_id';
         $dict = array();
         $dict[':id_zunit'] = $id;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException("No ship by id $id found.");
         }
@@ -98,7 +98,7 @@ class ModelInGameShip extends ModelInGameUnit {
         $query = 'get_ingame_ship_by_name';
         $dict = array();
         $dict[':name'] = $name;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException("No ship by name $name found.");
         }
@@ -122,7 +122,7 @@ class ModelInGameShip extends ModelInGameUnit {
 
         // query units
         SQLCommands::init($id_game);
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         foreach ($result as $ship) {
             $models[] = self::getShipById($id_game, (int)$ship['id']);
         }
@@ -146,7 +146,7 @@ class ModelInGameShip extends ModelInGameUnit {
 
         // query units
         SQLCommands::init($id_game);
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         foreach ($result as $ship) {
             $models[] = self::getShipById($id_game, (int)$ship['id']);
         }
@@ -169,7 +169,7 @@ class ModelInGameShip extends ModelInGameUnit {
 
         // query units
         SQLCommands::init($id_game);
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         foreach ($result as $ship) {
             $models[] = self::getShipById($id_game, (int)$ship['id']);
         }
@@ -191,7 +191,7 @@ class ModelInGameShip extends ModelInGameUnit {
 
         // query units
         SQLCommands::init($id_game);
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         foreach ($result as $ship) {
             $models[] = self::getShipById($id_game, (int)$ship['id']);
         }
@@ -208,7 +208,7 @@ class ModelInGameShip extends ModelInGameUnit {
      * @param $name string
      * @param $id_zarea_in_port int
      * @return ModelInGameShip
-     * @throws DataSourceException
+     * @throws DatabaseException
      * @throws NullPointerException
      */
     public static function createShip($id_user, $id_game, $id_unit, $id_zarea, $name, $id_zarea_in_port) {
@@ -226,8 +226,8 @@ class ModelInGameShip extends ModelInGameUnit {
         $dict[':id_zarea'] = $id_zarea;
         $dict[':id_zarea_in_port'] = $id_zarea_in_port;
         $dict[':id_unit'] = $id_unit;
-        DataSource::getInstance()->epp($query, $dict);
-        $id = DataSource::getInstance()->getLastInsertId();
+        SQLConnector::getInstance()->epp($query, $dict);
+        $id = SQLConnector::getInstance()->getLastInsertId();
 
         return self::getShipById((int)$id_game, (int)$id);
     }
@@ -248,7 +248,7 @@ class ModelInGameShip extends ModelInGameUnit {
         $query = 'delete_ship';
         $dict = array();
         $dict[':id_zunit'] = (int)$id_zunit;
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
 
         unset(self::$shipsById[$id_game][$id_zunit]);
         unset(self::$shipsByName[$id_game][$ship->getName()]);
@@ -324,7 +324,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_user';
         $dict = array(':id_zunit' => $this->id, ':id_user' => $id_user);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->id_user = $id_user;
     }
 
@@ -337,7 +337,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_zarea';
         $dict = array(':id_zunit' => $this->id, ':id_zarea' => $id_zarea);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->id_zarea = $id_zarea;
     }
 
@@ -353,7 +353,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_tank';
         $dict = array(':id_zunit' => $this->id, ':tank' => $tank);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->tank = $tank;
     }
 
@@ -369,7 +369,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_hitpoints';
         $dict = array(':id_zunit' => $this->id, ':hitpoints' => $hitpoints);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->hitpoints = $hitpoints;
     }
 
@@ -382,7 +382,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_experience';
         $dict = array(':id_zunit' => $this->id, ':experience' => $experience);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->experience = $experience;
     }
 
@@ -393,7 +393,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_dive_status';
         $dict = array(':id_zunit' => $this->id, ':dive_status' => $dive_status);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->dive_status = $dive_status;
     }
 
@@ -414,7 +414,7 @@ class ModelInGameShip extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_ship_in_port';
         $dict = array(':id_zunit' => $this->id, ':id_zarea_in_port' => $id_zarea_in_port);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->id_zarea_in_port = $id_zarea_in_port;
     }
 

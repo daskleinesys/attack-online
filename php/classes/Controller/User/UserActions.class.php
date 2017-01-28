@@ -2,7 +2,7 @@
 namespace Attack\Controller\User;
 
 use Attack\Exceptions\ControllerException;
-use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\LoginException;
 use Attack\Exceptions\UserCreationException;
 use Attack\Model\User\ModelUser;
@@ -20,7 +20,7 @@ class UserActions {
      * @param string $password2
      * @return void
      * @throws ControllerException
-     * @throws DataSourceException
+     * @throws DatabaseException
      * @throws UserCreationException
      */
     public static function register($given_name, $family_name, $email, $login, $password1, $password2) {

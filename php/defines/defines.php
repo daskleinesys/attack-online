@@ -19,11 +19,3 @@ define('CHECK_SESSION_GAME_RUNNING', 7); // user has a game_session and this gam
 
 // user login
 define('USER_TOKEN_MAX_LENGTH', 50);
-
-// sort options user: id,name,lastname,login,email,status
-define('SORT_BY_ID', 'id');
-define('SORT_BY_NAME', 'name');
-define('SORT_BY_LASTNAME', 'lastname');
-define('SORT_BY_LOGIN', 'login');
-define('SORT_BY_EMAIL', 'email');
-define('SORT_BY_STATUS', 'status');

@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Exceptions\NullPointerException;
 
 class ModelStartRegion {
@@ -49,7 +49,7 @@ class ModelStartRegion {
 
         $query = 'get_startregions_for_set';
         $dict[':id_set'] = $id_set;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Set not found.');
         }

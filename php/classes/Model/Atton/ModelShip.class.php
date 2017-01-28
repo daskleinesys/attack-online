@@ -3,7 +3,7 @@ namespace Attack\Model\Atton;
 
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Atton\Interfaces\ModelUnit;
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 
 class ModelShip extends ModelUnit {
@@ -33,7 +33,7 @@ class ModelShip extends ModelUnit {
         }
         $query = 'get_ship';
         $dict = array(':id_unit' => $id_unit);
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException("Ship with id $id_unit not found.");
         }
@@ -60,7 +60,7 @@ class ModelShip extends ModelUnit {
         $query = 'get_all_ships';
 
         // query units
-        $result = DataSource::Singleton()->epp($query);
+        $result = SQLConnector::Singleton()->epp($query);
 
         foreach ($result as $unit) {
             $id_unit = $unit['id_unit'];

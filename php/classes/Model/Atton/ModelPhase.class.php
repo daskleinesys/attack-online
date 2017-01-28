@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -49,7 +49,7 @@ class ModelPhase {
     /**
      * returns an iterator for all phases
      *
-     * @throws DataSourceException
+     * @throws SQLConnectorException
      * @return ModelIterator
      */
     public static function iterator() {
@@ -58,8 +58,8 @@ class ModelPhase {
 
         // query phases
         try {
-            $result = DataSource::Singleton()->epp($query);
-        } catch (DataSourceException $ex) {
+            $result = SQLConnector::Singleton()->epp($query);
+        } catch (SQLConnectorException $ex) {
             throw $ex;
         }
 
@@ -101,7 +101,7 @@ class ModelPhase {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = DataSource::Singleton()->epp('get_phase_info', array(':id_phase' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_phase_info', array(':id_phase' => $this->id));
         if (empty($result)) {
             return false;
         }

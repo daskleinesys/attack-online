@@ -53,8 +53,8 @@ $app->notFound(function () use ($app) {
 
 // INIT DB-CONNECTION
 try {
-    Model\DataBase\SQLCommands::init();
-} catch (Exceptions\DataSourceException $e) {
+    Database\SQLCommands::init();
+} catch (Exceptions\DatabaseException $e) {
     $logger->fatal($e->getMessage());
     $app->render('error.twig');
     die();

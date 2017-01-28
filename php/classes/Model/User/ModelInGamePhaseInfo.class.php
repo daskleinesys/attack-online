@@ -2,9 +2,9 @@
 namespace Attack\Model\User;
 
 use Attack\Model\Atton\ModelPhase;
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
-use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\NullPointerException;
 
 class ModelInGamePhaseInfo {
@@ -63,23 +63,33 @@ class ModelInGamePhaseInfo {
      * returns an iterator for all games the user is in or all user for a given game
      *
      * @param int $id_user
-     * @throws DataSourceException
+     * @throws DatabaseException
      * @return ModelIterator
      */
     public static function iterator($id_user = null, $id_game = null) {
         $models = array();
-        $query = 'get_iig_ids';
         $dict = array();
-        $dict[':id_user'] = ($id_user == null) ? '%' : intval($id_user);
-        $dict[':id_game'] = ($id_game == null) ? '%' : intval($id_game);
+
+        if ($id_user != null && $id_game != null) {
+            $models = self::getInGamePhaseInfo(intval($id_user), intval($id_game));
+            return new ModelIterator($models);
+        } else if ($id_user == null) {
+            $query = 'get_all_user_is_in_game_by_game';
+            $dict[':id_game'] = intval($id_game);
+        } else if ($id_game == null) {
+            $query = 'get_all_user_is_in_game_by_user';
+            $dict[':id_user'] = intval($id_user);
+        } else {
+            return new ModelIterator($models);
+        }
 
         // query user
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $iig) {
             $id_game = $iig['id_game'];
             $id_user = $iig['id_user'];
-            $models[] = self::getInGamePhaseInfo($id_user, $id_game);
+            $models[] = self::getInGamePhaseInfo(intval($id_user), intval($id_game));
         }
 
         return new ModelIterator($models);
@@ -98,7 +108,7 @@ class ModelInGamePhaseInfo {
         if ($id_user != null) {
             $dict[':id_user'] = intval($id_user);
         }
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
 
         if ($id_user === null) {
             foreach (array_keys(self::$models) as $key) {
@@ -129,7 +139,7 @@ class ModelInGamePhaseInfo {
         $dict[':id_game'] = $this->id_game;
         $dict[':id_phase'] = $id_phase;
         $dict[':rule'] = $this->notification_rules[$id_phase];
-        DataSource::getInstance()->epp($query,$dict);
+        SQLConnector::getInstance()->epp($query,$dict);
     }
 
     /**
@@ -152,7 +162,7 @@ class ModelInGamePhaseInfo {
         $dict[':id_game'] = $this->id_game;
         $dict[':id_phase'] = $id_phase;
         $dict[':is_ready'] = $this->is_ready[$id_phase];
-        DataSource::getInstance()->epp($query,$dict);
+        SQLConnector::getInstance()->epp($query,$dict);
     }
 
     /**
@@ -224,7 +234,7 @@ class ModelInGamePhaseInfo {
         while ($iter->hasNext()) {
             $id_phase = $iter->next()->getId();
             $dict[':id_phase'] = $id_phase;
-            $result = DataSource::getInstance()->epp($query, $dict);
+            $result = SQLConnector::getInstance()->epp($query, $dict);
             if (empty($result)) {
                 $this->create_info($id_phase);
             } else {
@@ -250,7 +260,7 @@ class ModelInGamePhaseInfo {
             $dict[':is_ready'] = $_Rule->getIsReadyForPhase($id_phase);
         }
 
-        DataSource::getInstance()->epp($query,$dict);
+        SQLConnector::getInstance()->epp($query,$dict);
 
         $this->notification_rules[$id_phase] = $dict[':rule'];
         $this->is_ready[$id_phase] = $dict[':is_ready'];

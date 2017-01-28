@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Exceptions\NullPointerException;
 
 class ModelOptionType {
@@ -71,7 +71,7 @@ class ModelOptionType {
 
     private static function load_option_types() {
         $query = 'get_option_types';
-        $result = DataSource::getInstance()->epp($query);
+        $result = SQLConnector::getInstance()->epp($query);
         foreach ($result as $type) {
             self::$types[$type['id']] = new ModelOptionType($type['id'], $type['units'], $type['countries']);
         }

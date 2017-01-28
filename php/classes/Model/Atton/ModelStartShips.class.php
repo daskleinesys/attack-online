@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Model\Atton;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Exceptions\NullPointerException;
 
 class ModelStartShips {
@@ -41,7 +41,7 @@ class ModelStartShips {
         // check if there is a game
         $query = 'get_start_ships_for_players';
         $dict = array(':players' => $players);
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('No startships for ' . $players . ' players found.');
         }

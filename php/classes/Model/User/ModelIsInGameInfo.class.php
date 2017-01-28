@@ -3,10 +3,10 @@ namespace Attack\Model\User;
 
 use Attack\Model\Atton\ModelColor;
 use Attack\Model\Atton\ModelStartingSet;
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\Iterator\ModelIterator;
-use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\JoinUserException;
 use Attack\Exceptions\GameAdministrationException;
 use Attack\Exceptions\NullPointerException;
@@ -60,23 +60,33 @@ class ModelIsInGameInfo {
      *
      * @param int $id_user (if null, query is for all)
      * @param int $id_game (if null, query is for all)
-     * @throws DataSourceException
+     * @throws DatabaseException
      * @return ModelIterator
      */
     public static function iterator($id_user = null, $id_game = null) {
         $models = array();
-        $query = 'get_iig_ids';
         $dict = array();
-        $dict[':id_user'] = ($id_user == null) ? '%' : intval($id_user);
-        $dict[':id_game'] = ($id_game == null) ? '%' : intval($id_game);
+
+        if ($id_user != null && $id_game != null) {
+            $models = self::getIsInGameInfo(intval($id_user), intval($id_game));
+            return new ModelIterator($models);
+        } else if ($id_user == null) {
+            $query = 'get_all_user_is_in_game_by_game';
+            $dict[':id_game'] = intval($id_game);
+        } else if ($id_game == null) {
+            $query = 'get_all_user_is_in_game_by_user';
+            $dict[':id_user'] = intval($id_user);
+        } else {
+            return new ModelIterator($models);
+        }
 
         // query iigs
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $iig) {
             $id_game = $iig['id_game'];
             $id_user = $iig['id_user'];
-            $models[] = self::getIsInGameInfo($id_user, $id_game);
+            $models[] = self::getIsInGameInfo(intval($id_user), intval($id_game));
         }
 
         return new ModelIterator($models);
@@ -140,7 +150,7 @@ class ModelIsInGameInfo {
         $dict[':id_user'] = $id_user;
         $dict[':id_game'] = $id_game;
         $dict[':id_color'] = $id_color;
-        DataSource::Singleton()->epp('join_game', $dict);
+        SQLConnector::Singleton()->epp('join_game', $dict);
 
         // set user notification rules
         ModelInGamePhaseInfo::getInGamePhaseInfo($id_user, $id_game);
@@ -161,7 +171,7 @@ class ModelIsInGameInfo {
         if ($id_user !== null) {
             $dict[':id_user'] = intval($id_user);
         }
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
 
         if ($id_user === null) {
             foreach (array_keys(self::$models) as $key) {
@@ -219,7 +229,7 @@ class ModelIsInGameInfo {
             throw new GameAdministrationException('Color already taken!');
         }
         $this->id_color = $id_color;
-        DataSource::Singleton()->epp('update_user_color_for_game', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_color' => $this->id_color));
+        SQLConnector::Singleton()->epp('update_user_color_for_game', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_color' => $this->id_color));
     }
 
     /**
@@ -231,7 +241,7 @@ class ModelIsInGameInfo {
     public function addMoney($money) {
         $money = intval($money);
         $this->money += $money;
-        DataSource::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
+        SQLConnector::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
     }
 
     /**
@@ -244,7 +254,7 @@ class ModelIsInGameInfo {
         $money = intval($money);
         $money = max(0, $money);
         $this->money = $money;
-        DataSource::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
+        SQLConnector::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
     }
 
     /**
@@ -258,7 +268,7 @@ class ModelIsInGameInfo {
         $id_set = intval($id_set);
         ModelStartingSet::getSet($id_set);
         $this->id_set = $id_set;
-        DataSource::Singleton()->epp('set_starting_set_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_set' => $this->id_set));
+        SQLConnector::Singleton()->epp('set_starting_set_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_set' => $this->id_set));
     }
 
     /**
@@ -304,11 +314,11 @@ class ModelIsInGameInfo {
     }
 
     private function fill_member_vars() {
-        $query = 'get_iig_info_for_user_in_game';
+        $query = 'get_user_is_in_game';
         $dict = array();
         $dict[':id_user'] = $this->id_user;
         $dict[':id_game'] = $this->id_game;
-        $result = DataSource::getInstance()->epp($query,$dict);
+        $result = SQLConnector::getInstance()->epp($query,$dict);
         if (empty($result)) {
             throw new NullPointerException('User is not in this game!');
         }

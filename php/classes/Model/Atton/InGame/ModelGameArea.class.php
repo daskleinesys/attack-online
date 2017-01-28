@@ -2,8 +2,8 @@
 namespace Attack\Model\Atton\InGame;
 
 use Attack\Model\Atton\ModelArea;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
@@ -79,7 +79,7 @@ class ModelGameArea {
         SQLCommands::init($id_game);
         $query = 'get_zarea_for_area';
         $dict = array(':id_area' => $id_area);
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('No corresponding area found.');
         }
@@ -93,7 +93,7 @@ class ModelGameArea {
      *
      * @param $id_user int
      * @param $id_game int
-     * @throws DataSourceException
+     * @throws SQLConnectorException
      * @return ModelIterator
      */
     public static function iterator($id_user = null, $id_game) {
@@ -106,7 +106,7 @@ class ModelGameArea {
         $dict[':id_user'] = ($id_user == null) ? '%' : intval($id_user);
 
         // query phases
-        $result = DataSource::Singleton()->epp($query,$dict);
+        $result = SQLConnector::Singleton()->epp($query,$dict);
 
         foreach ($result as $area) {
             $id_game_area = $area['id'];
@@ -167,7 +167,7 @@ class ModelGameArea {
             $dict[':id_area'] = $id_area;
             $dict[':id_resource'] = $id_resource;
             $dict[':productivity'] = $productivity;
-            DataSource::getInstance()->epp($query, $dict);
+            SQLConnector::getInstance()->epp($query, $dict);
             return self::getGameAreaForArea($id_game, $id_area);
         }
     }
@@ -185,7 +185,7 @@ class ModelGameArea {
         $dict[':id_zarea'] = $this->id;
         $dict[':tank'] = $tank;
         $this->tank = $tank;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
     }
 
     /**
@@ -200,7 +200,7 @@ class ModelGameArea {
         $dict = array();
         $dict[':id_zarea'] = $this->id;
         $dict[':id_user'] = $id_user;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
         $this->id_user = $id_user;
     }
 
@@ -217,7 +217,7 @@ class ModelGameArea {
         $dict[':id_zarea'] = $this->id;
         $dict[':id_resource'] = $id_resource;
         $this->id_resource = $id_resource;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
     }
 
@@ -234,7 +234,7 @@ class ModelGameArea {
         $dict[':id_zarea'] = $this->id;
         $dict[':productivity'] = $productivity;
         $this->productivity = $productivity;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
     }
 
@@ -338,7 +338,7 @@ class ModelGameArea {
     private function fill_member_vars() {
         SQLCommands::init($this->id_game);
         // check if there is a game
-        $result = DataSource::Singleton()->epp('get_all_zarea_info', array(':id_zarea' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_all_zarea_info', array(':id_zarea' => $this->id));
         if (empty($result)) {
             return false;
         }

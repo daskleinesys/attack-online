@@ -8,15 +8,15 @@ use Attack\Model\Atton\ModelColor;
 use Attack\Model\Atton\ModelEconomy;
 use Attack\Model\Atton\ModelPhase;
 use Attack\Model\Atton\ModelStartingSet;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Model\User\ModelIsInGameInfo;
 use Attack\Model\User\ModelInGamePhaseInfo;
 use Attack\Model\User\ModelUser;
 use Attack\Exceptions\NullPointerException;
 use Attack\Exceptions\GameCreationException;
-use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\GameAdministrationException;
 use Logger;
 
@@ -110,7 +110,7 @@ class ModelGame {
             $query .= '_for_user';
             $dict[':id_user'] = intval($id_user);
         }
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         foreach ($result as $game) {
             $id_game = $game['id'];
             if (!isset(self::$games[$id_game])) {
@@ -133,7 +133,7 @@ class ModelGame {
      * @throws GameCreationException
      */
     public static function createGame($name, $players, $id_creator, $password) {
-        $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
+        $result = SQLConnector::Singleton()->epp('check_game_name', array(':name' => $name));
         if (!empty($result)) {
             throw new GameCreationException('Spielname bereits vergeben!');
         }
@@ -150,20 +150,20 @@ class ModelGame {
         }
 
         try {
-            DataSource::Singleton()->epp($query, $dict);
-        } catch (DataSourceException $ex) {
+            SQLConnector::Singleton()->epp($query, $dict);
+        } catch (DatabaseException $ex) {
             throw new GameCreationException('Unexpected error. Please try again.');
         }
 
-        $result = DataSource::Singleton()->epp('check_game_name', array(':name' => $name));
+        $result = SQLConnector::Singleton()->epp('check_game_name', array(':name' => $name));
         $id_game = intval($result[0]['id']);
         self::setGameSpecificQueries($id_game);
 
-        DataSource::Singleton()->epp('create_areas_table', array());
-        DataSource::Singleton()->epp('create_moves_table', array());
-        DataSource::Singleton()->epp('create_moves_areas_table', array());
-        DataSource::Singleton()->epp('create_moves_units_table', array());
-        DataSource::Singleton()->epp('create_units_table', array());
+        SQLConnector::Singleton()->epp('create_areas_table', array());
+        SQLConnector::Singleton()->epp('create_moves_table', array());
+        SQLConnector::Singleton()->epp('create_moves_areas_table', array());
+        SQLConnector::Singleton()->epp('create_moves_units_table', array());
+        SQLConnector::Singleton()->epp('create_units_table', array());
         return self::getGame($id_game);
     }
 
@@ -186,19 +186,19 @@ class ModelGame {
 
         self::setGameSpecificQueries($id_game);
         try {
-            DataSource::Singleton()->epp('drop_areas_table', array());
-            DataSource::Singleton()->epp('drop_moves_table', array());
-            DataSource::Singleton()->epp('drop_moves_areas_table', array());
-            DataSource::Singleton()->epp('drop_moves_units_table', array());
-            DataSource::Singleton()->epp('drop_units_table', array());
-        } catch (DataSourceException $ex) {
+            SQLConnector::Singleton()->epp('drop_areas_table', array());
+            SQLConnector::Singleton()->epp('drop_moves_table', array());
+            SQLConnector::Singleton()->epp('drop_moves_areas_table', array());
+            SQLConnector::Singleton()->epp('drop_moves_units_table', array());
+            SQLConnector::Singleton()->epp('drop_units_table', array());
+        } catch (DatabaseException $ex) {
             if (!isset(self::$logger)) {
                 self::$logger = Logger::getLogger('ModelGame');
             }
             self::$logger->error($ex);
         }
         $dict = array(':id_game' => $id_game);
-        DataSource::Singleton()->epp('delete_game', $dict);
+        SQLConnector::Singleton()->epp('delete_game', $dict);
 
         ModelIsInGameInfo::deleteIsInGameInfos(null, $id_game);
         ModelInGamePhaseInfo::deleteInGamePhaseInfos(null, $id_game);
@@ -216,7 +216,7 @@ class ModelGame {
     public static function getGamesForProcessing() {
         $query = 'get_games_rdy_v2';
         $output = array();
-        $result = DataSource::getInstance()->epp($query);
+        $result = SQLConnector::getInstance()->epp($query);
         foreach ($result as $line) {
             $output[] = $line['id'];
         }
@@ -347,7 +347,7 @@ class ModelGame {
             $query = 'update_game_password';
             $dict[':password'] = $password;
         }
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
     }
 
     /**
@@ -365,9 +365,9 @@ class ModelGame {
         $dict[':id_game'] = $this->id;
         $dict[':status'] = $status;
         try {
-            DataSource::Singleton()->epp($query, $dict);
+            SQLConnector::Singleton()->epp($query, $dict);
             $this->status = $status;
-        } catch (DataSourceException $ex) {
+        } catch (DatabaseException $ex) {
             self::$logger->error($ex);
             return;
         }
@@ -399,7 +399,7 @@ class ModelGame {
         $dict = array();
         $dict[':id_game'] = $this->id;
         $dict[':id_phase'] = $id_phase;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
         $this->id_phase = $id_phase;
 
         if ($this->status === GAME_STATUS_DONE) {
@@ -455,13 +455,13 @@ class ModelGame {
             // set game to processing
             $query = 'set_game_processing';
             $dict = array(':id_game' => $this->id);
-            DataSource::getInstance()->epp($query, $dict);
+            SQLConnector::getInstance()->epp($query, $dict);
             $this->processing = true;
         } else if ($processing === false) {
             // set game to processing done
             $query = 'set_game_processing_done';
             $dict = array(':id_game' => $this->id);
-            DataSource::getInstance()->epp($query, $dict);
+            SQLConnector::getInstance()->epp($query, $dict);
             $this->processing = false;
         }
     }
@@ -485,7 +485,7 @@ class ModelGame {
      * @return bool - true if password is correct
      */
     public function checkPassword($password) {
-        $result = DataSource::Singleton()->epp('check_game_password', array(':id_game' => $this->id, ':password' => $password));
+        $result = SQLConnector::Singleton()->epp('check_game_password', array(':id_game' => $this->id, ':password' => $password));
         if (empty($result)) {
             return false;
         }
@@ -602,7 +602,7 @@ class ModelGame {
 
     private function fill_member_vars() {
         // check if there is a game
-        $result = DataSource::Singleton()->epp('get_full_game_info', array(':id_game' => $this->id));
+        $result = SQLConnector::Singleton()->epp('get_full_game_info', array(':id_game' => $this->id));
         if (empty($result)) {
             return false;
         }
@@ -636,7 +636,7 @@ class ModelGame {
         $dict = array();
         $dict[':id_game'] = $this->id;
         $dict[':round'] = $this->round;
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
     }
 
 }

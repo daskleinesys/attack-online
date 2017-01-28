@@ -1,13 +1,13 @@
 <?php
 namespace Attack\Model\Atton\InGame\Moves;
 
-use Attack\Exceptions\DataSourceException;
+use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\ModelException;
 use Attack\Model\Atton\InGame\ModelInGameShip;
 use Attack\Model\Atton\InGame\Moves\Interfaces\ModelMove;
 use Attack\Exceptions\NullPointerException;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 use Attack\Model\User\ModelUser;
 
@@ -55,7 +55,7 @@ class ModelSetShipsMove extends ModelMove {
         $query = 'get_set_ships_move';
         $dict = array();
         $dict[':id_move'] = intval($id_move);
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Move not found');
         }
@@ -78,7 +78,7 @@ class ModelSetShipsMove extends ModelMove {
         $dict[':id_user'] = intval($id_user);
         $dict[':id_phase'] = PHASE_SETSHIPS;
         $dict[':round'] = 0;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         ModelUser::getUser($id_user);
         if (empty($result)) {
             return new ModelIterator(array());
@@ -104,7 +104,7 @@ class ModelSetShipsMove extends ModelMove {
         $dict[':id_phase'] = PHASE_SETSHIPS;
         $dict[':round'] = 0;
 
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         $moves = array();
         foreach ($result as $move) {
             $id_move = $move['id'];
@@ -123,7 +123,7 @@ class ModelSetShipsMove extends ModelMove {
      * @param $name string
      * @return ModelSetShipsMove
      * @throws ModelException
-     * @throws DataSourceException
+     * @throws DatabaseException
      */
     public static function createSetShipsMove($id_user, $id_game, $id_zarea_in_port, $id_zarea, $id_unit, $name) {
         $id_user = (int)$id_user;
@@ -137,7 +137,7 @@ class ModelSetShipsMove extends ModelMove {
         $query = 'get_ingame_ship_by_name';
         $dict = array();
         $dict[':name'] = $name;
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         if (!empty($result)) {
             throw new ModelException('Name already taken.');
         }
@@ -152,8 +152,8 @@ class ModelSetShipsMove extends ModelMove {
         $dict[':id_user'] = $id_user;
         $dict[':id_phase'] = PHASE_SETSHIPS;
         $dict[':round'] = 0;
-        DataSource::Singleton()->epp($query, $dict);
-        $id_move = (int)DataSource::getInstance()->getLastInsertId();
+        SQLConnector::Singleton()->epp($query, $dict);
+        $id_move = (int)SQLConnector::getInstance()->getLastInsertId();
 
         // 4. set areas
         $query = 'insert_area_for_move';
@@ -161,17 +161,17 @@ class ModelSetShipsMove extends ModelMove {
         $dict[':id_move'] = $id_move;
         $dict[':step'] = 0;
         $dict[':id_zarea'] = $id_zarea_in_port;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
         $dict[':step'] = 1;
         $dict[':id_zarea'] = $id_zarea;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
         // 5. add new ship to move
         $query = 'insert_ship_for_move';
         $dict = array();
         $dict[':id_move'] = $id_move;
         $dict[':id_zunit'] = $id_zunit;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
         return self::getSetShipsMove($id_game, $id_move);
     }
@@ -194,15 +194,15 @@ class ModelSetShipsMove extends ModelMove {
         $query = 'delete_units_for_move';
         $dict = array();
         $dict[':id_move'] = $id_move;
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
         // 3. delete areas for move
         $query = 'delete_move_areas_for_move';
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
         // 4. delete move
         $query = 'delete_move';
-        DataSource::Singleton()->epp($query, $dict);
+        SQLConnector::Singleton()->epp($query, $dict);
 
         unset(self::$moves[$id_game][$id_move]);
     }

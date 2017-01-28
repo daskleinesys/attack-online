@@ -1,7 +1,7 @@
 <?php
 namespace Attack\Controller\Logic\Operations\Interfaces;
 
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelInGamePhaseInfo;
 
@@ -38,7 +38,7 @@ abstract class PhaseLogic {
         $game->setProcessing(true);
 
 		// begin new transaction so that we can rollback if anything unexpecting happens
-		DataSource::getInstance()->beginTransaction();
+		SQLConnector::getInstance()->beginTransaction();
 	}
 
 	protected function finishProcessing() {
@@ -60,12 +60,12 @@ abstract class PhaseLogic {
         $game->setProcessing(false);
 
 		// commit everything
-		DataSource::getInstance()->commit();
+		SQLConnector::getInstance()->commit();
 	}
 
 	protected function rollback() {
 		// something went wrong, rollback
-		DataSource::getInstance()->rollBack();
+		SQLConnector::getInstance()->rollBack();
 	}
 
 }

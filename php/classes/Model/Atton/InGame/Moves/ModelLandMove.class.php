@@ -7,8 +7,8 @@ use Attack\Model\Atton\InGame\Moves\Interfaces\ModelMove;
 use Attack\Exceptions\ModelException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Atton\ModelLandUnit;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 use Attack\Model\Iterator\ModelIterator;
 
 class ModelLandMove extends ModelMove {
@@ -55,7 +55,7 @@ class ModelLandMove extends ModelMove {
         $dict = array();
         $dict [':id_move'] = intval($id_move);
         $dict [':id_phase'] = PHASE_LANDMOVE;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Move not found');
         }
@@ -92,7 +92,7 @@ class ModelLandMove extends ModelMove {
             $dict[':id_user'] = intval($id_user);
         }
 
-        $result = DataSource::Singleton()->epp($query, $dict);
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         $moves = array();
         foreach ($result as $move) {
             $moves[] = self::getLandMove((int)$id_game, (int)$move['id']);
@@ -122,8 +122,8 @@ class ModelLandMove extends ModelMove {
         $dict [':id_user'] = intval($id_user);
         $dict [':id_phase'] = PHASE_LANDMOVE;
         $dict [':round'] = $round;
-        DataSource::Singleton()->epp($query, $dict);
-        $id_move = DataSource::getInstance()->getLastInsertId();
+        SQLConnector::Singleton()->epp($query, $dict);
+        $id_move = SQLConnector::getInstance()->getLastInsertId();
 
         try {
             // INSERT MOVE STEPS
@@ -139,7 +139,7 @@ class ModelLandMove extends ModelMove {
                 $dict [':id_move'] = intval($id_move);
                 $dict [':step'] = intval($step);
                 $dict [':id_zarea'] = intval($id_zarea);
-                DataSource::Singleton()->epp($query, $dict);
+                SQLConnector::Singleton()->epp($query, $dict);
             }
             $id_zarea_start = (int)$steps[1];
             // INSERT UNITS
@@ -151,7 +151,7 @@ class ModelLandMove extends ModelMove {
                 $dict [':id_zunit'] = $zUnit->getId();
                 $dict [':id_move'] = intval($id_move);
                 $dict [':count'] = intval($count);
-                DataSource::Singleton()->epp($query, $dict);
+                SQLConnector::Singleton()->epp($query, $dict);
             }
         } catch (ModelException $ex) {
             self::flagMoveDeleted();

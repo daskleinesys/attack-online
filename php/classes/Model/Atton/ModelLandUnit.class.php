@@ -3,7 +3,7 @@ namespace Attack\Model\Atton;
 
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Atton\Interfaces\ModelUnit;
-use Attack\Model\DataBase\DataSource;
+use Attack\Database\SQLConnector;
 use Attack\Model\Iterator\ModelIterator;
 
 class ModelLandUnit extends ModelUnit {
@@ -35,7 +35,7 @@ class ModelLandUnit extends ModelUnit {
         }
         $query = 'get_land_unit';
         $dict = array(':id_unit' => $id_unit);
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Unit not found.');
         }
@@ -64,7 +64,7 @@ class ModelLandUnit extends ModelUnit {
         $query = 'get_all_land_units';
 
         // query units
-        $result = DataSource::Singleton()->epp($query);
+        $result = SQLConnector::Singleton()->epp($query);
 
         foreach ($result as $unit) {
             $id_unit = $unit['id'];

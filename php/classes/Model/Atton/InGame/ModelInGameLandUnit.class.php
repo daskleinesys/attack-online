@@ -3,8 +3,8 @@ namespace Attack\Model\Atton\InGame;
 
 use Attack\Model\Atton\Interfaces\ModelInGameUnit;
 use Attack\Model\Atton\ModelLandUnit;
-use Attack\Model\DataBase\DataSource;
-use Attack\Model\DataBase\SQLCommands;
+use Attack\Database\SQLConnector;
+use Attack\Database\SQLCommands;
 
 class ModelInGameLandUnit extends ModelInGameUnit {
 
@@ -55,7 +55,7 @@ class ModelInGameLandUnit extends ModelInGameUnit {
         $dict[':id_zarea'] = $id_zarea;
         $dict[':id_user'] = $id_user;
         $dict[':id_unit'] = $id_unit;
-        $result = DataSource::getInstance()->epp($query, $dict);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             self::createModel($id_game, $id_zarea, $id_user, $id_unit);
         } else {
@@ -106,7 +106,7 @@ class ModelInGameLandUnit extends ModelInGameUnit {
         SQLCommands::init($this->id_game);
         $query = 'set_land_unit_count';
         $dict = array(':id_zunit' => $this->id, ':count' => $count);
-        DataSource::getInstance()->epp($query, $dict);
+        SQLConnector::getInstance()->epp($query, $dict);
         $this->count = $count;
     }
 
@@ -132,8 +132,8 @@ class ModelInGameLandUnit extends ModelInGameUnit {
         $dict[':id_zarea'] = $id_zarea;
         $dict[':id_unit'] = $id_unit;
         $dict[':count'] = 0;
-        DataSource::getInstance()->epp($query, $dict);
-        $id = DataSource::getInstance()->getLastInsertId();
+        SQLConnector::getInstance()->epp($query, $dict);
+        $id = SQLConnector::getInstance()->getLastInsertId();
 
         self::$units[$id_game][$id_zarea][$id_user][$id_unit] = new ModelInGameLandUnit($id, $id_unit, $id_user, $id_zarea, 0, $id_game);
     }
