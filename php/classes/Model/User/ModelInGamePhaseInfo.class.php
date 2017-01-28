@@ -103,7 +103,7 @@ class ModelInGamePhaseInfo {
      * @return void
      */
     public static function deleteInGamePhaseInfos($id_user = null, $id_game) {
-        $query = ($id_user == null) ? 'delete_game_phase_info_for_game' : 'delete_game_phase_info_for_user';
+        $query = ($id_user == null) ? 'delete_user_in_game_phase_info_by_game' : 'delete_user_in_game_phase_info';
         $dict = array(':id_game' => intval($id_game));
         if ($id_user != null) {
             $dict[':id_user'] = intval($id_user);
@@ -156,7 +156,7 @@ class ModelInGamePhaseInfo {
             throw new NullPointerException('No such info found.');
         }
         $this->is_ready[$id_phase] = ($is_ready) ? true : false;
-        $query = 'update_ingame_is_ready';
+        $query = 'set_user_in_game_phase_ready';
         $dict = array();
         $dict[':id_user'] = $this->id_user;
         $dict[':id_game'] = $this->id_game;
@@ -225,7 +225,7 @@ class ModelInGamePhaseInfo {
     }
 
     private function fill_member_vars() {
-        $query = 'get_game_phase_info';
+        $query = 'get_user_in_game_phase_info';
         $dict = array();
         $dict[':id_user'] = $this->id_user;
         $dict[':id_game'] = $this->id_game;
@@ -245,7 +245,7 @@ class ModelInGamePhaseInfo {
     }
 
     private function create_info($id_phase) {
-        $query = 'set_new_game_phase_info';
+        $query = 'insert_user_in_game_phase_info';
         $dict = array();
         $dict[':id_user'] = $this->id_user;
         $dict[':id_game'] = $this->id_game;

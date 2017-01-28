@@ -152,7 +152,7 @@ class ModelUser {
         $data[':password'] = $password;
         $data[':email'] = $email;
         $data[':verify'] = $verify;
-        SQLConnector::Singleton()->epp('create_new_user', $data);
+        SQLConnector::Singleton()->epp('insert_user', $data);
 
         // create user
         $id_newuser = SQLConnector::Singleton()->getLastInsertId();

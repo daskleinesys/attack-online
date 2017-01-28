@@ -214,7 +214,7 @@ class ModelGame {
      * @return array(int id_game)
      */
     public static function getGamesForProcessing() {
-        $query = 'get_games_rdy_v2';
+        $query = 'get_games_for_processing';
         $output = array();
         $result = SQLConnector::getInstance()->epp($query);
         foreach ($result as $line) {

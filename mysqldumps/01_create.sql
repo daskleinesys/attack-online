@@ -410,7 +410,8 @@ ALTER TABLE `user_in_game_phase_info`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_user` (`id_user`),
   ADD KEY `id_game` (`id_game`),
-  ADD KEY `id_phase` (`id_phase`);
+  ADD KEY `id_phase` (`id_phase`),
+  ADD UNIQUE KEY `user_in_game_phase` (`id_user`, `id_game`, `id_phase`);
 
 --
 -- Indexes for table `user_is_in_game`
@@ -420,7 +421,10 @@ ALTER TABLE `user_is_in_game`
   ADD KEY `id_user` (`id_user`),
   ADD KEY `id_game` (`id_game`),
   ADD KEY `id_color` (`id_color`),
-  ADD KEY `id_set` (`id_set`);
+  ADD KEY `id_set` (`id_set`),
+  ADD UNIQUE KEY `user_in_game` (`id_user`, `id_game`),
+  ADD UNIQUE KEY `color_in_game` (`id_color`, `id_game`),
+  ADD UNIQUE KEY `set_in_game` (`id_set`, `id_game`);
 
 --
 -- Indexes for table `option_types`

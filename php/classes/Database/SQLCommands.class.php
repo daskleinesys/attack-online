@@ -99,66 +99,53 @@ class SQLCommands {
         // register new user
         self::setQuery('check_if_login_exists', "SELECT id FROM $table_user WHERE login = :login");
         self::setQuery('check_if_email_exists', "SELECT id FROM $table_user WHERE email = :email");
-        self::setQuery('create_new_user', "INSERT INTO $table_user (name, lastname, login, password, email, verify) VALUES (:name, :lastname, :login, SHA(:password), :email, SHA(:verify))");
+        self::setQuery('insert_user', "INSERT INTO $table_user (name, lastname, login, password, email, verify) VALUES (:name, :lastname, :login, SHA(:password), :email, SHA(:verify))");
 
 
         /************************
          * user queries in-game *
          ************************/
 
-        // query infos
+        // get in game infos
         self::setQuery('get_user_is_in_game', "SELECT * FROM $table_user_is_in_game WHERE id_game = :id_game AND id_user = :id_user");
         self::setQuery('get_all_user_is_in_game_by_user', "SELECT * FROM $table_user_is_in_game WHERE id_user = :id_user");
         self::setQuery('get_all_user_is_in_game_by_game', "SELECT * FROM $table_user_is_in_game WHERE id_game = :id_game");
 
-        // query user
-        self::setQuery('get_all_user_ids_for_game', "SELECT id_user FROM $table_user_is_in_game WHERE id_game = :id_game");
-        self::setQuery('get_all_games_for_user', "
-            SELECT games.* 
-            FROM $table_games 
-                RIGHT JOIN $table_user_is_in_game AS iig ON(games.id = iig.id_game) 
-            WHERE iig.id_user = :id_user
-        ");
-        // TODO : continue query streamlining
-        self::setQuery('get_participating_user', "SELECT id_user FROM $table_user_is_in_game WHERE id_game = :id_game");
-        self::setQuery('get_money_for_user', "SELECT money FROM $table_user_is_in_game AS iig WHERE id_user = :id_user AND id_game = :id_game");
-        self::setQuery('get_user_status', "SELECT status FROM $table_user WHERE id = :id_user");
-        self::setQuery('check_if_user_created_a_game', "SELECT id FROM $table_games WHERE id_creator = :id_user");
-        self::setQuery('check_if_user_is_in_a_game', "SELECT id FROM $table_user_is_in_game WHERE id_user = :id_user");
-        self::setQuery('get_iig_info_for_user', "SELECT id_game, id_color, money, id_set FROM $table_user_is_in_game WHERE id_user = :id_user");
-
-        // update user
-        self::setQuery('update_user_color_for_game', "UPDATE $table_user_is_in_game SET id_color = :id_color WHERE id_user = :id_user AND id_game = :id_game LIMIT 1");
-        self::setQuery('set_money_for_user', "UPDATE $table_user_is_in_game SET money = :money WHERE id_user = :id_user AND id_game = :id_game");
-        self::setQuery('set_starting_set_for_user', "UPDATE $table_user_is_in_game SET id_set = :id_set WHERE id_user = :id_user AND id_game = :id_game");
-
-        // in-game-phase-info
-        self::setQuery('get_game_phase_info', "SELECT id_user, id_game, id_phase, is_ready FROM $table_user_in_game_phase_info WHERE id_user = :id_user AND id_game = :id_game AND id_phase = :id_phase LIMIT 1");
-        self::setQuery('update_ingame_is_ready', "UPDATE $table_user_in_game_phase_info SET is_ready = :is_ready WHERE id_user = :id_user AND id_phase = :id_phase AND id_game = :id_game");
-        self::setQuery('set_new_game_phase_info', "INSERT INTO $table_user_in_game_phase_info (id_user, id_phase, id_game, is_ready) VALUES (:id_user, :id_phase, :id_game, :is_ready)");
-        self::setQuery('delete_game_phase_info_for_game', "DELETE FROM $table_user_in_game_phase_info WHERE id_game = :id_game");
-        self::setQuery('delete_game_phase_info_for_user', "DELETE FROM $table_user_in_game_phase_info WHERE id_game = :id_game AND id_user = :id_user");
-
         // join/leave game
-        self::setQuery('leave_game_for_user', "DELETE FROM $table_user_is_in_game WHERE id_user = :id_user AND id_game = :id_game");
-        self::setQuery('join_game', "INSERT INTO $table_user_is_in_game (id_user, id_game, id_color) VALUES (:id_user, :id_game, :id_color)");
-        self::setQuery('delete_iig_info_for_game', "DELETE FROM $table_user_is_in_game WHERE id_game = :id_game");
-        self::setQuery('delete_iig_info_for_user', "DELETE FROM $table_user_is_in_game WHERE id_game = :id_game AND id_user = :id_user");
+        self::setQuery('insert_user_in_game', "INSERT INTO $table_user_is_in_game (id_user, id_game, id_color) VALUES (:id_user, :id_game, :id_color)");
+        self::setQuery('delete_user_in_game', "DELETE FROM $table_user_is_in_game WHERE id_game = :id_game AND id_user = :id_user");
+        self::setQuery('delete_user_in_game_by_game', "DELETE FROM $table_user_is_in_game WHERE id_game = :id_game");
+
+        // update in game infos
+        self::setQuery('set_user_in_game_color', "UPDATE $table_user_is_in_game SET id_color = :id_color WHERE id_user = :id_user AND id_game = :id_game");
+        self::setQuery('set_user_in_game_money', "UPDATE $table_user_is_in_game SET money = :money WHERE id_user = :id_user AND id_game = :id_game");
+        self::setQuery('set_user_in_game_starting_set', "UPDATE $table_user_is_in_game SET id_set = :id_set WHERE id_user = :id_user AND id_game = :id_game");
+
+        // get/update in game phase infos
+        self::setQuery('get_user_in_game_phase_info', "SELECT id_user, id_game, id_phase, is_ready FROM $table_user_in_game_phase_info WHERE id_user = :id_user AND id_game = :id_game AND id_phase = :id_phase LIMIT 1");
+        self::setQuery('set_user_in_game_phase_ready', "UPDATE $table_user_in_game_phase_info SET is_ready = :is_ready WHERE id_user = :id_user AND id_phase = :id_phase AND id_game = :id_game");
+        self::setQuery('insert_user_in_game_phase_info', "INSERT INTO $table_user_in_game_phase_info (id_user, id_phase, id_game, is_ready) VALUES (:id_user, :id_phase, :id_game, :is_ready)");
+        self::setQuery('delete_user_in_game_phase_info', "DELETE FROM $table_user_in_game_phase_info WHERE id_game = :id_game AND id_user = :id_user");
+        self::setQuery('delete_user_in_game_phase_info_by_game', "DELETE FROM $table_user_in_game_phase_info WHERE id_game = :id_game");
 
         // check which games are ready for processing
-        self::setQuery('get_games_rdy', "
-            SELECT g.id FROM $table_games g
-            WHERE (g.status = 'running' OR g.status = 'started')
-            AND 0 NOT IN (SELECT is_ready FROM $table_user_in_game_phase_info WHERE id_game = g.id AND id_phase = g.id_phase)
-        ");
-        self::setQuery('get_games_rdy_v2', "
-            SELECT g.id FROM $table_games g
-                JOIN (SELECT id_game, count(id_user) AS players FROM $table_user_is_in_game GROUP BY id_game) pl ON (pl.id_game = g.id)
-                JOIN (SELECT id_game, id_phase, count(id_user) AS players_done FROM $table_user_in_game_phase_info WHERE is_ready = 1 GROUP BY id_game, id_phase) pl_dn ON (pl_dn.id_game = g.id AND pl_dn.id_phase = g.id_phase)
-            WHERE pl.players = pl_dn.players_done AND g.processing = 0
+        self::setQuery('get_games_for_processing', "
+            SELECT games.* FROM $table_games games
+                JOIN (
+                    SELECT id_game, count(id_user) AS count
+                    FROM $table_user_is_in_game
+                    GROUP BY id_game
+                ) players ON (players.id_game = games.id)
+                JOIN (
+                    SELECT id_game, id_phase, count(id_user) AS count
+                    FROM $table_user_in_game_phase_info
+                    WHERE is_ready = 1
+                    GROUP BY id_game, id_phase
+                ) players_done ON (players_done.id_game = games.id AND players_done.id_phase = games.id_phase)
+            WHERE players.count = players_done.count AND games.processing = 0
         ");
 
-
+        // TODO : continue streamlining queries
         /****************
          * game queries *
          ****************/

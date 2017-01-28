@@ -150,7 +150,7 @@ class ModelIsInGameInfo {
         $dict[':id_user'] = $id_user;
         $dict[':id_game'] = $id_game;
         $dict[':id_color'] = $id_color;
-        SQLConnector::Singleton()->epp('join_game', $dict);
+        SQLConnector::Singleton()->epp('insert_user_in_game', $dict);
 
         // set user notification rules
         ModelInGamePhaseInfo::getInGamePhaseInfo($id_user, $id_game);
@@ -166,7 +166,7 @@ class ModelIsInGameInfo {
      * @return void
      */
     public static function deleteIsInGameInfos($id_user = null, $id_game) {
-        $query = ($id_user === null) ? 'delete_iig_info_for_game' : 'delete_iig_info_for_user';
+        $query = ($id_user === null) ? 'delete_user_in_game_by_game' : 'delete_user_in_game';
         $dict = array(':id_game' => intval($id_game));
         if ($id_user !== null) {
             $dict[':id_user'] = intval($id_user);
@@ -229,7 +229,7 @@ class ModelIsInGameInfo {
             throw new GameAdministrationException('Color already taken!');
         }
         $this->id_color = $id_color;
-        SQLConnector::Singleton()->epp('update_user_color_for_game', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_color' => $this->id_color));
+        SQLConnector::Singleton()->epp('set_user_in_game_color', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_color' => $this->id_color));
     }
 
     /**
@@ -241,7 +241,7 @@ class ModelIsInGameInfo {
     public function addMoney($money) {
         $money = intval($money);
         $this->money += $money;
-        SQLConnector::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
+        SQLConnector::Singleton()->epp('set_user_in_game_money', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
     }
 
     /**
@@ -254,7 +254,7 @@ class ModelIsInGameInfo {
         $money = intval($money);
         $money = max(0, $money);
         $this->money = $money;
-        SQLConnector::Singleton()->epp('set_money_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
+        SQLConnector::Singleton()->epp('set_user_in_game_money', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':money' => $this->money));
     }
 
     /**
@@ -268,7 +268,7 @@ class ModelIsInGameInfo {
         $id_set = intval($id_set);
         ModelStartingSet::getSet($id_set);
         $this->id_set = $id_set;
-        SQLConnector::Singleton()->epp('set_starting_set_for_user', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_set' => $this->id_set));
+        SQLConnector::Singleton()->epp('set_user_in_game_starting_set', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_set' => $this->id_set));
     }
 
     /**
