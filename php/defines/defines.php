@@ -5,9 +5,6 @@ namespace Attack;
  * general helpers *
  *******************/
 
-// define error-codes
-define('DATABASE_ERROR', -1);
-
 // session status
 define('CHECK_SESSION_GAME', 1); // user has a game_session active
 define('CHECK_SESSION_MOD', 2); // user is a moderator
