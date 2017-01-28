@@ -1,13 +1,13 @@
 <?php
 namespace Attack\View\Content\Operations;
 
-use Attack\Controller\Game\InGame\TroopsMoveController;
+use Attack\Controller\Game\Moves\TroopsMoveController;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
-use Attack\Model\Atton\InGame\ModelGameArea;
-use Attack\Model\Atton\InGame\Moves\ModelTroopsMove;
-use Attack\Model\Atton\ModelArea;
-use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\Moves\ModelTroopsMove;
+use Attack\Model\Areas\ModelArea;
+use Attack\Model\Units\ModelLandUnit;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 use Attack\View\Content\Operations\Interfaces\ContentOperation;

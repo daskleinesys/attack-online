@@ -3,13 +3,12 @@
 namespace Attack\View;
 
 use Attack\Exceptions\MapException;
-use Attack\Model\Atton\InGame\ModelGameArea;
-use Attack\Model\Atton\InGame\ModelInGameLandUnit;
-use Attack\Model\Atton\InGame\ModelInGameShip;
-use Attack\Model\Atton\ModelLandUnit;
-use Attack\Model\Atton\ModelShip;
+use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\ModelGameLandUnit;
+use Attack\Model\Game\ModelGameShip;
+use Attack\Model\Units\ModelLandUnit;
+use Attack\Model\Units\ModelShip;
 use Attack\Database\SQLConnector;
-use Attack\Database\SQLCommands;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 
@@ -18,7 +17,6 @@ class Map {
     public function run(array &$data) {
         $game = ModelGame::getCurrentGame();
         $id_game = $game->getId();
-        SQLCommands::init($id_game);
 
         // running game (or newly started but countries are already picked)
         if (($game->getStatus() === GAME_STATUS_RUNNING) || (($game->getStatus() === GAME_STATUS_STARTED) && ($game->getIdPhase() === PHASE_SETSHIPS))) {
@@ -30,7 +28,7 @@ class Map {
         else {
             throw new MapException('invalid game selected: ' . $id_game);
         }
-        $result = SQLConnector::getInstance()->epp($query);
+        $result = SQLConnector::getInstance()->epp($query, [':id_game' => $id_game]);
 
         $countryData = array();
         foreach ($result as $country) {
@@ -47,9 +45,9 @@ class Map {
             if ($id_user <= 0) {
                 $id_user = NEUTRAL_COUNTRY;
             }
-            $units = ModelInGameLandUnit::getUnitsByIdZAreaUser($id_game, (int)$country['id'], $id_user);
+            $units = ModelGameLandUnit::getUnitsByIdZAreaUser($id_game, (int)$country['id'], $id_user);
             $unitsViewData = array();
-            /* @var $unit ModelInGameLandUnit */
+            /* @var $unit ModelGameLandUnit */
             foreach ($units as $unit) {
                 $unitCount += $unit->getCount();
                 $landUnit = ModelLandUnit::getModelById($unit->getIdUnit());
@@ -68,12 +66,12 @@ class Map {
             $shipCount = 0;
             $shipViewData = array();
             if ((int)$country['area_type'] === TYPE_LAND) {
-                $ships = ModelInGameShip::getShipsInPort($id_game, (int)$country['id_zarea']);
+                $ships = ModelGameShip::getShipsInPort($id_game, (int)$country['id_zarea']);
             } else {
-                $ships = ModelInGameShip::getShipsInAreaNotInPort($id_game, (int)$country['id_zarea']);
+                $ships = ModelGameShip::getShipsInAreaNotInPort($id_game, (int)$country['id_zarea']);
             }
             while ($ships->hasNext()) {
-                /* @var $ship ModelInGameShip */
+                /* @var $ship ModelGameShip */
                 $ship = $ships->next();
                 $id_ship_owner = $ship->getIdUser();
                 if (!isset($shipViewData[$id_ship_owner])) {

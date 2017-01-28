@@ -1,7 +1,7 @@
 <?php
 namespace Attack;
 
-use Attack\Controller\CronMain;
+use Attack\GameLogic\CronMain;
 use Attack\Controller\User\UserActions;
 use Attack\Exceptions\MapException;
 use Attack\Model\Game\ModelGame;

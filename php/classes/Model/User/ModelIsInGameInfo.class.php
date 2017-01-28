@@ -1,11 +1,10 @@
 <?php
 namespace Attack\Model\User;
 
-use Attack\Model\Atton\ModelColor;
-use Attack\Model\Atton\ModelStartingSet;
+use Attack\Model\Game\Start\ModelStartSet;
 use Attack\Database\SQLConnector;
 use Attack\Model\Game\ModelGame;
-use Attack\Model\Iterator\ModelIterator;
+use Attack\Tools\Iterator\ModelIterator;
 use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\JoinUserException;
 use Attack\Exceptions\GameAdministrationException;
@@ -30,7 +29,6 @@ class ModelIsInGameInfo {
      * @param $id_user int
      * @param $id_game int
      * @throws NullPointerException
-     * @return ModelInGamePhaseInfo
      */
     private function __construct($id_user, $id_game) {
         $this->id_user = $id_user;
@@ -266,7 +264,7 @@ class ModelIsInGameInfo {
      */
     public function setStartingSet($id_set) {
         $id_set = intval($id_set);
-        ModelStartingSet::getSet($id_set);
+        ModelStartSet::getSet($id_set);
         $this->id_set = $id_set;
         SQLConnector::Singleton()->epp('set_user_in_game_starting_set', array(':id_user' => $this->id_user, ':id_game' => $this->id_game, ':id_set' => $this->id_set));
     }

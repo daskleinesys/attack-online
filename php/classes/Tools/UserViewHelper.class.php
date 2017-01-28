@@ -2,7 +2,7 @@
 namespace Attack\Tools;
 
 use Attack\Exceptions\NullPointerException;
-use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Game\ModelGameArea;
 use Attack\Model\User\ModelIsInGameInfo;
 
 class UserViewHelper {

@@ -1,7 +1,7 @@
 <?php
 namespace Attack\View\Content\Operations;
 
-use Attack\Model\Atton\InGame\ModelGameArea;
+use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelIsInGameInfo;
 use Attack\Model\User\ModelUser;
@@ -20,18 +20,19 @@ class ContentOverview extends Interfaces\ContentOperation {
         $users = array();
         $iter = ModelIsInGameInfo::iterator(null, ModelGame::getCurrentGame()->getId());
         while ($iter->hasNext()) {
-            $ingame = $iter->next();
-            $user = $this->getUserInfo($ingame);
+            /** @var ModelIsInGameInfo $userIngame */
+            $userIngame = $iter->next();
+            $user = $this->getUserInfo($userIngame);
             $users[] = $user;
         }
         $data['users'] = $users;
     }
 
-    public function getUserInfo($ingame) {
-        $user = ModelUser::getUser($ingame->getIdUser());
+    public function getUserInfo(ModelIsInGameInfo $userIngame) {
+        $user = ModelUser::getUser($userIngame->getIdUser());
 
         // money on bank
-        $money = $ingame->getMoney();
+        $money = $userIngame->getMoney();
 
         // money from resources
         $resproduction = 0;

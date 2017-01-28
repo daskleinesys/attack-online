@@ -6,7 +6,7 @@ use Attack\Exceptions\LoginException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Exceptions\UserCreationException;
 use Attack\Database\SQLConnector;
-use Attack\Model\Iterator\ModelIterator;
+use Attack\Tools\Iterator\ModelIterator;
 
 class ModelUser {
 

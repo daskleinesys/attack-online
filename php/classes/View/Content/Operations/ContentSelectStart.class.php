@@ -1,13 +1,13 @@
 <?php
 namespace Attack\View\Content\Operations;
 
-use Attack\Controller\Game\InGame\SelectStartController;
+use Attack\Controller\Game\Moves\SelectStartController;
 use Attack\Exceptions\ControllerException;
-use Attack\Model\Atton\InGame\ModelGameArea;
-use Attack\Model\Atton\InGame\Moves\ModelSelectStartMove;
-use Attack\Model\Atton\ModelArea;
-use Attack\Model\Atton\ModelOptionType;
-use Attack\Model\Atton\ModelStartRegion;
+use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\Moves\ModelSelectStartMove;
+use Attack\Model\Areas\ModelArea;
+use Attack\Model\Game\Start\ModelOptionType;
+use Attack\Model\Game\Start\ModelStartRegion;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelIsInGameInfo;
 use Attack\Model\User\ModelUser;

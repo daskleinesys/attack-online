@@ -4,7 +4,7 @@ namespace Attack\View\Content\Operations;
 use Attack\Controller\Game\GamesModeration;
 use Attack\Exceptions\GameCreationException;
 use Attack\Exceptions\JoinUserException;
-use Attack\Model\Atton\ModelColor;
+use Attack\Model\User\ModelColor;
 use Attack\Model\User\ModelUser;
 
 class ContentNewGame extends Interfaces\ContentOperation {

@@ -1,13 +1,13 @@
 <?php
 namespace Attack\View\Content\Operations;
 
-use Attack\Controller\Game\InGame\ProductionController;
+use Attack\Controller\Game\Moves\ProductionController;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
-use Attack\Model\Atton\InGame\ModelGameArea;
-use Attack\Model\Atton\InGame\Moves\ModelProductionMove;
-use Attack\Model\Atton\ModelArea;
-use Attack\Model\Atton\ModelLandUnit;
+use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\Moves\ModelProductionMove;
+use Attack\Model\Areas\ModelArea;
+use Attack\Model\Units\ModelLandUnit;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 use Attack\Tools\UserViewHelper;

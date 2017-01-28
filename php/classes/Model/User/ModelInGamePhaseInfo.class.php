@@ -1,9 +1,9 @@
 <?php
 namespace Attack\Model\User;
 
-use Attack\Model\Atton\ModelPhase;
+use Attack\Model\Game\ModelPhase;
 use Attack\Database\SQLConnector;
-use Attack\Model\Iterator\ModelIterator;
+use Attack\Tools\Iterator\ModelIterator;
 use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\NullPointerException;
 
@@ -25,7 +25,6 @@ class ModelInGamePhaseInfo {
      * @param $id_user int
      * @param $id_game int
      * @throws NullPointerException
-     * @return ModelInGamePhaseInfo
      */
     private function __construct($id_user, $id_game = null) {
         if ($id_game === null) {

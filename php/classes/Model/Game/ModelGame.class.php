@@ -2,15 +2,12 @@
 namespace Attack\Model\Game;
 
 use Attack\Exceptions\ModelException;
-use Attack\Model\Atton\InGame\ModelGameArea;
-use Attack\Model\Atton\ModelArea;
-use Attack\Model\Atton\ModelColor;
-use Attack\Model\Atton\ModelEconomy;
-use Attack\Model\Atton\ModelPhase;
-use Attack\Model\Atton\ModelStartingSet;
+use Attack\Model\Areas\ModelArea;
+use Attack\Model\User\ModelColor;
+use Attack\Model\Areas\ModelEconomy;
+use Attack\Model\Game\Start\ModelStartSet;
 use Attack\Database\SQLConnector;
-use Attack\Database\SQLCommands;
-use Attack\Model\Iterator\ModelIterator;
+use Attack\Tools\Iterator\ModelIterator;
 use Attack\Model\User\ModelIsInGameInfo;
 use Attack\Model\User\ModelInGamePhaseInfo;
 use Attack\Model\User\ModelUser;
@@ -45,7 +42,6 @@ class ModelGame {
      * creates new game object, fills in relevant info if id given, otherwise use create function to create new game
      *
      * @param int $id_game
-     * @return ModelGame
      * @throws NullPointerException
      */
     private function __construct($id_game) {
@@ -119,7 +115,6 @@ class ModelGame {
         if (!empty($result)) {
             throw new GameCreationException('Spielname bereits vergeben!');
         }
-        // :game_name, :players, :id_creator
         $dict = array();
         $dict[':game_name'] = $name;
         $dict[':players'] = $players;
@@ -130,22 +125,9 @@ class ModelGame {
             $query = 'insert_game_with_password';
             $dict[':password'] = $password;
         }
-
-        try {
-            SQLConnector::Singleton()->epp($query, $dict);
-        } catch (DatabaseException $ex) {
-            throw new GameCreationException('Unexpected error. Please try again.');
-        }
-
+        SQLConnector::Singleton()->epp($query, $dict);
         $result = SQLConnector::Singleton()->epp('check_game_name', array(':name' => $name));
         $id_game = intval($result[0]['id']);
-        self::setGameSpecificQueries($id_game);
-
-        SQLConnector::Singleton()->epp('create_areas_table', array());
-        SQLConnector::Singleton()->epp('create_moves_table', array());
-        SQLConnector::Singleton()->epp('create_moves_areas_table', array());
-        SQLConnector::Singleton()->epp('create_moves_units_table', array());
-        SQLConnector::Singleton()->epp('create_units_table', array());
         return self::getGame($id_game);
     }
 
@@ -164,20 +146,6 @@ class ModelGame {
         }
         if ($_Game->getStatus() !== GAME_STATUS_NEW) {
             throw new GameAdministrationException('Only new games can be deleted.');
-        }
-
-        self::setGameSpecificQueries($id_game);
-        try {
-            SQLConnector::Singleton()->epp('drop_areas_table', array());
-            SQLConnector::Singleton()->epp('drop_moves_table', array());
-            SQLConnector::Singleton()->epp('drop_moves_areas_table', array());
-            SQLConnector::Singleton()->epp('drop_moves_units_table', array());
-            SQLConnector::Singleton()->epp('drop_units_table', array());
-        } catch (DatabaseException $ex) {
-            if (!isset(self::$logger)) {
-                self::$logger = Logger::getLogger('ModelGame');
-            }
-            self::$logger->error($ex);
         }
         $dict = array(':id_game' => $id_game);
         SQLConnector::Singleton()->epp('delete_game', $dict);
@@ -263,7 +231,7 @@ class ModelGame {
         // allocate starting sets to users
         $iter_player = ModelIsInGameInfo::iterator(null, $this->id);
         $players = $iter_player->size();
-        $iter_sets = ModelStartingSet::iterator($players, true);
+        $iter_sets = ModelStartSet::iterator($players, true);
         while ($iter_player->hasNext()) {
             if (!$iter_sets->hasNext()) {
                 throw new GameAdministrationException('Not enough starting sets found!');
@@ -296,14 +264,14 @@ class ModelGame {
                     throw new ModelException('Area with invalid eco type found: ' . $_Area->getId());
                     break;
             }
-            ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
+            ModelGameArea::setGameArea($this->id, NEUTRAL_COUNTRY, $_Area->getId(), $_Eco->getIdResource(), $_Eco->getResPower());
         }
 
         // create sea areas
         $iter_sea = ModelArea::iterator(TYPE_SEA);
         while ($iter_sea->hasNext()) {
             $_Area = $iter_sea->next();
-            ModelGameArea::setGameArea($this->id, 0, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
+            ModelGameArea::setGameArea($this->id, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
         }
 
         // set game to started
@@ -576,10 +544,6 @@ class ModelGame {
      */
     public function getRound() {
         return $this->round;
-    }
-
-    private static function setGameSpecificQueries($id_game) {
-        SQLCommands::init($id_game);
     }
 
     private function fill_member_vars() {

@@ -283,6 +283,10 @@ class SQLCommands {
          * moves *
          *********/
 
+        // select
+        self::setQuery('get_game_moves_by_phase_round', "SELECT id FROM $table_game_moves WHERE id_game = :id_game AND id_phase = :id_phase AND round = :round AND deleted = 0");
+        self::setQuery('get_game_moves_by_phase_round_user', "SELECT id FROM $table_game_moves WHERE id_game = :id_game AND id_phase = :id_phase AND round = :round AND id_user = :id_user AND deleted = 0");
+
         // start moves
         self::setQuery('get_start_move', "
             SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, areas.id_game_area, areas.step
@@ -314,10 +318,10 @@ class SQLCommands {
                 move_units.id_game_unit, move_units.numberof,
                 units.id AS id_unit, units.abbreviation, units.name
             FROM $table_game_moves AS moves
-            LEFT JOIN $table_game_move_has_areas AS move_areas ON (moves.id = move_areas.id_game_move)
-            LEFT JOIN $table_game_move_has_units AS move_units ON (moves.id = move_units.id_game_move)
-            LEFT JOIN $table_game_units AS game_units ON (move_units.id_game_unit = game_units.id)
-            LEFT JOIN $table_units ON (game_units.id_unit = units.id)
+                LEFT JOIN $table_game_move_has_areas AS move_areas ON (moves.id = move_areas.id_game_move)
+                LEFT JOIN $table_game_move_has_units AS move_units ON (moves.id = move_units.id_game_move)
+                LEFT JOIN $table_game_units AS game_units ON (move_units.id_game_unit = game_units.id)
+                LEFT JOIN $table_units ON (game_units.id_unit = units.id)
             WHERE moves.id = :id_move
         ");
         self::setQuery('get_production_move', "
@@ -326,22 +330,18 @@ class SQLCommands {
                 move_units.id_game_unit, move_units.numberof,
                 units.id AS id_unit, units.abbreviation, units.name
             FROM $table_game_moves AS moves
-            LEFT JOIN $table_game_move_has_areas AS move_areas ON (moves.id = move_areas.id_game_move)
-            LEFT JOIN $table_game_move_has_units AS move_units ON (moves.id = move_units.id_game_move)
-            LEFT JOIN $table_game_units AS game_units ON (move_units.id_game_unit = game_units.id)
-            LEFT JOIN $table_units ON (game_units.id_unit = units.id)
+                LEFT JOIN $table_game_move_has_areas AS move_areas ON (moves.id = move_areas.id_game_move)
+                LEFT JOIN $table_game_move_has_units AS move_units ON (moves.id = move_units.id_game_move)
+                LEFT JOIN $table_game_units AS game_units ON (move_units.id_game_unit = game_units.id)
+                LEFT JOIN $table_units ON (game_units.id_unit = units.id)
             WHERE moves.id = :id_move
         ");
 
         // new moves
-        self::setQuery('create_move', "INSERT INTO $table_game_moves (id_game, id_user, id_phase, round) VALUES (:id_game, :id_user, :id_phase, :round)");
+        self::setQuery('insert_move', "INSERT INTO $table_game_moves (id_game, id_user, id_phase, round) VALUES (:id_game, :id_user, :id_phase, :round)");
         self::setQuery('insert_area_for_move', "INSERT INTO $table_game_move_has_areas (id_game_move, id_game_area, step) VALUES (:id_move, :id_game_area, :step)");
         self::setQuery('insert_land_units_for_move', "INSERT INTO $table_game_move_has_units (id_game_move, id_game_unit, numberof) VALUES (:id_move, :id_game_unit, :count)");
         self::setQuery('insert_ship_for_move', "INSERT INTO $table_game_move_has_units (id_game_move, id_game_unit) VALUES (:id_move, :id_game_unit)");
-
-        // select moves
-        self::setQuery('get_all_moves_for_phase_and_round', "SELECT id FROM $table_game_moves WHERE id_game = :id_game AND id_phase = :id_phase AND round = :round AND deleted = 0");
-        self::setQuery('get_specific_moves', "SELECT id FROM $table_game_moves WHERE id_game = :id_game AND id_phase = :id_phase AND round = :round AND id_user = :id_user AND deleted = 0");
 
         // delete moves
         self::setQuery('delete_move_areas_for_step', "DELETE FROM $table_game_move_has_areas WHERE id_game_move = :id_move AND step = :step");

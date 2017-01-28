@@ -1,7 +1,7 @@
 <?php
 namespace Attack\View\Content\Operations\Interfaces;
 
-use Attack\Model\Atton\ModelPhase;
+use Attack\Model\Game\ModelPhase;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelInGamePhaseInfo;
 use Attack\Model\User\ModelUser;

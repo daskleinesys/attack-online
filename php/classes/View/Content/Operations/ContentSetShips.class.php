@@ -1,14 +1,14 @@
 <?php
 namespace Attack\View\Content\Operations;
 
-use Attack\Controller\Game\InGame\SetShipsController;
+use Attack\Controller\Game\Moves\SetShipsController;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\ModelException;
-use Attack\Model\Atton\InGame\ModelGameArea;
-use Attack\Model\Atton\InGame\ModelInGameShip;
-use Attack\Model\Atton\InGame\Moves\ModelSetShipsMove;
-use Attack\Model\Atton\ModelArea;
-use Attack\Model\Atton\ModelShip;
+use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\ModelGameShip;
+use Attack\Model\Game\Moves\ModelSetShipsMove;
+use Attack\Model\Areas\ModelArea;
+use Attack\Model\Units\ModelShip;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 
@@ -44,7 +44,7 @@ class ContentSetShips extends Interfaces\ContentOperation {
         while ($iterator->hasNext()) {
             /** @var ModelSetShipsMove $move */
             $move = $iterator->next();
-            $zShip = ModelInGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdZunit());
+            $zShip = ModelGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdZunit());
             $id_ship = $zShip->getIdUnit();
             $ship = ModelShip::getModelById($id_ship);
             $zAreaInPort = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZareaInPort());

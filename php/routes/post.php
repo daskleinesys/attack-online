@@ -1,7 +1,6 @@
 <?php
 namespace Attack;
 
-use Logger;
 use Slim\Slim;
 
 /* @var $app Slim */
