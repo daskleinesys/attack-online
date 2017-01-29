@@ -19,7 +19,10 @@ class CronMain {
 
         // factory pattern
         global $env;
-        $this->factories = Autoloader::loadFactories($env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Controller' . DIRECTORY_SEPARATOR . 'Logic' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR, 'AttOn\\Controller\\Logic\\Factories\\');
+        $this->factories = Autoloader::loadFactories(
+            $env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'GameLogic' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR,
+            'Attack\\GameLogic\\Factories\\'
+        );
     }
 
     /**

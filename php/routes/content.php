@@ -122,7 +122,10 @@ $app->map('/:content/', function ($content) use ($app, $debug, $logger) {
 
     // factory pattern
     $env = $app->environment();
-    $factories = Autoloader::loadFactories($env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Content' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR, '\\AttOn\\View\\Content\\Factories\\');
+    $factories = Autoloader::loadFactories(
+        $env['basepath'] . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Content' . DIRECTORY_SEPARATOR . 'Factories' . DIRECTORY_SEPARATOR,
+        '\\Attack\\View\\Content\\Factories\\'
+    );
 
     // get operation
     foreach ($factories as $factory) {
