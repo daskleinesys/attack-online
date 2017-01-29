@@ -14,7 +14,7 @@ class ModelColor {
 	// member vars
 	private $id; // int
 	private $name; // string
-	private $color; // string
+	private $key; // string
 
 	/**
 	 * returns the color model
@@ -88,8 +88,8 @@ class ModelColor {
 	/**
 	 * @return string
 	 */
-	public function getColor() {
-		return $this->color;
+	public function getKey() {
+		return $this->key;
 	}
 
 	private function fill_member_vars() {
@@ -101,7 +101,7 @@ class ModelColor {
 		$data = $result[0];
 
 		$this->name = $data['name'];
-		$this->color = $data['color'];
+		$this->key = $data['key'];
 		return true;
 	}
 

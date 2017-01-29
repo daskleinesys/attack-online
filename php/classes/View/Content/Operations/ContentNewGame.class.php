@@ -49,11 +49,11 @@ class ContentNewGame extends Interfaces\ContentOperation {
         $colors = array();
         $iter = ModelColor::iterator();
         while ($iter->hasNext()) {
-            $_Color = $iter->next();
+            $colorModel = $iter->next();
             $color = array();
-            $color['id'] = $_Color->getId();
-            $color['name'] = $_Color->getName();
-            $color['color'] = $_Color->getColor();
+            $color['id'] = $colorModel->getId();
+            $color['name'] = $colorModel->getName();
+            $color['color'] = $colorModel->getKey();
             $colors[] = $color;
         }
         $data['colors'] = $colors;

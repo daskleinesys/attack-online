@@ -214,7 +214,7 @@ class SQLCommands {
 
         // color info
         self::setQuery('get_all_colors', "SELECT * FROM $table_colors");
-        self::setQuery('get_color_by_id', "SELECT id,name,key FROM $table_colors WHERE id = :id_color");
+        self::setQuery('get_color_by_id', "SELECT * FROM $table_colors WHERE id = :id_color");
 
 
         /*************
