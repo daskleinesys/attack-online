@@ -1,28 +1,30 @@
-# BUILT FILES
-/.sass-cache
-/bower_components
-/node_modules
+# built files
+.sass-cache
 
-# SRC FILES
-/src
-/mysqldumps
-/.ebignore
-/.gitignore
-/bower.json
-/composer.*
-/docker-setup.sh
-/Dockerfile
-/Gruntfile.js
-/package.json
+# vendor files
+.elasticbeanstalk
+.idea
+.vagrant
+bower_components
+node_modules
 
-# LOCAL CONFIGURATION
+# src files
+.ebignore
+.gitignore
+bower.json
+composer.*
+docker-setup.sh
+Dockerfile
+Gruntfile.js
+src
+mysqldumps
+package.json
+readme.md
+vagrant-setup-sh
+Vagrantfile
+
+# local configuration
 php/defines/local_configuration.php
 
-# LOGGING
-/logs
-
-# IDE
-.idea
-
-# Elastic Beanstalk Files
-.elasticbeanstalk
+# logging
+logs

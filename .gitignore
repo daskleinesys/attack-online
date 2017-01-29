@@ -1,22 +1,21 @@
-# BUILT FILES
-/dist/js
-/dist/css
-/.sass-cache
-/bower_components
-/node_modules
-/vendor
+# built files
+.sass-cache
+dist/js
+dist/css
 
-# LOCAL DB DATA
+# vendor files
+.elasticbeanstalk
+.idea
+.vagrant
+bower_components
+node_modules
+vendor
+
+# local sql files
 mysqldumps/local*
 
-# LOCAL CONFIGURATION
+# local configuration
 php/defines/local_configuration.php
 
-# LOGGING
-/logs
-
-# IDE
-.idea
-
-# Elastic Beanstalk Files
-.elasticbeanstalk
+# logging
+logs
