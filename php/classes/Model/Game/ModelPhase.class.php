@@ -14,8 +14,7 @@ class ModelPhase {
     // member vars
     private $id; // int
     private $name; // string
-    private $label; // string
-    private $id_type; // int
+    private $key; // string
 
     /**
      * returns the phase model
@@ -88,15 +87,8 @@ class ModelPhase {
     /**
      * @return string
      */
-    public function getLabel() {
-        return $this->label;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIdType() {
-        return $this->id_type;
+    public function getKey() {
+        return $this->key;
     }
 
     private function fill_member_vars() {
@@ -108,8 +100,7 @@ class ModelPhase {
         $data = $result[0];
 
         $this->name = $data['name'];
-        $this->label = $data['label'];
-        $this->id_type = $data['id_type'];
+        $this->key = $data['key'];
         return true;
     }
 
