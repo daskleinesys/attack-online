@@ -24,9 +24,7 @@ class ModelArea {
     private $yres; //int
     private $height; // int
     private $width; // int
-    private $tanksize; // int
     private $id_type; // int
-    private $zone; // int
     private $economy; // string/enum
 
     // dynamically loaded infos
@@ -75,7 +73,7 @@ class ModelArea {
         $dict = array();
         if ($id_type != null) {
             $query = 'get_areas_by_type';
-            $dict[':id_type'] =  $id_type;
+            $dict[':id_type'] = $id_type;
         }
 
         // query phases
@@ -118,13 +116,6 @@ class ModelArea {
     }
 
     /**
-     * @return int
-     */
-    public function getZone() {
-        return $this->zone;
-    }
-
-    /**
      * @return string/enum
      */
     public function getEconomy() {
@@ -161,17 +152,15 @@ class ModelArea {
         $this->name = $data['name'];
         $this->number = $data['number'];
         $this->coords_small = $data['coords_small'];
-        $this->x = (int) $data['x'];
-        $this->y = (int) $data['y'];
-        $this->x2 = (int) $data['x2'];
-        $this->y2 = (int) $data['y2'];
-        $this->xres = (int) $data['xres'];
-        $this->yres = (int) $data['yres'];
-        $this->height = (int) $data['height'];
-        $this->width = (int) $data['width'];
-        $this->tanksize = (int) $data['tanksize'];
-        $this->id_type = (int) $data['id_type'];
-        $this->zone = (int) $data['zone'];
+        $this->x = (int)$data['x'];
+        $this->y = (int)$data['y'];
+        $this->x2 = (int)$data['x2'];
+        $this->y2 = (int)$data['y2'];
+        $this->xres = (int)$data['xres'];
+        $this->yres = (int)$data['yres'];
+        $this->height = (int)$data['height'];
+        $this->width = (int)$data['width'];
+        $this->id_type = (int)$data['id_type'];
         $this->economy = $data['economy'];
         return true;
     }
