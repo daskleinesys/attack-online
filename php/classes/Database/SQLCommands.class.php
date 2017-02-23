@@ -185,7 +185,7 @@ class SQLCommands {
         self::setQuery('insert_game', "INSERT INTO $table_games (name, players, id_creator) VALUES (:game_name, :players, :id_creator)");
         self::setQuery('insert_game_with_password', "INSERT INTO $table_games (name, players, id_creator, password) VALUES (:game_name, :players, :id_creator, SHA(:password))");
         self::setQuery('get_all_start_sets', "SELECT * FROM $table_start_sets WHERE players = :players");
-        self::setQuery('get_start_set_by_id', "SELECT * $table_start_sets WHERE id = :id_set");
+        self::setQuery('get_start_set_by_id', "SELECT * FROM $table_start_sets WHERE id = :id_set");
 
 
         /***************

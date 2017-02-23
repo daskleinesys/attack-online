@@ -12,7 +12,6 @@ class ModelStartSet {
 
     // member vars
     private $id; // int
-    private $name; // string
     private $players; // int
 
     /**
@@ -87,13 +86,6 @@ class ModelStartSet {
     /**
      * @return string
      */
-    public function getName() {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
     public function getPlayers() {
         return $this->players;
     }
@@ -106,7 +98,6 @@ class ModelStartSet {
         }
         $data = $result[0];
 
-        $this->name = $data['name'];
         $this->players = $data['players'];
         return true;
     }
