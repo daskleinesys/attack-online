@@ -16,7 +16,6 @@ class ModelInGamePhaseInfo {
     // member vars
     private $id_user; // int
     private $id_game; // int
-    private $notification_rules = array(); // dict(int id_phase = boolean)
     private $is_ready = array(); // dict(int id_phase = boolean)
 
     /**
@@ -26,10 +25,7 @@ class ModelInGamePhaseInfo {
      * @param $id_game int
      * @throws NullPointerException
      */
-    private function __construct($id_user, $id_game = null) {
-        if ($id_game === null) {
-            $id_game = 0;
-        }
+    private function __construct($id_user, $id_game = 0) {
         $this->id_user = intval($id_user);
         $this->id_game = intval($id_game);
 
@@ -55,7 +51,7 @@ class ModelInGamePhaseInfo {
             return self::$models[$id_user][$id_game];
         }
 
-        return self::$models[$id_user][$id_game] = new ModelInGamePhaseInfo($id_user,$id_game);
+        return self::$models[$id_user][$id_game] = new ModelInGamePhaseInfo($id_user, $id_game);
     }
 
     /**
@@ -119,29 +115,6 @@ class ModelInGamePhaseInfo {
     }
 
     /**
-     * sets the notification rule for specific phase
-     *
-     * @param $id_phase int
-     * @param $rule bool
-     * @throws NullPointerException
-     * @return void
-     */
-    public function setNotificationRule($id_phase, $rule) {
-        $id_phase = intval($id_phase);
-        if (!isset($this->notification_rules[$id_phase])) {
-            throw new NullPointerException('No such rule found.');
-        }
-        $this->notification_rules[$id_phase] = ($rule) ? true : false;
-        $query = 'update_ingame_notification_rule';
-        $dict = array();
-        $dict[':id_user'] = $this->id_user;
-        $dict[':id_game'] = $this->id_game;
-        $dict[':id_phase'] = $id_phase;
-        $dict[':rule'] = $this->notification_rules[$id_phase];
-        SQLConnector::getInstance()->epp($query,$dict);
-    }
-
-    /**
      * sets the is_ready info for specific phase
      *
      * @param $id_phase int
@@ -149,7 +122,7 @@ class ModelInGamePhaseInfo {
      * @throws NullPointerException
      * @return void
      */
-    public function setIsReady($id_phase,$is_ready) {
+    public function setIsReady($id_phase, $is_ready) {
         $id_phase = intval($id_phase);
         if (!isset($this->is_ready[$id_phase])) {
             throw new NullPointerException('No such info found.');
@@ -161,7 +134,7 @@ class ModelInGamePhaseInfo {
         $dict[':id_game'] = $this->id_game;
         $dict[':id_phase'] = $id_phase;
         $dict[':is_ready'] = $this->is_ready[$id_phase];
-        SQLConnector::getInstance()->epp($query,$dict);
+        SQLConnector::getInstance()->epp($query, $dict);
     }
 
     /**
@@ -176,28 +149,6 @@ class ModelInGamePhaseInfo {
      */
     public function getIdGame() {
         return $this->id_game;
-    }
-
-    /**
-     * returns the rule for specific game and phase
-     *
-     * @throws NullPointerException
-     * @return boolean
-     */
-    public function getNotificationRuleForPhase($id_phase) {
-        if (!isset($this->notification_rules[$id_phase])) {
-            throw new NullPointerException('No such rule found.');
-        }
-        return $this->notification_rules[$id_phase];
-    }
-
-    /**
-     * returns all rules for specific user and game
-     *
-     * @return array(int id_phase => boolean)
-     */
-    public function getNotificationRules() {
-        return $this->notification_rules;
     }
 
     /**
@@ -237,7 +188,6 @@ class ModelInGamePhaseInfo {
             if (empty($result)) {
                 $this->create_info($id_phase);
             } else {
-                $this->notification_rules[$id_phase] = ($result[0]['notif_rule']) ? true : false;
                 $this->is_ready[$id_phase] = ($result[0]['is_ready']) ? true : false;
             }
         }
@@ -249,19 +199,10 @@ class ModelInGamePhaseInfo {
         $dict[':id_user'] = $this->id_user;
         $dict[':id_game'] = $this->id_game;
         $dict[':id_phase'] = $id_phase;
+        $dict[':is_ready'] = false;
 
-        if ($this->id_game === 0) {
-            $dict[':rule'] = true;
-            $dict[':is_ready'] = false;
-        } else {
-            $_Rule = ModelInGamePhaseInfo::getInGamePhaseInfo($this->id_user);
-            $dict[':rule'] = $_Rule->getNotificationRuleForPhase($id_phase);
-            $dict[':is_ready'] = $_Rule->getIsReadyForPhase($id_phase);
-        }
+        SQLConnector::getInstance()->epp($query, $dict);
 
-        SQLConnector::getInstance()->epp($query,$dict);
-
-        $this->notification_rules[$id_phase] = $dict[':rule'];
         $this->is_ready[$id_phase] = $dict[':is_ready'];
     }
 
