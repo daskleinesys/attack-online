@@ -140,18 +140,17 @@ class ModelGame {
      */
     public static function deleteGame($id_game) {
         try {
-            $_Game = self::getGame($id_game);
+            $game = self::getGame($id_game);
         } catch (NullPointerException $ex) {
             throw new GameAdministrationException('Game not found.');
         }
-        if ($_Game->getStatus() !== GAME_STATUS_NEW) {
+        if ($game->getStatus() !== GAME_STATUS_NEW) {
             throw new GameAdministrationException('Only new games can be deleted.');
         }
+        ModelInGamePhaseInfo::deleteInGamePhaseInfos(null, $id_game);
+        ModelIsInGameInfo::deleteIsInGameInfos(null, $id_game);
         $dict = array(':id_game' => $id_game);
         SQLConnector::Singleton()->epp('delete_game', $dict);
-
-        ModelIsInGameInfo::deleteIsInGameInfos(null, $id_game);
-        ModelInGamePhaseInfo::deleteInGamePhaseInfos(null, $id_game);
 
         unset(self::$games[$id_game]);
 
@@ -371,7 +370,8 @@ class ModelGame {
      */
     public function moveToNextPhase() {
         // TODO : add phases as development progresses
-        $phases = array(PHASE_LANDMOVE, PHASE_SEAMOVE, /*PHASE_TRADEROUTE, */PHASE_TROOPSMOVE, PHASE_PRODUCTION, PHASE_GAME_START, PHASE_SELECTSTART, PHASE_SETSHIPS);
+        $phases = array(PHASE_LANDMOVE, PHASE_SEAMOVE, /*PHASE_TRADEROUTE, */
+            PHASE_TROOPSMOVE, PHASE_PRODUCTION, PHASE_GAME_START, PHASE_SELECTSTART, PHASE_SETSHIPS);
 
         // check which phase is next
         $add_round = false;
