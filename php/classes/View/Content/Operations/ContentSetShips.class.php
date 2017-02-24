@@ -127,7 +127,7 @@ class ContentSetShips extends Interfaces\ContentOperation {
 
     private function deleteMove(array &$data) {
         try {
-            $this->moveController->deleteMove($_POST['delete']);
+            $this->moveController->deleteMove((int)$_POST['delete']);
         } catch (ControllerException $ex) {
             $data['errors'] = array(
                 'message' => $ex->getMessage()

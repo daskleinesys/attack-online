@@ -191,22 +191,22 @@ class ModelSetShipsMove extends ModelMove {
         $id_game = $move->getIdGame();
         $id_move = $move->getId();
 
-        // 1. delete ship from DB
-        ModelGameShip::deleteShip($id_game, $move->getIdGameUnit());
-
-        // 2. delete ship for move
+        // 1. delete ship for move
         $query = 'delete_units_for_move';
         $dict = array();
         $dict[':id_move'] = $id_move;
         SQLConnector::Singleton()->epp($query, $dict);
 
-        // 3. delete areas for move
+        // 2. delete areas for move
         $query = 'delete_move_areas_for_move';
         SQLConnector::Singleton()->epp($query, $dict);
 
-        // 4. delete move
+        // 3. delete move
         $query = 'delete_move';
         SQLConnector::Singleton()->epp($query, $dict);
+
+        // 4. delete ship from DB
+        ModelGameShip::deleteShip($id_game, $move->getIdGameUnit());
 
         unset(self::$moves[$id_game][$id_move]);
     }
