@@ -21,6 +21,13 @@ SET time_zone = "+00:00";
 --
 
 --
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `lastname`, `login`) VALUES
+(-1, 'NEUTRAL_COUNTRY', 'NEUTRAL_COUNTRY', 'NEUTRAL_COUNTRY');
+
+--
 -- Dumping data for table `types`
 --
 
@@ -1035,6 +1042,7 @@ INSERT INTO `phases` (`id`, `name`, `key`) VALUES
 --
 
 INSERT INTO `resources` (`id`, `name`, `key`) VALUES
+(-1, 'RESOURCE_NONE', 'RESOURCE_NONE'),
 (1, 'Öl', 'oil'),
 (2, 'Transport', 'transport'),
 (3, 'Industrie', 'industry'),

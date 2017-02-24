@@ -176,6 +176,7 @@ class ModelGameArea {
     /**
      * sets the user that owns this game-area
      *
+     * @param $id_user int
      * @return void
      */
     public function setIdUser($id_user) {
@@ -191,6 +192,7 @@ class ModelGameArea {
     /**
      * sets the resource of this game-area
      *
+     * @param $id_resource int
      * @return void
      */
     public function setIdResource($id_resource) {
@@ -207,6 +209,7 @@ class ModelGameArea {
     /**
      * sets the productivity of this game-area
      *
+     * @param $productivity int
      * @return void
      */
     public function setProductivity($productivity) {
@@ -230,9 +233,9 @@ class ModelGameArea {
     /**
      * @return ModelArea
      */
-     public function getArea() {
-         return ModelArea::getArea($this->id_area);
-     }
+    public function getArea() {
+        return ModelArea::getArea($this->id_area);
+    }
 
     /**
      * @return string
@@ -256,14 +259,6 @@ class ModelGameArea {
     public function getIdType() {
         $area = ModelArea::getArea($this->id_area);
         return $area->getIdType();
-    }
-
-    /**
-     * @return int
-     */
-    public function getZone() {
-        $area = ModelArea::getArea($this->id_area);
-        return $area->getZone();
     }
 
     /**
@@ -317,10 +312,10 @@ class ModelGameArea {
         }
         $data = $result[0];
 
-        $this->id_user = (int) $data['id_user'];
-        $this->id_area = (int) $data['id_area'];
-        $this->id_resource = (int) $data['id_resource'];
-        $this->productivity = (int) $data['productivity'];
+        $this->id_user = (int)$data['id_user'];
+        $this->id_area = (int)$data['id_area'];
+        $this->id_resource = (int)$data['id_resource'];
+        $this->productivity = (int)$data['productivity'];
         return true;
     }
 

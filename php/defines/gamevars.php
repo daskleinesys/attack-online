@@ -48,7 +48,7 @@ define('ECONOMY_NORMAL', 'normal');
 define('ECONOMY_STRONG', 'strong');
 
 // resources
-define('RESOURCE_NONE', 0);
+define('RESOURCE_NONE', -1);
 define('RESOURCE_OIL', 1);
 define('RESOURCE_TRANSPORT', 2);
 define('RESOURCE_INDUSTRY', 3);
@@ -56,6 +56,7 @@ define('RESOURCE_MINERALS', 4);
 define('RESOURCE_POPULATION', 5);
 
 // user
+define('NEUTRAL_COUNTRY', -1);
 define('STATUS_USER_INACTIVE', 'inactive');
 define('STATUS_USER_ACTIVE', 'active');
 define('STATUS_USER_MODERATOR', 'moderator');
@@ -66,8 +67,6 @@ define('STATUS_USER_ALL', 'all');
 /****************************************************
  * game settings that are NOT reflected in database *
  ****************************************************/
-
-define('NEUTRAL_COUNTRY', -1);
 
 define('MAX_LAND_ATTACKS', 1);
 
