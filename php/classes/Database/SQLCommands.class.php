@@ -316,7 +316,7 @@ class SQLCommands {
 
         // set ship moves
         self::setQuery('get_set_ships_move', "
-            SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, port_area.id_game_area AS id_port_area, sea_area.id_game_area AS id_sea_area, ship.id_game_unit
+            SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted, port_area.id_game_area AS id_port_area, sea_area.id_game_area AS id_game_area, ship.id_game_unit
             FROM $table_game_moves AS moves
                 LEFT JOIN $table_game_move_has_areas AS port_area ON (moves.id = port_area.id_game_move AND port_area.step = 0) 
                 LEFT JOIN $table_game_move_has_areas AS sea_area ON (moves.id = sea_area.id_game_move AND sea_area.step = 1)
@@ -414,8 +414,7 @@ class SQLCommands {
         self::setQuery('get_game_ship_by_name', "
             SELECT game_units.*
             FROM $table_game_units AS game_units
-                LEFT JOIN $table_game_areas AS game_areas ON (game_areas.id = game_units.id_game_area)
-            WHERE game_areas.id_game = :id_game AND game_units.name = :name
+            WHERE id_game = :id_game AND name = :name
             LIMIT 1
         ");
         self::setQuery('get_all_game_ships_not_in_port_by_area_user', "

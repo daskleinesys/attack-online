@@ -215,8 +215,8 @@ class ModelGameShip extends ModelGameUnit {
         $dict[':experience'] = 0;
         $dict[':dive_status'] = ((int)$id_unit === ID_SUBMARINE) ? DIVE_STATUS_UP : null;
         $dict[':id_user'] = $id_user;
-        $dict[':id_game_area'] = $id_game_area;
-        $dict[':id_game_area_in_port'] = $id_game_area_in_port;
+        $dict[':id_game_area'] = ($id_game_area === NO_AREA) ? null : $id_game_area;
+        $dict[':id_game_area_in_port'] = ($id_game_area_in_port === NO_AREA) ? null : $id_game_area_in_port;
         $dict[':id_unit'] = $id_unit;
         SQLConnector::getInstance()->epp($query, $dict);
         $id = SQLConnector::getInstance()->getLastInsertId();

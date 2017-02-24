@@ -90,8 +90,7 @@ class ModelSetShipsMove extends ModelMove {
         }
         $moves = array();
         foreach ($result as $move) {
-            $id_move = $move['id'];
-            $moves[] = self::getSetShipsMove($id_game, $id_move);
+            $moves[] = self::getSetShipsMove($id_game, (int)$move['id']);
         }
         return new ModelIterator($moves);
     }
@@ -140,6 +139,7 @@ class ModelSetShipsMove extends ModelMove {
         // 1. check if name is available
         $query = 'get_game_ship_by_name';
         $dict = array();
+        $dict[':id_game'] = $id_game;
         $dict[':name'] = $name;
         $result = SQLConnector::Singleton()->epp($query, $dict);
         if (!empty($result)) {
@@ -147,7 +147,7 @@ class ModelSetShipsMove extends ModelMove {
         }
 
         // 2. create ship
-        $ship = ModelGameShip::createShip($id_user, $id_game, $id_unit, 0, $name, 0);
+        $ship = ModelGameShip::createShip($id_user, $id_game, $id_unit, NO_AREA, $name, NO_AREA);
         $id_game_unit = $ship->getId();
 
         // 3. create new move

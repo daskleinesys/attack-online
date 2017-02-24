@@ -103,7 +103,7 @@ class ContentSetShips extends Interfaces\ContentOperation {
     private function setShip(array &$data) {
         // get post data and create new move via controller
         try {
-            $this->moveController->setNewShip($_POST['unit'], $_POST['name'], $_POST['game_area_in_port'], $_POST['game_area']);
+            $this->moveController->setNewShip((int)$_POST['unit'], $_POST['name'], (int)$_POST['game_area_in_port'], (int)$_POST['game_area']);
         } catch (ControllerException $ex) {
             $data['errors'] = array(
                 'message' => $ex->getMessage()

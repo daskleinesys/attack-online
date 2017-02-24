@@ -68,6 +68,8 @@ define('STATUS_USER_ALL', 'all');
  * game settings that are NOT reflected in database *
  ****************************************************/
 
+define('NO_AREA', -1);
+
 define('MAX_LAND_ATTACKS', 1);
 
 define('MAX_MONEY_SPENDABLE', 10);

@@ -50,26 +50,27 @@ class SetShipsController extends PhaseController {
      *
      * @param $id_unit int
      * @param $name string
-     * @param $zarea_in_port int
-     * @param $zarea int
+     * @param $id_game_area_in_port int
+     * @param $id_game_area int
      * @throws ControllerException
      * @throws ModelException
      */
-    public function setNewShip($id_unit, $name, $zarea_in_port, $zarea) {
+    public function setNewShip($id_unit, $name, $id_game_area_in_port, $id_game_area) {
         // 1. regex name
         $name = trim($name);
         if (!preg_match("/^([a-zA-Z0-9]+[a-zA-Z0-9' -]+[a-zA-Z0-9']+){1,}?$/", $name)) {
             throw new ControllerException('Invalid ship name. Only letters, numbers, spaces and -\' allowed');
         }
 
-        // 2. check if id_zarea_in_port belongs to user
-        $port_area = ModelGameArea::getGameArea($this->id_game, (int)$zarea_in_port);
+        // 2. check if game_area_in_port belongs to user
+        $port_area = ModelGameArea::getGameArea($this->id_game, (int)$id_game_area_in_port);
         if ($port_area->getIdUser() !== $this->id_user) {
             throw new ControllerException('Area doesn\'t belong to user.');
         }
 
-        // 3. check if zarea and id_zarea_in_port are adjacent
-        if (!in_array((int)$zarea, $port_area->getAdjecents())) {
+        // 3. check if game_area and game_area_in_port are adjacent
+        $game_area = ModelGameArea::getGameArea($this->id_game, (int)$id_game_area);
+        if (!in_array($game_area->getIdArea(), $port_area->getAdjecents())) {
             throw new ControllerException('Area not adjacent do port area.');
         }
 
@@ -82,7 +83,7 @@ class SetShipsController extends PhaseController {
         }
 
         // 5. create new move
-        ModelSetShipsMove::createSetShipsMove($this->id_user, $this->id_game, (int)$zarea_in_port, (int)$zarea, (int)$id_unit, $name);
+        ModelSetShipsMove::createSetShipsMove($this->id_user, $this->id_game, (int)$id_game_area_in_port, (int)$id_game_area, (int)$id_unit, $name);
     }
 
     /**
@@ -138,21 +139,21 @@ class SetShipsController extends PhaseController {
      * @throws ControllerException
      */
     public function validateSetShipsMove(ModelSetShipsMove $move) {
-        // 1. check if id_zarea_in_port belongs to user
+        // 1. check if id_game_area_in_port belongs to user
         $port_area = ModelGameArea::getGameArea($this->id_game, $move->getIdGameAreaInPort());
         if ($port_area->getIdUser() !== $move->getIdUser()) {
             throw new ControllerException('Area doesn\'t belong to user.');
         }
 
-        // 2. check if zarea and id_zarea_in_port are adjacent
-        if (!in_array($move->getIdGameArea(), $port_area->getAdjecents())) {
+        // 2. check if zarea and id_game_area_in_port are adjacent
+        $game_area = ModelGameArea::getGameArea($this->id_game, $move->getIdGameArea());
+        if (!in_array($game_area->getIdArea(), $port_area->getAdjecents())) {
             throw new ControllerException('Area not adjacent do port area.');
         }
 
         // 3. check if ship id is in still available ships
         $stillAvailableShips = $this->getStillAvailableShips();
-        $id_zunit = $move->getIdGameUnit();
-        $ship = ModelGameShip::getShipById($this->id_game, $id_zunit);
+        $ship = ModelGameShip::getShipById($this->id_game, $move->getIdGameUnit());
         $id_unit = $ship->getIdUnit();
         if (!isset($stillAvailableShips[$id_unit])) {
             throw new ControllerException('No ships of this type available.');
