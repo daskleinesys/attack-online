@@ -398,7 +398,13 @@ class SQLCommands {
         self::setQuery('set_game_land_unit_count', "UPDATE $table_game_units SET numberof = :count WHERE id = :id_game_unit");
 
         // create
-        self::setQuery('insert_game_land_unit', "INSERT INTO $table_game_units (numberof, id_user, id_game_area, id_unit) VALUES (:count, :id_user, :id_game_area, :id_unit)");
+        self::setQuery('insert_game_land_unit', "
+            INSERT INTO $table_game_units (
+                id_game, numberof, id_user, id_game_area, id_unit
+            ) VALUES (
+                :id_game, :count, :id_user, :id_game_area, :id_unit
+            )
+        ");
 
 
         /*******************
@@ -453,8 +459,11 @@ class SQLCommands {
 
         // create
         self::setQuery('insert_game_ship', "
-            INSERT INTO $table_game_units (tank, hitpoints, name, experience, dive_status, id_user, id_game_area, id_game_area_in_port, id_unit) 
-            VALUES (:tank, :hitpoints, :name, :experience, :dive_status, :id_user, :id_game_area, :id_game_area_in_port, :id_unit)
+            INSERT INTO $table_game_units (
+                id_game, tank, hitpoints, name, experience, dive_status, id_user, id_game_area, id_game_area_in_port, id_unit
+            ) VALUES (
+                :id_game, :tank, :hitpoints, :name, :experience, :dive_status, :id_user, :id_game_area, :id_game_area_in_port, :id_unit
+            )
         ");
 
         // delete

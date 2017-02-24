@@ -123,6 +123,7 @@ class ModelGameLandUnit extends ModelGameUnit {
     private static function createModel($id_game, $id_game_area, $id_user, $id_unit) {
         $query = 'insert_game_land_unit';
         $dict = array();
+        $dict[':id_game'] = $id_game;
         $dict[':id_user'] = $id_user;
         $dict[':id_game_area'] = $id_game_area;
         $dict[':id_unit'] = $id_unit;
