@@ -333,6 +333,7 @@ CREATE TABLE `game_move_has_units` (
 DROP TABLE IF EXISTS `game_units`;
 CREATE TABLE `game_units` (
   `id` int(11) NOT NULL,
+  `id_game` int(11) NOT NULL,
   `tank` int(11) DEFAULT NULL,
   `hitpoints` int(11) DEFAULT NULL,
   `name` varchar(40) DEFAULT NULL,
@@ -509,6 +510,7 @@ ALTER TABLE `game_move_has_units`
 --
 ALTER TABLE `game_units`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `id_game` (`id_game`),
   ADD KEY `id_user` (`id_user`),
   ADD KEY `id_game_area` (`id_game_area`),
   ADD KEY `id_game_area_in_port` (`id_game_area_in_port`),
@@ -713,6 +715,8 @@ ALTER TABLE `game_move_has_units`
 -- Constraints for table `game_units`
 --
 ALTER TABLE `game_units`
+  ADD CONSTRAINT `game_units_name` UNIQUE (`id_game`, `name`),
+  ADD CONSTRAINT `game_units_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
   ADD CONSTRAINT `game_units_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `game_units_game_area` FOREIGN KEY (`id_game_area`) REFERENCES `game_areas` (`id`),
   ADD CONSTRAINT `game_units_game_area_in_port` FOREIGN KEY (`id_game_area_in_port`) REFERENCES `game_areas` (`id`),
