@@ -308,7 +308,7 @@ class SQLCommands {
             WHERE moves.id = :id_move
         ");
         self::setQuery('get_start_move_for_user', "
-            SELECT moves.id
+            SELECT id
             FROM $table_game_moves
             WHERE id_game = :id_game AND id_user = :id_user AND id_phase = :id_phase AND round = :round AND deleted = 0
             LIMIT 1
