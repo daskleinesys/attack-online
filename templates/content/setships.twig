@@ -70,20 +70,20 @@
                 </td>
                 <td>
                     <label>
-                        <select name="zarea_in_port" size="1">
+                        <select name="game_area_in_port" size="1">
                             <option value="" disabled selected>Land wählen</option>
-                            {% for zarea in availableZAreasInPort %}
-                                <option value="{{ zarea.id_zarea_in_port }}">{{ zarea.name }} {{ zarea.number }}</option>
+                            {% for game_area in availableGameAreasInPort %}
+                                <option value="{{ game_area.id_game_area_in_port }}">{{ game_area.name }} {{ game_area.number }}</option>
                             {% endfor %}
                         </select>
                     </label>
                 </td>
                 <td>
                     <label>
-                        <select name="zarea" size="1">
+                        <select name="game_area" size="1">
                             <option value="" disabled selected>Hafen wählen</option>
-                            {% for zarea in availableZAreasAtSea %}
-                                <option value="{{ zarea.id_zarea_at_sea }}">{{ zarea.name }} {{ zarea.number }}</option>
+                            {% for game_area in availableGameAreasAtSea %}
+                                <option value="{{ game_area.id_game_area_at_sea }}">{{ game_area.name }} {{ game_area.number }}</option>
                             {% endfor %}
                         </select>
                     </label>
@@ -140,10 +140,10 @@
                     {{ move.ship_name }}
                 </td>
                 <td>
-                    {{ move.zarea_in_port }}
+                    {{ move.game_area_in_port }}
                 </td>
                 <td>
-                    {{ move.zarea_at_sea }}
+                    {{ move.game_area_at_sea }}
                 </td>
                 {% if not notCurrentPhase and not turnFixated %}
                     <td>

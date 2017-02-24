@@ -44,17 +44,17 @@ class ContentSetShips extends Interfaces\ContentOperation {
         while ($iterator->hasNext()) {
             /** @var ModelSetShipsMove $move */
             $move = $iterator->next();
-            $zShip = ModelGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdZunit());
-            $id_ship = $zShip->getIdUnit();
-            $ship = ModelShip::getModelById($id_ship);
-            $zAreaInPort = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZareaInPort());
-            $zAreaAtSea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZarea());
+            $gameShip = ModelGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdZunit());
+            $id_game_ship = $gameShip->getIdUnit();
+            $ship = ModelShip::getModelById($id_game_ship);
+            $gameAreaInPort = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZareaInPort());
+            $gameAreaAtSea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZarea());
             $data['currentShips'][] = array(
                 'id' => $move->getId(),
                 'ship_type' => $ship->getName(),
-                'ship_name' => $zShip->getName(),
-                'zarea_in_port' => $zAreaInPort->getName() . ' ' . $zAreaInPort->getNumber(),
-                'zarea_at_sea' => $zAreaAtSea->getName() . ' ' . $zAreaAtSea->getNumber()
+                'ship_name' => $gameShip->getName(),
+                'game_area_in_port' => $gameAreaInPort->getName() . ' ' . $gameAreaInPort->getNumber(),
+                'game_area_at_sea' => $gameAreaAtSea->getName() . ' ' . $gameAreaAtSea->getNumber()
             );
         }
 
@@ -73,24 +73,24 @@ class ContentSetShips extends Interfaces\ContentOperation {
         }
 
         // show available countries
-        $data['availableZAreasInPort'] = array();
-        $data['availableZAreasAtSea'] = array();
+        $data['availableGameAreasInPort'] = array();
+        $data['availableGameAreasAtSea'] = array();
         $iterator = ModelGameArea::iterator(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
         while ($iterator->hasNext()) {
-            /** @var ModelGameArea $zArea */
-            $zArea = $iterator->next();
-            $data['availableZAreasInPort'][] = array(
-                'id_zarea_in_port' => $zArea->getId(),
-                'name' => $zArea->getName(),
-                'number' => $zArea->getNumber()
+            /** @var ModelGameArea $gameArea */
+            $gameArea = $iterator->next();
+            $data['availableGameAreasInPort'][] = array(
+                'id_game_area_in_port' => $gameArea->getId(),
+                'name' => $gameArea->getName(),
+                'number' => $gameArea->getNumber()
             );
         }
         $iterator = ModelArea::iterator(TYPE_SEA);
         while ($iterator->hasNext()) {
             /** @var ModelArea $area */
             $area = $iterator->next();
-            $data['availableZAreasAtSea'][] = array(
-                'id_zarea_at_sea' => ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId())->getId(),
+            $data['availableGameAreasAtSea'][] = array(
+                'id_game_area_at_sea' => ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId())->getId(),
                 'name' => $area->getName(),
                 'number' => $area->getNumber()
             );
@@ -103,7 +103,7 @@ class ContentSetShips extends Interfaces\ContentOperation {
     private function setShip(array &$data) {
         // get post data and create new move via controller
         try {
-            $this->moveController->setNewShip($_POST['unit'], $_POST['name'], $_POST['zarea_in_port'], $_POST['zarea']);
+            $this->moveController->setNewShip($_POST['unit'], $_POST['name'], $_POST['game_area_in_port'], $_POST['game_area']);
         } catch (ControllerException $ex) {
             $data['errors'] = array(
                 'message' => $ex->getMessage()
