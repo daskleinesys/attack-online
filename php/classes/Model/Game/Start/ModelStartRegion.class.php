@@ -6,15 +6,23 @@ use Attack\Exceptions\NullPointerException;
 
 class ModelStartRegion {
 
-    // phase models
-    private static $regions = array(); // array(int id_set => array(int id_opttype => array(int option_number => array(int id_area => ModelStartRegion))))
+    /**
+     * @var array(
+     *     int id_set => array(
+     *         int id_optiontype => array(
+     *             int option_group => array(int id_area => ModelStartRegion)
+     *         )
+     *     )
+     * )
+     */
+    private static $start_regions = array();
 
     // member vars
     private $id; // int
     private $id_area; // int
-    private $id_optiontype; // int
     private $id_set; // int
-    private $option_number; // int
+    private $id_optiontype; // int
+    private $option_group; // int
 
     /**
      * returns the start region model
@@ -26,11 +34,11 @@ class ModelStartRegion {
      * @param $option_number int
      */
     private function __construct($id, $id_area, $id_optiontype, $id_set, $option_number) {
-        $this->$id = intval($id);
+        $this->id = intval($id);
         $this->id_area = intval($id_area);
         $this->id_optiontype = intval($id_optiontype);
         $this->id_set = intval($id_set);
-        $this->option_number = intval($option_number);
+        $this->option_group = intval($option_number);
     }
 
     /**
@@ -42,8 +50,8 @@ class ModelStartRegion {
      */
     public static function getRegionsForSet($id_set) {
         $id_set = intval($id_set);
-        if (isset(self::$regions[$id_set])) {
-            return self::$regions[$id_set];
+        if (isset(self::$start_regions[$id_set])) {
+            return self::$start_regions[$id_set];
         }
 
         $query = 'get_start_set_areas_by_set';
@@ -52,10 +60,19 @@ class ModelStartRegion {
         if (empty($result)) {
             throw new NullPointerException('Set not found.');
         }
-        foreach ($result as $region) {
-            self::$regions[$id_set][$region['id_optiontype']][$region['options']][$region['id_area']] = new ModelStartRegion($region['id'], $region['id_area'], $region['id_optiontype'], $region['id_set'], $region['options']);
+        foreach ($result as $start_region) {
+            $id_optiontype = $start_region['id_optiontype'];
+            $option_group = $start_region['option_group'];
+            $id_area = $start_region['id_area'];
+            self::$start_regions[$id_set][$id_optiontype][$option_group][$id_area] = new ModelStartRegion(
+                $start_region['id'],
+                $id_area,
+                $id_optiontype,
+                $id_set,
+                $option_group
+            );
         }
-        return self::$regions[$id_set];
+        return self::$start_regions[$id_set];
     }
 
     /**
@@ -69,10 +86,10 @@ class ModelStartRegion {
     public static function getRegionsForSetAndOption($id_set, $option_number) {
         $id_set = intval($id_set);
         $option_number = intval($option_number);
-        if (!isset(self::$regions[$id_set])) {
+        if (!isset(self::$start_regions[$id_set])) {
             self::getRegionsForSet($id_set);
         }
-        foreach (self::$regions[$id_set] as $options_types) {
+        foreach (self::$start_regions[$id_set] as $options_types) {
             if (isset($options_types[$option_number])) {
                 return $options_types[$option_number];
             }
@@ -111,8 +128,8 @@ class ModelStartRegion {
     /**
      * @return int
      */
-    public function getOptionNumber() {
-        return $this->option_number;
+    public function getOptionGroup() {
+        return $this->option_group;
     }
 
 }
