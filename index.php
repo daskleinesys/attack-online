@@ -6,12 +6,8 @@ use Slim\Slim;
 use Slim\Views\Twig;
 
 // DEBUG && NO-MERGE
-$debug = isset($_REQUEST['debug']) ? true : false;
-if ($debug) {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-}
-$nomerge = isset($_REQUEST['no_merge']) || isset($_REQUEST['nomerge']) ? true : false;
+$debug = false;
+$nomerge = false;
 
 // SETUP PHP
 date_default_timezone_set('Europe/Vienna');
@@ -20,9 +16,15 @@ session_start();
 // LOADING FRAMEWORKS
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools' . DIRECTORY_SEPARATOR . 'Autoloader.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'defines.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'gamevars.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'configuration.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'defines.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'gamevars.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'configuration.php';
+
+// DEBUG
+if ($debug) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+}
 
 // INIT ERROR-HANDLING && LOGGING
 global $log4php_config;

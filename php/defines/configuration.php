@@ -1,7 +1,7 @@
 <?php
 
 if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'local_configuration.php')) {
-    require_once __DIR__ . DIRECTORY_SEPARATOR . 'local_configuration.php';
+    include_once __DIR__ . DIRECTORY_SEPARATOR . 'local_configuration.php';
 }
 
 // db vars
