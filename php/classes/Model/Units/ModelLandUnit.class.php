@@ -52,13 +52,21 @@ class ModelLandUnit extends ModelUnit {
     public static function iterator() {
         $models = array();
         $query = 'get_units_by_type';
+
+        // query land units
         $dict = array(
             ':id_type' => TYPE_LAND
         );
-
-        // query units
         $result = SQLConnector::Singleton()->epp($query, $dict);
-
+        foreach ($result as $unit) {
+            $id_unit = $unit['id'];
+            $models[] = self::getModelById($id_unit);
+        }
+        // query air units
+        $dict = array(
+            ':id_type' => TYPE_AIR
+        );
+        $result = SQLConnector::Singleton()->epp($query, $dict);
         foreach ($result as $unit) {
             $id_unit = $unit['id'];
             $models[] = self::getModelById($id_unit);
