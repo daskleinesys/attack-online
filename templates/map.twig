@@ -69,7 +69,7 @@
                         {% endfor %}
                     {% endfor %}
 
-                    {% if country.resource %}
+                    {% if country.prod > 0 %}
                         <tr>
                             <th>{{ country.resource }}</th>
                             <th>{{ country.prod }}</th>
@@ -114,7 +114,7 @@
             {# HOVER INFO BOX END #}
 
             {# COUNTRY STATUS INFO #}
-            {% if country.resource %}
+            {% if country.prod > 0 %}
                 <div class="resource" style="top:{{ country.yres }}px; left:{{ country.xres }}px;">
                     <img src="{{ absRefPrefix }}dist/images/resources/{{ country.res_label }}{{ country.prod }}.gif" class="resource" alt=""/>
                 </div>

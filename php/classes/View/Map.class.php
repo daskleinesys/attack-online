@@ -42,9 +42,6 @@ class Map {
             // check landunits
             $unitCount = 0;
             $id_user = (int)$country['id_user'];
-            if ($id_user <= 0) {
-                $id_user = NEUTRAL_COUNTRY;
-            }
             $units = ModelGameLandUnit::getUnitsByIdZAreaUser($id_game, (int)$country['id'], $id_user);
             $unitsViewData = array();
             /* @var $unit ModelGameLandUnit */
