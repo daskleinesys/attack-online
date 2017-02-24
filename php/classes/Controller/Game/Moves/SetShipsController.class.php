@@ -120,7 +120,7 @@ class SetShipsController extends PhaseController {
         while ($moves->hasNext()) {
             /** @var $move ModelSetShipsMove */
             $move = $moves->next();
-            $ship = ModelGameShip::getShipById($this->id_game, $move->getIdZunit());
+            $ship = ModelGameShip::getShipById($this->id_game, $move->getIdGameUnit());
             $id_unit = $ship->getIdUnit();
             if (isset($startShips[$id_unit])) {
                 --$startShips[$id_unit];
@@ -139,19 +139,19 @@ class SetShipsController extends PhaseController {
      */
     public function validateSetShipsMove(ModelSetShipsMove $move) {
         // 1. check if id_zarea_in_port belongs to user
-        $port_area = ModelGameArea::getGameArea($this->id_game, $move->getIdZareaInPort());
+        $port_area = ModelGameArea::getGameArea($this->id_game, $move->getIdGameAreaInPort());
         if ($port_area->getIdUser() !== $move->getIdUser()) {
             throw new ControllerException('Area doesn\'t belong to user.');
         }
 
         // 2. check if zarea and id_zarea_in_port are adjacent
-        if (!in_array($move->getIdZarea(), $port_area->getAdjecents())) {
+        if (!in_array($move->getIdGameArea(), $port_area->getAdjecents())) {
             throw new ControllerException('Area not adjacent do port area.');
         }
 
         // 3. check if ship id is in still available ships
         $stillAvailableShips = $this->getStillAvailableShips();
-        $id_zunit = $move->getIdZunit();
+        $id_zunit = $move->getIdGameUnit();
         $ship = ModelGameShip::getShipById($this->id_game, $id_zunit);
         $id_unit = $ship->getIdUnit();
         if (!isset($stillAvailableShips[$id_unit])) {

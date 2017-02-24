@@ -53,13 +53,13 @@ class LogicSetShips extends PhaseLogic {
                 } catch (ControllerException $ex) {
                     $this->logger->error($ex);
                     $move->flagMoveDeleted();
-                    ModelGameShip::deleteShip($this->id_game, $move->getIdZunit());
+                    ModelGameShip::deleteShip($this->id_game, $move->getIdGameUnit());
                     continue;
                 }
 
-                $ship = ModelGameShip::getShipById($this->id_game, $move->getIdZunit());
-                $ship->setIdZarea($move->getIdZarea());
-                $ship->setIdZareaInPort($move->getIdZareaInPort());
+                $ship = ModelGameShip::getShipById($this->id_game, $move->getIdGameUnit());
+                $ship->setIdZarea($move->getIdGameArea());
+                $ship->setIdZareaInPort($move->getIdGameAreaInPort());
             }
 
             $this->finishProcessing();

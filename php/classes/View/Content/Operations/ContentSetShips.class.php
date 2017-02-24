@@ -44,11 +44,11 @@ class ContentSetShips extends Interfaces\ContentOperation {
         while ($iterator->hasNext()) {
             /** @var ModelSetShipsMove $move */
             $move = $iterator->next();
-            $gameShip = ModelGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdZunit());
+            $gameShip = ModelGameShip::getShipById(ModelGame::getCurrentGame()->getId(), $move->getIdGameUnit());
             $id_game_ship = $gameShip->getIdUnit();
             $ship = ModelShip::getModelById($id_game_ship);
-            $gameAreaInPort = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZareaInPort());
-            $gameAreaAtSea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdZarea());
+            $gameAreaInPort = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdGameAreaInPort());
+            $gameAreaAtSea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $move->getIdGameArea());
             $data['currentShips'][] = array(
                 'id' => $move->getId(),
                 'ship_type' => $ship->getName(),
