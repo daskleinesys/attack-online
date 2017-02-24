@@ -277,7 +277,7 @@ CREATE TABLE `game_areas` (
   `id_user` int(11) DEFAULT NULL,
   `id_area` int(11) NOT NULL,
   `id_resource` int(11) DEFAULT NULL,
-  `productivity` int(11) DEFAULT NULL
+  `productivity` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

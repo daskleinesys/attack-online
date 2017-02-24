@@ -270,7 +270,7 @@ class ModelGame {
         $iter_sea = ModelArea::iterator(TYPE_SEA);
         while ($iter_sea->hasNext()) {
             $_Area = $iter_sea->next();
-            ModelGameArea::setGameArea($this->id, NEUTRAL_COUNTRY, $_Area->getId(), RESOURCE_NONE, 0);
+            ModelGameArea::setGameArea($this->id, NEUTRAL_COUNTRY, $_Area->getId(), NO_RESOURCE, 0);
         }
 
         // set game to started

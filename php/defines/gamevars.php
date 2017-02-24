@@ -48,7 +48,6 @@ define('ECONOMY_NORMAL', 'normal');
 define('ECONOMY_STRONG', 'strong');
 
 // resources
-define('RESOURCE_NONE', -1);
 define('RESOURCE_OIL', 1);
 define('RESOURCE_TRANSPORT', 2);
 define('RESOURCE_INDUSTRY', 3);
@@ -68,6 +67,7 @@ define('STATUS_USER_ALL', 'all');
  * game settings that are NOT reflected in database *
  ****************************************************/
 
+define('NO_RESOURCE', -1);
 define('NO_AREA', -1);
 
 define('MAX_LAND_ATTACKS', 1);

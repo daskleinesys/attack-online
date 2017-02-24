@@ -166,7 +166,7 @@ class ModelGameArea {
             $dict[':id_game'] = $id_game;
             $dict[':id_user'] = $id_user;
             $dict[':id_area'] = $id_area;
-            $dict[':id_resource'] = $id_resource;
+            $dict[':id_resource'] = ($id_resource === NO_RESOURCE) ? null : $id_resource;
             $dict[':productivity'] = $productivity;
             SQLConnector::getInstance()->epp($query, $dict);
             return self::getGameAreaForArea($id_game, $id_area);
@@ -200,7 +200,7 @@ class ModelGameArea {
         $query = 'set_game_area_resource';
         $dict = array();
         $dict[':id_game_area'] = $this->id;
-        $dict[':id_resource'] = $id_resource;
+        $dict[':id_resource'] = ($id_resource === NO_RESOURCE) ? null : $id_resource;
         $this->id_resource = $id_resource;
         SQLConnector::Singleton()->epp($query, $dict);
 
@@ -314,7 +314,7 @@ class ModelGameArea {
 
         $this->id_user = (int)$data['id_user'];
         $this->id_area = (int)$data['id_area'];
-        $this->id_resource = (int)$data['id_resource'];
+        $this->id_resource = ($data['id_resource'] == null) ? NO_RESOURCE : (int)$data['id_resource'];
         $this->productivity = (int)$data['productivity'];
         return true;
     }

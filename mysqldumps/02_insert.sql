@@ -1042,7 +1042,6 @@ INSERT INTO `phases` (`id`, `name`, `key`) VALUES
 --
 
 INSERT INTO `resources` (`id`, `name`, `key`) VALUES
-(-1, 'RESOURCE_NONE', 'RESOURCE_NONE'),
 (1, 'Öl', 'oil'),
 (2, 'Transport', 'transport'),
 (3, 'Industrie', 'industry'),
