@@ -42,7 +42,10 @@ class Map {
             // check landunits
             $unitCount = 0;
             $id_user = (int)$country['id_user'];
-            $units = ModelGameLandUnit::getUnitsByIdZAreaUser($id_game, (int)$country['id'], $id_user);
+            if ($id_user === 0) {
+                $id_user = NEUTRAL_COUNTRY;
+            }
+            $units = ModelGameLandUnit::getUnitsByIdGameAreaUser($id_game, (int)$country['id_game_area'], $id_user);
             $unitsViewData = array();
             /* @var $unit ModelGameLandUnit */
             foreach ($units as $unit) {
@@ -63,9 +66,9 @@ class Map {
             $shipCount = 0;
             $shipViewData = array();
             if ((int)$country['area_type'] === TYPE_LAND) {
-                $ships = ModelGameShip::getShipsInPort($id_game, (int)$country['id_zarea']);
+                $ships = ModelGameShip::getShipsInPort($id_game, (int)$country['id_game_area']);
             } else {
-                $ships = ModelGameShip::getShipsInAreaNotInPort($id_game, (int)$country['id_zarea']);
+                $ships = ModelGameShip::getShipsInAreaNotInPort($id_game, (int)$country['id_game_area']);
             }
             while ($ships->hasNext()) {
                 /* @var $ship ModelGameShip */

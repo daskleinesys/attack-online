@@ -101,7 +101,7 @@ class LogicProduction extends PhaseLogic {
         $id_user = $move->getIdUser();
         $id_zarea = $move->getIdZArea();
         foreach ($move->getUnits() as $id_unit => $count) {
-            $inGameLandUnits = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
+            $inGameLandUnits = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
             $inGameLandUnits->addCount($count);
         }
 

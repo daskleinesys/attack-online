@@ -35,7 +35,7 @@ class ModelGameLandUnit extends ModelGameUnit {
      * @param $id_unit int
      * @return ModelGameLandUnit
      */
-    public static function getModelByIdZAreaUserUnit($id_game, $id_game_area, $id_user, $id_unit) {
+    public static function getModelByIdGameAreaUserUnit($id_game, $id_game_area, $id_user, $id_unit) {
         $id_game = intval($id_game);
         $id_game_area = intval($id_game_area);
         $id_user = intval($id_user);
@@ -70,13 +70,13 @@ class ModelGameLandUnit extends ModelGameUnit {
      * @param $id_user int
      * @return array - array(int id_unit => ModelGameLandUnit)
      */
-    public static function getUnitsByIdZAreaUser($id_game, $id_game_area, $id_user) {
+    public static function getUnitsByIdGameAreaUser($id_game, $id_game_area, $id_user) {
         $output = array();
         $iter = ModelLandUnit::iterator();
         while ($iter->hasNext()) {
             $landUnit = $iter->next();
             $id_unit = (int)$landUnit->getId();
-            $output[$id_unit] = self::getModelByIdZAreaUserUnit($id_game, $id_game_area, $id_user, $id_unit);
+            $output[$id_unit] = self::getModelByIdGameAreaUserUnit($id_game, $id_game_area, $id_user, $id_unit);
         }
         return $output;
     }

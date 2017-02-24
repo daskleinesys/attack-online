@@ -140,7 +140,7 @@ class ModelLandMove extends ModelMove {
             // INSERT UNITS
             foreach ($units as $id_unit => $count) {
                 ModelLandUnit::getModelById($id_unit);
-                $gameUnit = ModelGameLandUnit::getModelByIdZAreaUserUnit((int)$id_game, $id_game_area_start, (int)$id_user, (int)$id_unit);
+                $gameUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit((int)$id_game, $id_game_area_start, (int)$id_user, (int)$id_unit);
                 $query = 'insert_land_units_for_move';
                 $dict = array();
                 $dict [':id_game_unit'] = $gameUnit->getId();

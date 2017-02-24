@@ -132,9 +132,9 @@ class LogicLandMove extends PhaseLogic {
         $to = end($steps);
         $units = $move->getUnits();
         foreach ($units as $id_unit => $count) {
-            $landUnit_from = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
+            $landUnit_from = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
             $landUnit_from->addCount($count * -1);
-            $landUnit_to = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $to, $id_user, $id_unit);
+            $landUnit_to = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $to, $id_user, $id_unit);
             $landUnit_to->addCount($count);
         }
         $this->finished_moves[] = $id_move;
@@ -157,7 +157,7 @@ class LogicLandMove extends PhaseLogic {
             /* @var ModelLandUnit $unit */
             $unit = $iter->next();
             $units_attacker[$unit->getId()] = 0;
-            $landUnit_defender = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_target_area, $id_defender, $unit->getId());
+            $landUnit_defender = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_target_area, $id_defender, $unit->getId());
             $units_defender[$unit->getId()] = $landUnit_defender->getCount();
         }
 
@@ -172,7 +172,7 @@ class LogicLandMove extends PhaseLogic {
             $from = reset($steps);
             $units = $move->getUnits();
             foreach ($units as $id_unit => $count) {
-                $landUnit_from = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
+                $landUnit_from = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $from, $id_user, $id_unit);
                 $landUnit_from->addCount($count * -1);
                 $units_attacker[$id_unit] += $count;
             }
@@ -185,7 +185,7 @@ class LogicLandMove extends PhaseLogic {
         while ($iter->hasNext()) {
             /* @var ModelLandUnit $unit */
             $unit = $iter->next();
-            $landUnit_defender = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_target_area, $id_defender, $unit->getId());
+            $landUnit_defender = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_target_area, $id_defender, $unit->getId());
             $landUnit_defender->setCount($units_defender[$unit->getId()]);
         }
 
@@ -196,7 +196,7 @@ class LogicLandMove extends PhaseLogic {
             while ($iter->hasNext()) {
                 /* @var ModelLandUnit $unit */
                 $unit = $iter->next();
-                $landUnit_attacker = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_target_area, $id_attacker, $unit->getId());
+                $landUnit_attacker = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_target_area, $id_attacker, $unit->getId());
                 $landUnit_attacker->setCount($units_attacker[$unit->getId()]);
             }
             // 4.b update country owner

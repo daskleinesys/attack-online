@@ -140,7 +140,7 @@ class ModelTroopsMove extends ModelMove {
             // INSERT UNITS
             foreach ($units as $id_unit => $count) {
                 ModelLandUnit::getModelById($id_unit);
-                $zUnit = ModelGameLandUnit::getModelByIdZAreaUserUnit((int)$id_game, $id_zarea_start, (int)$id_user, (int)$id_unit);
+                $zUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit((int)$id_game, $id_zarea_start, (int)$id_user, (int)$id_unit);
                 $query = 'insert_land_units_for_move';
                 $dict = array();
                 $dict[':id_zunit'] = $zUnit->getId();

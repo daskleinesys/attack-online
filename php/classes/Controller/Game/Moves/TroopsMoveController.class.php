@@ -242,7 +242,7 @@ class TroopsMoveController extends PhaseController {
          * check if there are any incoming units
          * count number of attacks
          */
-        $ingameLandUnits = ModelGameLandUnit::getUnitsByIdZAreaUser($this->id_game, $id_start_area, $this->id_user); //array(int id_unit => ModelGameLandUnit)
+        $ingameLandUnits = ModelGameLandUnit::getUnitsByIdGameAreaUser($this->id_game, $id_start_area, $this->id_user); //array(int id_unit => ModelGameLandUnit)
         $area_units = array();
         $units_incoming = false;
         $units_left = false;

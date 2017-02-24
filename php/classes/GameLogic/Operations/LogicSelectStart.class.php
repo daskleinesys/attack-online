@@ -67,7 +67,7 @@ class LogicSelectStart extends PhaseLogic {
 						while ($iterUnits->hasNext()) {
 							$landUnit = $iterUnits->next();
 							$id_unit = $landUnit->getId();
-							$inGameLandUnit = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
+							$inGameLandUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
 							$inGameLandUnit->setCount($unit_count);
 						}
 					}
@@ -91,7 +91,7 @@ class LogicSelectStart extends PhaseLogic {
                 while ($iterUnits->hasNext()) {
                     $landUnit = $iterUnits->next();
                     $id_unit = $landUnit->getId();
-                    $inGameLandUnit = ModelGameLandUnit::getModelByIdZAreaUserUnit($this->id_game, $gameArea->getId(), NEUTRAL_COUNTRY, $id_unit);
+                    $inGameLandUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $gameArea->getId(), NEUTRAL_COUNTRY, $id_unit);
                     $inGameLandUnit->setCount($count);
                 }
             }
