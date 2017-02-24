@@ -255,13 +255,13 @@ class SQLCommands {
                 game_areas.id AS id_game_area, game_areas.productivity AS prod, 
                 areas.id, areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, 
                 areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, 
-                resources.name AS resource, resources.label AS res_label, 
+                resources.name AS resource, resources.key AS res_label, 
                 user.id AS id_user, user.user AS user, user.color AS color 
             FROM $table_game_areas AS game_areas 
                 LEFT JOIN $table_resources AS resources ON (game_areas.id_resource = resources.id) 
                 LEFT JOIN $table_areas AS areas ON (game_areas.id_area = areas.id) 
                 LEFT JOIN (
-                    SELECT user.id AS id, user.login AS user, colors.color AS color 
+                    SELECT user.id AS id, user.login AS user, colors.key AS color 
                     FROM $table_user_is_in_game AS iig 
                         LEFT JOIN $table_user AS user ON (iig.id_user = user.id) 
                         LEFT JOIN $table_colors AS colors ON (colors.id = iig.id_color) 
@@ -274,13 +274,13 @@ class SQLCommands {
                 game_areas.id AS id_game_area, game_areas.productivity AS prod, 
                 areas.number AS number, areas.name AS name, areas.coords_small AS coords, areas.x AS posleft, areas.y AS postop, 
                 areas.height AS height, areas.width AS width, areas.id_type AS area_type, areas.xres AS xres, areas.yres AS yres, 
-                resources.name AS resource, resources.label AS res_label, 
+                resources.name AS resource, resources.key AS res_label, 
                 start.*
             FROM $table_game_areas AS game_areas 
                 LEFT JOIN $table_resources AS resources ON (game_areas.id_resource = resources.id) 
                 LEFT JOIN $table_areas AS areas ON (game_areas.id_area = areas.id) 
                 LEFT JOIN (
-                    SELECT user.login AS user, colors.color AS color, set_has_areas.id_area, set_has_areas.option_group AS countrySelectOption, optypes.units AS countrySelectUnitCount, optypes.countries AS countrySelectCount 
+                    SELECT user.login AS user, colors.key AS color, set_has_areas.id_area, set_has_areas.option_group AS countrySelectOption, optypes.units AS countrySelectUnitCount, optypes.countries AS countrySelectCount 
                     FROM $table_user_is_in_game AS iig 
                         LEFT JOIN $table_user AS user ON (iig.id_user = user.id) 
                         LEFT JOIN $table_colors AS colors ON (colors.id = iig.id_color) 
