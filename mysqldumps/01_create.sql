@@ -92,22 +92,6 @@ CREATE TABLE `games` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `game_area_has_default_units`
---
-
-DROP TABLE IF EXISTS `game_area_has_default_units`;
-CREATE TABLE `game_area_has_default_units` (
-  `id` int(11) NOT NULL,
-  `id_resource` int(11) NOT NULL,
-  `productivity` int(11) NOT NULL,
-  `id_unit` int(11) NOT NULL,
-  `numberof` int(11) NOT NULL,
-  `type` enum('losses','strength') NOT NULL DEFAULT 'strength'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `user_in_game_phase_info`
 --
 
@@ -396,14 +380,6 @@ ALTER TABLE `games`
   ADD KEY `id_phase` (`id_phase`);
 
 --
--- Indexes for table `game_area_has_default_units`
---
-ALTER TABLE `game_area_has_default_units`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_resource` (`id_resource`),
-  ADD KEY `id_unit` (`id_unit`);
-
---
 -- Indexes for table `user_in_game_phase_info`
 --
 ALTER TABLE `user_in_game_phase_info`
@@ -563,11 +539,6 @@ ALTER TABLE `colors`
 ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `game_area_has_default_units`
---
-ALTER TABLE `game_area_has_default_units`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `user_in_game_phase_info`
 --
 ALTER TABLE `user_in_game_phase_info`
@@ -674,12 +645,6 @@ ALTER TABLE `areas`
 ALTER TABLE `games`
   ADD CONSTRAINT `games_creator` FOREIGN KEY (`id_creator`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `games_phase` FOREIGN KEY (`id_phase`) REFERENCES `phases` (`id`);
---
--- Constraints for table `game_area_has_default_units`
---
-ALTER TABLE `game_area_has_default_units`
-  ADD CONSTRAINT `game_area_has_default_units_resource` FOREIGN KEY (`id_resource`) REFERENCES `resources` (`id`),
-  ADD CONSTRAINT `game_area_has_default_units_unit` FOREIGN KEY (`id_unit`) REFERENCES `units` (`id`);
 --
 -- Constraints for table `user_in_game_phase_info`
 --
