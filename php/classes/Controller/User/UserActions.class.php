@@ -162,11 +162,10 @@ class UserActions {
     }
 
     /**
-     * tries to active a new user, returns a state if error or successfull
+     * tries to active a new user
      *
      * @param int $id_user
      * @param string $verification_code
-     * @return int state
      * @throws ControllerException
      * 1: user successfully created
      * 2: at least one empty entry
