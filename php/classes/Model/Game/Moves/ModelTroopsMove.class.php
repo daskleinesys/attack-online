@@ -14,7 +14,7 @@ class ModelTroopsMove extends ModelMove {
 
     private static $moves = array(); // array(int id_game => array(int id_move => ModelTroopsMove))
 
-    private $steps = array(); // array(int step_nr => int id_zarea)
+    private $steps = array(); // array(int step_nr => int id_game_area)
     private $units = array(); // array(int id_unit => count)
 
     /**
@@ -26,7 +26,7 @@ class ModelTroopsMove extends ModelMove {
      * @param $id_move int
      * @param $round int
      * @param $deleted boolean
-     * @param $steps array(int step_nr => int id_zarea)
+     * @param $steps array(int step_nr => int id_game_area)
      * @param $units array(int id_unit => count)
      */
     protected function __construct($id_user, $id_game, $id_phase, $id_move, $round, $deleted, $steps, $units) {
@@ -59,8 +59,8 @@ class ModelTroopsMove extends ModelMove {
         $steps = array();
         $units = array();
         foreach ($result as $line) {
-            if ($line['step'] !== null && $line['id_zarea'] !== null) {
-                $steps[$line['step']] = (int)$line['id_zarea'];
+            if ($line['step'] !== null && $line['id_game_area'] !== null) {
+                $steps[$line['step']] = (int)$line['id_game_area'];
             }
             if ($line['id_unit'] !== null && $line['numberof'] !== null) {
                 $units[$line['id_unit']] = (int)$line['numberof'];
@@ -104,7 +104,7 @@ class ModelTroopsMove extends ModelMove {
      * @param $id_user int
      * @param $id_game int
      * @param $round int
-     * @param $steps array(int step_nr => int id_zarea) -> step_nr counting from 1 to x
+     * @param $steps array(int step_nr => int id_game_area) -> step_nr counting from 1 to x
      * @param $units array(int id_unit => count)
      * @throws NullPointerException
      * @throws ModelException
@@ -123,9 +123,9 @@ class ModelTroopsMove extends ModelMove {
         try {
             // INSERT MOVE STEPS
             $x = 0;
-            foreach ($steps as $step => $id_zarea) {
+            foreach ($steps as $step => $id_game_area) {
                 ++$x;
-                ModelGameArea::getGameArea((int)$id_game, (int)$id_zarea);
+                ModelGameArea::getGameArea((int)$id_game, (int)$id_game_area);
                 if (!isset($steps[$x])) {
                     throw new ModelException('Cannot create troops move, steps not consistent.');
                 }
@@ -133,17 +133,17 @@ class ModelTroopsMove extends ModelMove {
                 $dict = array();
                 $dict[':id_move'] = intval($id_move);
                 $dict[':step'] = intval($step);
-                $dict[':id_zarea'] = intval($id_zarea);
+                $dict[':id_game_area'] = intval($id_game_area);
                 SQLConnector::Singleton()->epp($query, $dict);
             }
-            $id_zarea_start = (int)$steps[1];
+            $id_game_area_start = (int)$steps[1];
             // INSERT UNITS
             foreach ($units as $id_unit => $count) {
                 ModelLandUnit::getModelById($id_unit);
-                $zUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit((int)$id_game, $id_zarea_start, (int)$id_user, (int)$id_unit);
+                $gameUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit((int)$id_game, $id_game_area_start, (int)$id_user, (int)$id_unit);
                 $query = 'insert_land_units_for_move';
                 $dict = array();
-                $dict[':id_zunit'] = $zUnit->getId();
+                $dict[':id_game_unit'] = $gameUnit->getId();
                 $dict[':id_move'] = intval($id_move);
                 $dict[':count'] = intval($count);
                 SQLConnector::Singleton()->epp($query, $dict);
@@ -160,7 +160,7 @@ class ModelTroopsMove extends ModelMove {
     }
 
     /**
-     * @return array(int step_nr => int id_zarea)
+     * @return array(int step_nr => int id_game_area)
      */
     public function getSteps() {
         return $this->steps;
