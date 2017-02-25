@@ -145,7 +145,7 @@ class SetShipsController extends PhaseController {
             throw new ControllerException('Area doesn\'t belong to user.');
         }
 
-        // 2. check if zarea and id_game_area_in_port are adjacent
+        // 2. check if game_area and id_game_area_in_port are adjacent
         $game_area = ModelGameArea::getGameArea($this->id_game, $move->getIdGameArea());
         if (!in_array($game_area->getIdArea(), $port_area->getAdjacentAreas())) {
             throw new ControllerException('Area not adjacent do port area.');
