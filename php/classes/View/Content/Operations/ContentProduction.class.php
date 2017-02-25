@@ -69,7 +69,7 @@ class ContentProduction extends ContentOperation {
         // 3 create new production move (incl validation)
         if (isset($_POST['newmove'])) {
             try {
-                if (!isset($_POST['id_zarea']) || !isset($_POST['id_unit']) || !isset($_POST['count'])) {
+                if (!isset($_POST['id_game_area']) || !isset($_POST['id_unit']) || !isset($_POST['count'])) {
                     $data['errors'] = array(
                         'message' => 'Missing Parameters!'
                     );
@@ -77,7 +77,7 @@ class ContentProduction extends ContentOperation {
                 }
                 $units = array();
                 $units[(int)$_POST['id_unit']] = (int)$_POST['count'];
-                $controller->createProductionMove((int)$_POST['id_zarea'], $units);
+                $controller->createProductionMove((int)$_POST['id_game_area'], $units);
                 $data['status'] = array(
                     'message' => 'Landzug erstellt.'
                 );
@@ -112,9 +112,9 @@ class ContentProduction extends ContentOperation {
             $moveViewData = array();
             $moveViewData['id'] = $move->getIdMove();
 
-            $id_zarea = $move->getIdGameArea();
-            $zArea = ModelGameArea::getGameArea((int)$id_game, $id_zarea);
-            $area = ModelArea::getArea((int)$zArea->getIdArea());
+            $id_game_area = $move->getIdGameArea();
+            $gameArea = ModelGameArea::getGameArea((int)$id_game, $id_game_area);
+            $area = ModelArea::getArea((int)$gameArea->getIdArea());
             $moveViewData['area'] = array(
                 'number' => $area->getNumber(),
                 'name' => $area->getName()
@@ -153,12 +153,12 @@ class ContentProduction extends ContentOperation {
         while ($areas->hasNext()) {
             /* @var $area ModelArea */
             $area = $areas->next();
-            $zArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId());
+            $gameArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId());
             $areaViewData = array();
-            $areaViewData['id_zarea'] = $zArea->getId();
+            $areaViewData['id_game_area'] = $gameArea->getId();
             $areaViewData['number'] = $area->getNumber();
             $areaViewData['name'] = $area->getName();
-            if ($zArea->getIdUser() === ModelUser::getCurrentUser()->getId()) {
+            if ($gameArea->getIdUser() === ModelUser::getCurrentUser()->getId()) {
                 $areasViewData[] = $areaViewData;
             }
         }

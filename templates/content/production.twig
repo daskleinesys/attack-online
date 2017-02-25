@@ -54,10 +54,10 @@
             <tr>
                 <td>
                     <label>
-                        <select name="id_zarea" size="1">
+                        <select name="id_game_area" size="1">
                             <option value="" disabled selected>Land wählen</option>
                             {% for area in areas %}
-                                <option value="{{ area.id_zarea }}">{{ area.number }} {{ area.name }}</option>
+                                <option value="{{ area.id_game_area }}">{{ area.number }} {{ area.name }}</option>
                             {% endfor %}
                         </select>
                     </label>
