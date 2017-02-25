@@ -277,18 +277,18 @@ class LandMoveController extends PhaseController {
             }
 
             $move_steps = $landMove->getSteps();
-            $zTargetArea = ModelGameArea::getGameArea($this->id_game, end($move_steps));
-            $zStartArea = ModelGameArea::getGameArea($this->id_game, reset($move_steps));
+            $targetGameArea = ModelGameArea::getGameArea($this->id_game, end($move_steps));
+            $startGameArea = ModelGameArea::getGameArea($this->id_game, reset($move_steps));
             // check if this is an attack
-            if ($zTargetArea->getIdUser() !== $this->id_user && (!in_array($zTargetArea->getId(), $attacks))) {
-                $attacks[] = $zTargetArea->getId();
+            if ($targetGameArea->getIdUser() !== $this->id_user && (!in_array($targetGameArea->getId(), $attacks))) {
+                $attacks[] = $targetGameArea->getId();
             }
-            if ($zStartArea->getId() === $id_start_area) {
+            if ($startGameArea->getId() === $id_start_area) {
                 $move_units = $landMove->getUnits();
                 foreach ($move_units as $id_unit => $count) {
                     $area_units[$id_unit] -= $count;
                 }
-            } else if ($zTargetArea->getId() === $id_start_area) {
+            } else if ($targetGameArea->getId() === $id_start_area) {
                 $move_units = $landMove->getUnits();
                 foreach ($move_units as $id_unit => $count) {
                     $units_incoming += $count;
@@ -333,10 +333,10 @@ class LandMoveController extends PhaseController {
         /*
          * check if target area is enemy area, only MAX_LAND_ATTACKS attacks per round
          */
-        $zTargetArea = ModelGameArea::getGameArea($this->id_game, $id_target_area);
-        if ($zTargetArea->getIdUser() !== $this->id_user) { // move is an attack
-            if (!in_array($zTargetArea->getId(), $attacks)) {
-                $attacks[] = $zTargetArea->getId();
+        $targetGameArea = ModelGameArea::getGameArea($this->id_game, $id_target_area);
+        if ($targetGameArea->getIdUser() !== $this->id_user) { // move is an attack
+            if (!in_array($targetGameArea->getId(), $attacks)) {
+                $attacks[] = $targetGameArea->getId();
             }
             if (count($attacks) > MAX_LAND_ATTACKS) {
                 throw new ControllerException('Unable to start any more attacks! Only ' . MAX_LAND_ATTACKS . ' per round allowed.');
@@ -346,7 +346,7 @@ class LandMoveController extends PhaseController {
         /*
          * check if target area is land area
          */
-        if ($zTargetArea->getIdType() != TYPE_LAND) {
+        if ($targetGameArea->getIdType() != TYPE_LAND) {
             throw new ControllerException('Destination not a country.');
         }
 

@@ -75,8 +75,8 @@ class TroopsMoveController extends PhaseController {
     /**
      * create land move for user
      *
-     * @param int $start (id_zarea)
-     * @param int $destination (id_zarea)
+     * @param int $start (id_game_area)
+     * @param int $destination (id_game_area)
      * @param array $units (int $id_unit -> $int count)
      * @throws NullPointerException
      * @throws ControllerException
@@ -161,8 +161,8 @@ class TroopsMoveController extends PhaseController {
     /**
      * checks if there is a possible route for this 2 countries for the user
      *
-     * @param int $id_start (int id_zarea)
-     * @param int $id_destination (int id_zarea)
+     * @param int $id_start (int id_game_area)
+     * @param int $id_destination (int id_game_area)
      * @param int $type (TYPE_LAND, TYPE_SEA, TYPE_AIR)
      * @throws NullPointerException
      * @throws ControllerException
@@ -186,20 +186,20 @@ class TroopsMoveController extends PhaseController {
             if (empty($current)) {
                 return false;
             }
-            foreach ($current as $id_zarea) {
-                if ($id_zarea === $id_destination) {
+            foreach ($current as $id_game_area) {
+                if ($id_game_area === $id_destination) {
                     return true; // destination found
                 }
-                $visited[] = $id_zarea;
-                if (!$this->isAreaPassable($id_zarea, $type)) {
+                $visited[] = $id_game_area;
+                if (!$this->isAreaPassable($id_game_area, $type)) {
                     continue;
                 }
-                $zArea = ModelGameArea::getGameArea($this->id_game, $id_zarea);
-                $a2a = $zArea->getAdjacentAreas();
-                foreach ($a2a as $id_a2a_zarea) {
-                    $id_a2a_zarea = (int)$id_a2a_zarea;
-                    if (!in_array($id_a2a_zarea, $visited) && !in_array($id_a2a_zarea, $current) && !in_array($id_a2a_zarea, $next)) {
-                        $next[] = $id_a2a_zarea;
+                $gameArea = ModelGameArea::getGameArea($this->id_game, $id_game_area);
+                $adjacentGameAreas = $gameArea->getAdjacentGameAreas();
+                foreach ($adjacentGameAreas as $id_adjacent_game_area) {
+                    $id_adjacent_game_area = (int)$id_adjacent_game_area;
+                    if (!in_array($id_adjacent_game_area, $visited) && !in_array($id_adjacent_game_area, $current) && !in_array($id_adjacent_game_area, $next)) {
+                        $next[] = $id_adjacent_game_area;
                     }
                 }
             }
@@ -214,7 +214,7 @@ class TroopsMoveController extends PhaseController {
      *
      * @param int $id_move
      * @param int $round
-     * @param $steps array(int step_nr => int id_zarea) -> step_nr counting from 1 to x
+     * @param $steps array(int step_nr => int id_game_area) -> step_nr counting from 1 to x
      * @param $units array(int id_unit => count)
      * @throws NullPointerException
      * @throws ControllerException
@@ -225,8 +225,8 @@ class TroopsMoveController extends PhaseController {
          * check if user owns the start country and if start area is land area
          */
         $id_start_area = $steps[1];
-        $zArea = ModelGameArea::getGameArea($this->id_game, $id_start_area);
-        if ($zArea->getIdUser() !== $this->id_user) {
+        $gameArea = ModelGameArea::getGameArea($this->id_game, $id_start_area);
+        if ($gameArea->getIdUser() !== $this->id_user) {
             throw new ControllerException('Start country isn\'t owned by this user.');
         }
 
@@ -268,14 +268,14 @@ class TroopsMoveController extends PhaseController {
             }
 
             $move_steps = $troopsMove->getSteps();
-            $zTargetArea = ModelGameArea::getGameArea($this->id_game, end($move_steps));
-            $zStartArea = ModelGameArea::getGameArea($this->id_game, reset($move_steps));
-            if ($zStartArea->getId() === $id_start_area) {
+            $targetGameArea = ModelGameArea::getGameArea($this->id_game, end($move_steps));
+            $startGameArea = ModelGameArea::getGameArea($this->id_game, reset($move_steps));
+            if ($startGameArea->getId() === $id_start_area) {
                 $move_units = $troopsMove->getUnits();
                 foreach ($move_units as $id_unit => $count) {
                     $area_units[$id_unit] -= $count;
                 }
-            } else if ($zTargetArea->getId() === $id_start_area) {
+            } else if ($targetGameArea->getId() === $id_start_area) {
                 $move_units = $troopsMove->getUnits();
                 foreach ($move_units as $id_unit => $count) {
                     if ($count > 0) {
@@ -319,10 +319,10 @@ class TroopsMoveController extends PhaseController {
         return true;
     }
 
-    private function isAreaPassable($id_zarea, $move_type) {
-        $zArea = ModelGameArea::getGameArea($this->id_game, $id_zarea);
-        $id_owner = (int)$zArea->getIdUser();
-        $area_type = (int)$zArea->getIdType();
+    private function isAreaPassable($id_game_area, $move_type) {
+        $gameArea = ModelGameArea::getGameArea($this->id_game, $id_game_area);
+        $id_owner = (int)$gameArea->getIdUser();
+        $area_type = (int)$gameArea->getIdType();
 
         if ($id_owner === $this->id_user) {
             if ($move_type === TYPE_AIR || $move_type === TYPE_LAND) {
