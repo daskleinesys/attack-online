@@ -88,7 +88,7 @@ class Map {
                     'experience' => $ship->getExperience()
                 );
                 if ((int)$country['area_type'] === TYPE_LAND) {
-                    $portToArea = ModelGameArea::getGameArea($id_game, $ship->getIdZArea());
+                    $portToArea = ModelGameArea::getGameArea($id_game, $ship->getIdGameArea());
                     $currShipViewData['port'] = $portToArea->getName();
                     $currShipViewData['portNumber'] = $portToArea->getNumber();
                 }

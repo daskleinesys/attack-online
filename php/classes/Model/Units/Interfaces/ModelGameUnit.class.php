@@ -51,7 +51,7 @@ abstract class ModelGameUnit {
     /**
      * @return int id_game_area
      */
-    public function getIdZArea() {
+    public function getIdGameArea() {
         return $this->id_game_area;
     }
 
