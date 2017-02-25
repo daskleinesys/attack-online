@@ -100,9 +100,9 @@ class ContentSelectStart extends Interfaces\ContentOperation {
 
                     // check if country already selected
                     $gameArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $id_area);
-                    $id_zarea = $gameArea->getId();
+                    $id_game_area = $gameArea->getId();
                     $modelMove = ModelSelectStartMove::getSelectStartMoveForUser(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
-                    if ($modelMove->checkIfAreaIsSelected($option_number, $id_zarea)) {
+                    if ($modelMove->checkIfAreaIsSelected($option_number, $id_game_area)) {
                         $area['checked'] = true;
                     }
 
