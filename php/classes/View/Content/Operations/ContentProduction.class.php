@@ -112,7 +112,7 @@ class ContentProduction extends ContentOperation {
             $moveViewData = array();
             $moveViewData['id'] = $move->getIdMove();
 
-            $id_zarea = $move->getIdZArea();
+            $id_zarea = $move->getIdGameArea();
             $zArea = ModelGameArea::getGameArea((int)$id_game, $id_zarea);
             $area = ModelArea::getArea((int)$zArea->getIdArea());
             $moveViewData['area'] = array(

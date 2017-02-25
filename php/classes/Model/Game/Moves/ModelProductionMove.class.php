@@ -14,7 +14,7 @@ class ModelProductionMove extends ModelMove {
 
     private static $moves = array(); // array(int id_game => array(int id_move => ModelProductionMove))
 
-    private $id_zarea; // int id_zarea
+    private $id_game_area; // int
     private $units = array(); // array(int id_unit => count)
 
     /**
@@ -26,12 +26,12 @@ class ModelProductionMove extends ModelMove {
      * @param $id_move int
      * @param $round int
      * @param $deleted boolean
-     * @param $id_zarea int id_zarea
+     * @param $id_game_area int
      * @param $units array(int id_unit => count)
      */
-    protected function __construct($id_user, $id_game, $id_phase, $id_move, $round, $deleted, $id_zarea, $units) {
+    protected function __construct($id_user, $id_game, $id_phase, $id_move, $round, $deleted, $id_game_area, $units) {
         parent::__construct($id_user, $id_game, $id_phase, $id_move, $round, $deleted);
-        $this->id_zarea = $id_zarea;
+        $this->id_game_area = $id_game_area;
         $this->units = $units;
     }
 
@@ -55,17 +55,17 @@ class ModelProductionMove extends ModelMove {
         if (empty($result)) {
             throw new NullPointerException('Move not found');
         }
-        $id_zarea = 0;
+        $id_game_area = 0;
         $units = array();
         foreach ($result as $line) {
-            if ($line['step'] !== null && $line['id_zarea'] !== null) {
-                $id_zarea = (int)$line['id_zarea'];
+            if ($line['step'] !== null && $line['id_game_area'] !== null) {
+                $id_game_area = (int)$line['id_game_area'];
             }
             if ($line['id_unit'] !== null && $line['numberof'] !== null) {
                 $units[$line['id_unit']] = (int)$line['numberof'];
             }
         }
-        return self::$moves[$id_game][$id_move] = new ModelProductionMove((int)$result[0]['id_user'], (int)$id_game, PHASE_PRODUCTION, (int)$id_move, (int)$result[0]['round'], (bool)$result[0]['deleted'], $id_zarea, $units);
+        return self::$moves[$id_game][$id_move] = new ModelProductionMove((int)$result[0]['id_user'], (int)$id_game, PHASE_PRODUCTION, (int)$id_move, (int)$result[0]['round'], (bool)$result[0]['deleted'], $id_game_area, $units);
     }
 
     /**
@@ -103,13 +103,13 @@ class ModelProductionMove extends ModelMove {
      * @param $id_user int
      * @param $id_game int
      * @param $round int
-     * @param $id_zarea int id_zarea
+     * @param $id_game_area int
      * @param $units array(int id_unit => count)
      * @throws NullPointerException
      * @throws ModelException
      * @return ModelProductionMove
      */
-    public static function createProductionMove($id_user, $id_game, $round, $id_zarea, $units) {
+    public static function createProductionMove($id_user, $id_game, $round, $id_game_area, $units) {
         $query = 'insert_move';
         $dict = array();
         $dict[':id_game'] = intval($id_game);
@@ -121,21 +121,21 @@ class ModelProductionMove extends ModelMove {
 
         try {
             // INSERT MOVE STEPS
-            ModelGameArea::getGameArea((int)$id_game, (int)$id_zarea);
+            ModelGameArea::getGameArea((int)$id_game, (int)$id_game_area);
             $query = 'insert_area_for_move';
             $dict = array();
             $dict [':id_move'] = intval($id_move);
             $dict [':step'] = intval(1);
-            $dict [':id_zarea'] = intval($id_zarea);
+            $dict [':id_game_area'] = intval($id_game_area);
             SQLConnector::Singleton()->epp($query, $dict);
 
             // INSERT UNITS
             foreach ($units as $id_unit => $count) {
                 ModelLandUnit::getModelById($id_unit);
-                $zUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit((int)$id_game, $id_zarea, (int)$id_user, (int)$id_unit);
+                $gameUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit((int)$id_game, $id_game_area, (int)$id_user, (int)$id_unit);
                 $query = 'insert_land_units_for_move';
                 $dict = array();
-                $dict [':id_zunit'] = $zUnit->getId();
+                $dict [':id_game_unit'] = $gameUnit->getId();
                 $dict [':id_move'] = intval($id_move);
                 $dict [':count'] = intval($count);
                 SQLConnector::Singleton()->epp($query, $dict);
@@ -148,14 +148,14 @@ class ModelProductionMove extends ModelMove {
             throw $ex;
         }
 
-        return self::$moves[$id_game][$id_move] = new ModelProductionMove((int)$id_user, (int)$id_game, PHASE_PRODUCTION, (int)$id_move, (int)$round, false, $id_zarea, $units);
+        return self::$moves[$id_game][$id_move] = new ModelProductionMove((int)$id_user, (int)$id_game, PHASE_PRODUCTION, (int)$id_move, (int)$round, false, $id_game_area, $units);
     }
 
     /**
-     * @return int id_zarea
+     * @return int id_game_area
      */
-    public function getIdZArea() {
-        return $this->id_zarea;
+    public function getIdGameArea() {
+        return $this->id_game_area;
     }
 
     /**

@@ -99,7 +99,7 @@ class LogicProduction extends PhaseLogic {
 
     private function executeProduction(ModelProductionMove $move) {
         $id_user = $move->getIdUser();
-        $id_zarea = $move->getIdZArea();
+        $id_zarea = $move->getIdGameArea();
         foreach ($move->getUnits() as $id_unit => $count) {
             $inGameLandUnits = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
             $inGameLandUnits->addCount($count);

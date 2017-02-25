@@ -130,7 +130,7 @@ class ProductionController extends PhaseController {
      */
     public function validateProductionMove(ModelProductionMove $move) {
         // 1. check if zarea belongs to user
-        $gameArea = ModelGameArea::getGameArea($move->getIdGame(), $move->getIdZArea());
+        $gameArea = ModelGameArea::getGameArea($move->getIdGame(), $move->getIdGameArea());
         if ($move->getIdUser() !== $gameArea->getIdUser()) {
             throw new ControllerException('Area doesn\'t belong to the user.');
         }
