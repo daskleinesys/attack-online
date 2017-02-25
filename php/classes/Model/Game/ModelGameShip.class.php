@@ -303,7 +303,7 @@ class ModelGameShip extends ModelGameUnit {
     /**
      * @return int
      */
-    public function getIdZareaInPort() {
+    public function getIdGameAreaInPort() {
         return $this->id_game_area_in_port;
     }
 
@@ -322,7 +322,7 @@ class ModelGameShip extends ModelGameUnit {
     /**
      * @param int $id_game_area
      */
-    public function setIdZarea($id_game_area) {
+    public function setIdGameArea($id_game_area) {
         $id_game_area = intval($id_game_area);
         ModelGameArea::getGameArea($this->id_game, $id_game_area);
         $query = 'set_game_ship_game_area';
@@ -387,12 +387,12 @@ class ModelGameShip extends ModelGameUnit {
      * @param int $id_game_area_in_port
      * @throws ModelException
      */
-    public function setIdZareaInPort($id_game_area_in_port = null) {
+    public function setIdGameAreaInPort($id_game_area_in_port = null) {
         if ($id_game_area_in_port !== null) {
             $id_game_area_in_port = intval($id_game_area_in_port);
-            $port_zarea = ModelGameArea::getGameArea($this->id_game, $id_game_area_in_port);
-            $sea_zarea = ModelGameArea::getGameArea($this->id_game, $this->id_game_area);
-            if (!in_array($port_zarea->getIdArea(), $sea_zarea->getAdjacentAreas())) {
+            $portGameArea = ModelGameArea::getGameArea($this->id_game, $id_game_area_in_port);
+            $seaGameArea = ModelGameArea::getGameArea($this->id_game, $this->id_game_area);
+            if (!in_array($portGameArea->getIdArea(), $seaGameArea->getAdjacentAreas())) {
                 throw new ModelException('Invalid port -> not adjacent to current area.');
             }
         }

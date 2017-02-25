@@ -58,8 +58,8 @@ class LogicSetShips extends PhaseLogic {
                 }
 
                 $ship = ModelGameShip::getShipById($this->id_game, $move->getIdGameUnit());
-                $ship->setIdZarea($move->getIdGameArea());
-                $ship->setIdZareaInPort($move->getIdGameAreaInPort());
+                $ship->setIdGameArea($move->getIdGameArea());
+                $ship->setIdGameAreaInPort($move->getIdGameAreaInPort());
             }
 
             $this->finishProcessing();
