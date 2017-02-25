@@ -137,16 +137,16 @@ class ModelSelectStartMove extends ModelMove {
      * updates selected areas if necessary
      *
      * @param $option_number int
-     * @param $zareas array(int id_game_area)
+     * @param $game_areas array(int id_game_area)
      * @return void
      */
-    public function setRegions($option_number, $zareas) {
+    public function setRegions($option_number, $game_areas) {
         $option_number = intval($option_number);
 
         // check if areas are already set
         if (isset($this->regions[$option_number])) {
             $found_all = true;
-            foreach ($zareas as $id_game_area) {
+            foreach ($game_areas as $id_game_area) {
                 if (!in_array($id_game_area, $this->regions[$option_number])) {
                     $found_all = false;
                 }
@@ -168,11 +168,11 @@ class ModelSelectStartMove extends ModelMove {
 
         // insert areas
         $query = 'insert_area_for_move';
-        foreach ($zareas as $id_game_area) {
+        foreach ($game_areas as $id_game_area) {
             $dict[':id_game_area'] = $id_game_area;
             SQLConnector::getInstance()->epp($query, $dict);
         }
-        $this->regions[$option_number] = $zareas;
+        $this->regions[$option_number] = $game_areas;
     }
 
     /**
