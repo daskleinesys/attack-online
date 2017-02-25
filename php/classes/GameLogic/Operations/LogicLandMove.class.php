@@ -112,8 +112,8 @@ class LogicLandMove extends PhaseLogic {
 
             // sort moves
             $steps = $move->getSteps();
-            $zArea = ModelGameArea::getGameArea($this->id_game, end($steps));
-            if ($zArea->getIdUser() !== $id_user) {
+            $gameArea = ModelGameArea::getGameArea($this->id_game, end($steps));
+            if ($gameArea->getIdUser() !== $id_user) {
                 if (!isset($this->attack_moves_to[end($steps)])) {
                     $this->attack_moves_to[end($steps)] = array();
                 }

@@ -42,7 +42,7 @@ class LogicSelectStart extends PhaseLogic {
 			while ($iter->hasNext()) {
 				// areas to select for user
 				$selectStartMove = $iter->next();
-				$regions_selected = $selectStartMove->getRegions(); // array(int option_number => array(int id_zarea))
+				$regions_selected = $selectStartMove->getRegions(); // array(int option_number => array(int id_game_area))
 				$id_user = $selectStartMove->getIdUser();
                 /* @var $iigi ModelIsInGameInfo */
                 $iigi = ModelIsInGameInfo::getIsInGameInfo($id_user, $this->id_game);
@@ -51,8 +51,8 @@ class LogicSelectStart extends PhaseLogic {
 				foreach ($regions_selected as $option_number => $areas) {
 					$regions = ModelStartRegion::getRegionsForSetAndOption($id_set, $option_number); // array(int id_area => ModelStartRegion)
 
-					foreach ($areas as $id_zarea) {
-						$gameArea = ModelGameArea::getGameArea($this->id_game, $id_zarea);
+					foreach ($areas as $id_game_area) {
+						$gameArea = ModelGameArea::getGameArea($this->id_game, $id_game_area);
 						$id_area = $gameArea->getIdArea();
                         /* @var $region ModelStartRegion */
                         $region = $regions[$id_area];
@@ -67,7 +67,7 @@ class LogicSelectStart extends PhaseLogic {
 						while ($iterUnits->hasNext()) {
 							$landUnit = $iterUnits->next();
 							$id_unit = $landUnit->getId();
-							$inGameLandUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_zarea, $id_user, $id_unit);
+							$inGameLandUnit = ModelGameLandUnit::getModelByIdGameAreaUserUnit($this->id_game, $id_game_area, $id_user, $id_unit);
 							$inGameLandUnit->setCount($unit_count);
 						}
 					}
