@@ -32,15 +32,15 @@ class ProductionController extends PhaseController {
     /**
      * validates the new move first (does the user own the country, has he/she enough res left)
      *
-     * @param int $id_zarea
+     * @param int $id_game_area
      * @param array $units
      * @return ModelProductionMove
      * @throws ControllerException
      * @throws \Attack\Exceptions\ModelException
      * @throws \Attack\Exceptions\NullPointerException
      */
-    public function createProductionMove($id_zarea, $units) {
-        $id_zarea = (int)$id_zarea;
+    public function createProductionMove($id_game_area, $units) {
+        $id_game_area = (int)$id_game_area;
 
         // check if already fixated
         if ($this->checkIfDone()) {
@@ -53,10 +53,10 @@ class ProductionController extends PhaseController {
             throw new ControllerException('Unable to create moves at this moment as the game-logic is currently processing.');
         }
         // check if valid area picked
-        if ($id_zarea === 0) {
+        if ($id_game_area === 0) {
             throw new ControllerException('Choose a start and destination country.');
         }
-        ModelGameArea::getGameArea($this->id_game, $id_zarea);
+        ModelGameArea::getGameArea($this->id_game, $id_game_area);
         // check for units
         $unit_count = 0;
         foreach ($units as $count) {
@@ -75,8 +75,8 @@ class ProductionController extends PhaseController {
             ++$round;
         }
 
-        $this->validateNewProductionMove($round, $id_zarea, $units);
-        return ModelProductionMove::createProductionMove($this->id_user, $this->id_game, $round, $id_zarea, $units);
+        $this->validateNewProductionMove($round, $id_game_area, $units);
+        return ModelProductionMove::createProductionMove($this->id_user, $this->id_game, $round, $id_game_area, $units);
     }
 
     /**
@@ -129,7 +129,7 @@ class ProductionController extends PhaseController {
      * @throws ControllerException $ex
      */
     public function validateProductionMove(ModelProductionMove $move) {
-        // 1. check if zarea belongs to user
+        // 1. check if game_area belongs to user
         $gameArea = ModelGameArea::getGameArea($move->getIdGame(), $move->getIdGameArea());
         if ($move->getIdUser() !== $gameArea->getIdUser()) {
             throw new ControllerException('Area doesn\'t belong to the user.');
@@ -155,9 +155,9 @@ class ProductionController extends PhaseController {
         }
     }
 
-    private function validateNewProductionMove($round, $id_zarea, array $units) {
-        // 1. check if zarea belongs to user
-        $gameArea = ModelGameArea::getGameArea($this->id_game, $id_zarea);
+    private function validateNewProductionMove($round, $id_game_area, array $units) {
+        // 1. check if game_area belongs to user
+        $gameArea = ModelGameArea::getGameArea($this->id_game, $id_game_area);
         if ($this->id_user !== $gameArea->getIdUser()) {
             throw new ControllerException('Unable to create production move. Area doesn\'t belong to the current user.');
         }
