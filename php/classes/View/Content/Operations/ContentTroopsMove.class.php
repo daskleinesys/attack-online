@@ -64,14 +64,14 @@ class ContentTroopsMove extends ContentOperation {
             $moveViewData['id'] = $move->getIdMove();
 
             $steps = $move->getSteps();
-            $zArea = ModelGameArea::getGameArea((int)$id_game, (int)array_shift($steps));
-            $area = ModelArea::getArea((int)$zArea->getIdArea());
+            $gameArea = ModelGameArea::getGameArea((int)$id_game, (int)array_shift($steps));
+            $area = ModelArea::getArea((int)$gameArea->getIdArea());
             $moveViewData['startArea'] = array(
                 'number' => $area->getNumber(),
                 'name' => $area->getName()
             );
-            $zArea = ModelGameArea::getGameArea((int)$id_game, (int)array_pop($steps));
-            $area = ModelArea::getArea($zArea->getIdArea());
+            $gameArea = ModelGameArea::getGameArea((int)$id_game, (int)array_pop($steps));
+            $area = ModelArea::getArea($gameArea->getIdArea());
             $moveViewData['destinationArea'] = array(
                 'number' => $area->getNumber(),
                 'name' => $area->getName()
@@ -102,12 +102,12 @@ class ContentTroopsMove extends ContentOperation {
         while ($areas->hasNext()) {
             /* @var $area ModelArea */
             $area = $areas->next();
-            $zArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId());
+            $gameArea = ModelGameArea::getGameAreaForArea(ModelGame::getCurrentGame()->getId(), $area->getId());
             $areaViewData = array();
-            $areaViewData['id_zarea'] = $zArea->getId();
+            $areaViewData['id_game_area'] = $gameArea->getId();
             $areaViewData['number'] = $area->getNumber();
             $areaViewData['name'] = $area->getName();
-            if ($zArea->getIdUser() === ModelUser::getCurrentUser()->getId()) {
+            if ($gameArea->getIdUser() === ModelUser::getCurrentUser()->getId()) {
                 $startAreas[] = $areaViewData;
                 $destinationAreas[] = $areaViewData;
             }
