@@ -70,7 +70,7 @@ class SetShipsController extends PhaseController {
 
         // 3. check if game_area and game_area_in_port are adjacent
         $game_area = ModelGameArea::getGameArea($this->id_game, (int)$id_game_area);
-        if (!in_array($game_area->getIdArea(), $port_area->getAdjecents())) {
+        if (!in_array($game_area->getIdArea(), $port_area->getAdjacentAreas())) {
             throw new ControllerException('Area not adjacent do port area.');
         }
 
@@ -147,7 +147,7 @@ class SetShipsController extends PhaseController {
 
         // 2. check if zarea and id_game_area_in_port are adjacent
         $game_area = ModelGameArea::getGameArea($this->id_game, $move->getIdGameArea());
-        if (!in_array($game_area->getIdArea(), $port_area->getAdjecents())) {
+        if (!in_array($game_area->getIdArea(), $port_area->getAdjacentAreas())) {
             throw new ControllerException('Area not adjacent do port area.');
         }
 

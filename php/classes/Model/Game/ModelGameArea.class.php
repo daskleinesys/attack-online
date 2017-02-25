@@ -21,6 +21,9 @@ class ModelGameArea {
     private $id_resource; // int
     private $productivity; // int
 
+    // dynamically loaded infos
+    private $adjacentGameAreas = array(); // array (int $id_game_area)
+
     /**
      * returns the game area model
      *
@@ -298,11 +301,30 @@ class ModelGameArea {
     }
 
     /**
-     * @return array(int $id_adjacent_area)
+     * @return array(int $id_area)
      */
-    public function getAdjecents() {
+    public function getAdjacentAreas() {
         $area = ModelArea::getArea($this->id_area);
-        return $area->getAdjecents();
+        return $area->getAdjacentAreas();
+    }
+
+    /**
+     * @return array(int $id_game_area)
+     */
+    public function getAdjacentGameAreas() {
+        if (!empty($this->adjacentGameAreas)) {
+            return $this->adjacentGameAreas;
+        }
+
+        // load adjacent_areas
+        $query = 'get_adjacent_game_areas';
+        $dict = array(':id_game_area' => $this->id);
+        $result = SQLConnector::getInstance()->epp($query, $dict);
+        foreach ($result as $line) {
+            $this->adjacentGameAreas[] = $line['id_adjacent_game_area'];
+        }
+
+        return $this->adjacentGameAreas;
     }
 
     private function fill_member_vars() {

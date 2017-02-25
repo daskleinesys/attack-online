@@ -373,6 +373,14 @@ class SQLCommands {
         self::setQuery('get_game_area_by_area', "SELECT * FROM $table_game_areas WHERE id_game = :id_game AND id_area = :id_area");
         self::setQuery('get_all_game_areas', "SELECT * FROM $table_game_areas WHERE id_game = :id_game");
         self::setQuery('get_game_areas_by_user', "SELECT * FROM $table_game_areas WHERE id_game = :id_game AND id_user = :id_user");
+        self::setQuery('get_adjacent_game_areas', "
+            SELECT
+                adjacent_game_areas.id as id_adjacent_game_area
+            FROM $table_game_areas AS game_areas
+                LEFT JOIN $table_area_is_adjacent AS areas_is_adjacent ON (game_areas.id_area = areas_is_adjacent.id_area1)
+                LEFT JOIN $table_game_areas AS adjacent_game_areas ON (areas_is_adjacent.id_area2 = adjacent_game_areas.id_area)
+            WHERE game_areas.id = :id_game_area
+        ");
 
         // update
         self::setQuery('set_game_area_user', "UPDATE $table_game_areas SET id_user = :id_user WHERE id = :id_game_area");

@@ -28,7 +28,7 @@ class ModelArea {
     private $economy; // string/enum
 
     // dynamically loaded infos
-    private $adjecents = array(); // array (int $id_area)
+    private $adjacentAreas = array(); // array (int $id_area)
 
     /**
      * returns the area model
@@ -123,11 +123,11 @@ class ModelArea {
     }
 
     /**
-     * @return array(int $id_adjacent_area)
+     * @return array(int $id_area)
      */
-    public function getAdjecents() {
-        if (!empty($this->adjecents)) {
-            return $this->adjecents;
+    public function getAdjacentAreas() {
+        if (!empty($this->adjacentAreas)) {
+            return $this->adjacentAreas;
         }
 
         // load adjacent_areas
@@ -135,10 +135,10 @@ class ModelArea {
         $dict = array(':id_area' => $this->id);
         $result = SQLConnector::getInstance()->epp($query, $dict);
         foreach ($result as $line) {
-            $this->adjecents[] = $line['id_adjacent_area'];
+            $this->adjacentAreas[] = $line['id_adjacent_area'];
         }
 
-        return $this->adjecents;
+        return $this->adjacentAreas;
     }
 
     private function fill_member_vars() {

@@ -195,7 +195,7 @@ class TroopsMoveController extends PhaseController {
                     continue;
                 }
                 $zArea = ModelGameArea::getGameArea($this->id_game, $id_zarea);
-                $a2a = $zArea->getAdjecents();
+                $a2a = $zArea->getAdjacentAreas();
                 foreach ($a2a as $id_a2a_zarea) {
                     $id_a2a_zarea = (int)$id_a2a_zarea;
                     if (!in_array($id_a2a_zarea, $visited) && !in_array($id_a2a_zarea, $current) && !in_array($id_a2a_zarea, $next)) {
