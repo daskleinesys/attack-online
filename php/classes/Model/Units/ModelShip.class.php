@@ -66,7 +66,7 @@ class ModelShip extends ModelUnit {
         $result = SQLConnector::Singleton()->epp($query, $dict);
 
         foreach ($result as $unit) {
-            $id_unit = $unit['id_unit'];
+            $id_unit = $unit['id'];
             $models[] = self::getModelById($id_unit);
         }
 
