@@ -337,6 +337,28 @@ class SQLCommands {
                 LEFT JOIN $table_units ON (game_units.id_unit = units.id)
             WHERE moves.id = :id_move
         ");
+        self::setQuery('get_sea_move_by_id', "
+            SELECT
+                moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
+                move_areas.id_game_area, move_areas.step,
+                move_units.id_game_unit
+            FROM $table_game_moves AS moves
+                LEFT JOIN $table_game_move_has_areas AS move_areas ON (moves.id = move_areas.id_game_move)
+                LEFT JOIN $table_game_move_has_units AS move_units ON (moves.id = move_units.id_game_move)
+                LEFT JOIN $table_game_units AS game_units ON (move_units.id_game_unit = game_units.id)
+            WHERE moves.id = :id_move AND moves.id_game = :id_game AND moves.id_phase = " . PHASE_SEAMOVE
+        );
+        self::setQuery('get_sea_move_by_id_ship', "
+            SELECT
+                moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
+                move_areas.id_game_area, move_areas.step,
+                move_units.id_game_unit
+            FROM $table_game_moves AS moves
+                LEFT JOIN $table_game_move_has_areas AS move_areas ON (moves.id = move_areas.id_game_move)
+                LEFT JOIN $table_game_move_has_units AS move_units ON (moves.id = move_units.id_game_move)
+                LEFT JOIN $table_game_units AS game_units ON (move_units.id_game_unit = game_units.id)
+            WHERE moves.id_game = :id_game AND moves.round = :round AND move_units.id_game_unit = :id_game_unit AND moves.id_phase = " . PHASE_SEAMOVE
+        );
         self::setQuery('get_production_move', "
             SELECT moves.id, moves.id_user, moves.id_phase, moves.round, moves.deleted,
                 move_areas.id_game_area, move_areas.step,

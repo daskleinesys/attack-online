@@ -1,8 +1,8 @@
 <?php
 namespace Attack\Model\Game\Moves;
 
+use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\Moves\Interfaces\ModelMove;
-use Attack\Exceptions\ModelException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Database\SQLConnector;
 use Attack\Tools\Iterator\ModelIterator;
@@ -82,8 +82,44 @@ class ModelSeaMove extends ModelMove {
         if (isset(self::$moves[$id_game][$id_move])) {
             return self::$moves[$id_game][$id_move];
         }
-        throw new NullPointerException('TODO : implement');
-        // TODO : implement
+        $query = 'get_sea_move_by_id';
+        $dict = [];
+        $dict[':id_game'] = $id_game;
+        $dict[':id_move'] = $id_move;
+        $result = SQLConnector::getInstance()->epp($query, $dict);
+        if (empty($result)) {
+            throw new NullPointerException('Move not found');
+        }
+        $steps = [];
+        $id_user = 0;
+        $round = 0;
+        $deleted = false;
+        $id_game_ship = 0;
+        foreach ($result as $line) {
+            $id_user = (int)$line['id_user'];
+            $round = (int)$line['round'];
+            $deleted = (bool)$line['deleted'];
+            $id_game_ship = (int)$line['id_game_unit'];
+            $step = (int)$line['step'];
+            $id_game_area = (int)$line['id_game_area'];
+            $gameArea = ModelGameArea::getGameArea($id_game, $id_game_area);
+            if ($gameArea->getIdType() === TYPE_SEA) {
+                $steps[$step][0] = $id_game_area;
+            } else if ($gameArea->getIdType() === TYPE_LAND) {
+                $steps[$step][1] = $id_game_area;
+            }
+        }
+        if (!isset($steps[1][0])) {
+            $steps[1][0] = NO_AREA;
+        }
+        if (!isset($steps[2][0])) {
+            $steps[2][0] = NO_AREA;
+        }
+
+        $move = new ModelSeaMove($id_user, $id_game, PHASE_SEAMOVE, $id_move, $round, $deleted, $steps, $id_game_ship);
+        self::$movesByShip[$id_game][$round][$id_game_ship] = $move;
+        self::$moves[$id_game][$id_move] = $move;
+        return $move;
     }
 
     /**
@@ -99,8 +135,43 @@ class ModelSeaMove extends ModelMove {
         if (isset(self::$movesByShip[$id_game][$round][$id_game_ship])) {
             return self::$movesByShip[$id_game][$round][$id_game_ship];
         }
-        throw new NullPointerException('TODO : implement');
-        // TODO : implement
+        $query = 'get_sea_move_by_id_ship';
+        $dict = [];
+        $dict[':id_game'] = $id_game;
+        $dict[':round'] = $round;
+        $dict[':id_game_unit'] = $id_game_ship;
+        $result = SQLConnector::getInstance()->epp($query, $dict);
+        if (empty($result)) {
+            throw new NullPointerException('Move not found');
+        }
+        $steps = [];
+        $id_user = 0;
+        $id_move = 0;
+        $deleted = false;
+        foreach ($result as $line) {
+            $id_move = (int)$line['id'];
+            $id_user = (int)$line['id_user'];
+            $deleted = (bool)$line['deleted'];
+            $step = (int)$line['step'];
+            $id_game_area = (int)$line['id_game_area'];
+            $gameArea = ModelGameArea::getGameArea($id_game, $id_game_area);
+            if ($gameArea->getIdType() === TYPE_SEA) {
+                $steps[$step][0] = $id_game_area;
+            } else if ($gameArea->getIdType() === TYPE_LAND) {
+                $steps[$step][1] = $id_game_area;
+            }
+        }
+        if (!isset($steps[1][1])) {
+            $steps[1][1] = NO_AREA;
+        }
+        if (!isset($steps[2][1])) {
+            $steps[2][1] = NO_AREA;
+        }
+
+        $move = new ModelSeaMove($id_user, $id_game, PHASE_SEAMOVE, $id_move, $round, $deleted, $steps, $id_game_ship);
+        self::$movesByShip[$id_game][$round][$id_game_ship] = $move;
+        self::$moves[$id_game][$id_move] = $move;
+        return $move;
     }
 
     /**
@@ -211,6 +282,47 @@ class ModelSeaMove extends ModelMove {
      * @return array
      */
     public function getSteps() {
+        return $this->steps;
+    }
+
+    /**
+     * @param array $steps
+     * @return array
+     * @throws \Exception
+     */
+    public function setSteps(array $steps) {
+        SQLConnector::Singleton()->beginTransaction();
+
+        try {
+            // DELETE PREVIOUS MOVE STEPS
+            $query = 'delete_move_areas_for_move';
+            $dict = [];
+            $dict[':id_move'] = $this->id;
+            SQLConnector::Singleton()->epp($query, $dict);
+
+            // INSERT MOVE STEPS
+            $query = 'insert_area_for_move';
+            $dict[':step'] = 1;
+            $dict[':id_game_area'] = $steps[1][0];
+            SQLConnector::Singleton()->epp($query, $dict);
+            if ($steps[1][1] !== NO_AREA) {
+                $dict[':id_game_area'] = $steps[1][1];
+                SQLConnector::Singleton()->epp($query, $dict);
+            }
+            $dict[':step'] = 2;
+            $dict[':id_game_area'] = $steps[2][0];
+            SQLConnector::Singleton()->epp($query, $dict);
+            if ($steps[2][1] !== NO_AREA) {
+                $dict[':id_game_area'] = $steps[2][1];
+                SQLConnector::Singleton()->epp($query, $dict);
+            }
+
+            // COMMIT ALL QUERIES
+            SQLConnector::Singleton()->commit();
+        } catch (\Exception $ex) {
+            SQLConnector::Singleton()->rollBack();
+            throw $ex;
+        }
         return $this->steps;
     }
 

@@ -87,10 +87,20 @@ class SeaMoveController extends PhaseController {
         // validate move
         $this->validateShipMovement($ship, $id_target_area, $id_target_port_area);
 
+        // update move
+        if ($move) {
+            $move->setSteps([
+                1 => [$ship->getIdGameArea(), $ship->getIdGameAreaInPort()],
+                2 => [$id_target_area, $id_target_port_area]
+            ]);
+            return true;
+        }
+
         ModelSeaMove::create($this->id_user, $this->id_game, $round, [
             1 => [$ship->getIdGameArea(), $ship->getIdGameAreaInPort()],
             2 => [$id_target_area, $id_target_port_area]
         ], $ship->getId());
+        return true;
     }
 
     /**
