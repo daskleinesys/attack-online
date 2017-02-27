@@ -39,12 +39,12 @@ class ModelGameShip extends ModelGameUnit {
      */
     protected function __construct($id, $id_user, $id_game, $id_unit, $id_game_area, $tank, $hitpoints, $name, $experience, $dive_status, $id_game_area_in_port) {
         parent::__construct($id, $id_user, $id_game, $id_unit, $id_game_area);
-        $this->tank = intval($tank);
-        $this->hitpoints = intval($hitpoints);
+        $this->tank = $tank;
+        $this->hitpoints = $hitpoints;
         $this->name = $name;
-        $this->experience = intval($experience);
+        $this->experience = $experience;
         $this->dive_status = $dive_status;
-        $this->id_game_area_in_port = intval($id_game_area_in_port);
+        $this->id_game_area_in_port = $id_game_area_in_port;
     }
 
     /**
@@ -100,6 +100,32 @@ class ModelGameShip extends ModelGameUnit {
             throw new NullPointerException("No ship by name $name found.");
         }
         return self::getShipHelper($id_game, $result);
+    }
+
+    /**
+     * returns all ships
+     *
+     * @param $id_user int
+     * @param $id_game int
+     * @return ModelIterator
+     */
+    public static function getAllShips($id_user = null, $id_game) {
+        $models = [];
+        $query = 'get_all_game_ships';
+        $dict= [
+            ':id_game' => (int)$id_game
+        ];
+        if ($id_user != null) {
+            $query = 'get_all_game_ships_for_user';
+            $dict[':id_user'] = (int)$id_user;
+        }
+
+        // query units
+        $result = SQLConnector::Singleton()->epp($query, $dict);
+        foreach ($result as $ship) {
+            $models[] = self::getShipById($id_game, (int)$ship['id']);
+        }
+        return new ModelIterator($models);
     }
 
     /**
@@ -253,13 +279,13 @@ class ModelGameShip extends ModelGameUnit {
             (int)$unit_data['id_user'],
             $id_game,
             (int)$unit_data['id_unit'],
-            (int)$unit_data['id_game_area'],
+            ($unit_data['id_game_area'] == null) ? NO_AREA : (int)$unit_data['id_game_area'],
             (int)$unit_data['tank'],
             (int)$unit_data['hitpoints'],
             $unit_data['name'],
             (int)$unit_data['experience'],
             $unit_data['dive_status'],
-            (int)$unit_data['id_game_area_in_port']
+            ($unit_data['id_game_area_in_port'] == null) ? NO_AREA : (int)$unit_data['id_game_area_in_port']
         );
         self::$shipsById[$id_game][$ship->getId()] = $ship;
         return self::$shipsByName[$id_game][$ship->getName()] = $ship;

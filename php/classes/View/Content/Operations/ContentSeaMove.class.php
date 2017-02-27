@@ -5,6 +5,7 @@ use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\ModelGameShip;
 use Attack\Model\Units\ModelShip;
 use Attack\Model\User\ModelUser;
 use Attack\View\Content\Operations\Interfaces\ContentOperation;
@@ -23,18 +24,42 @@ class ContentSeaMove extends ContentOperation {
         $this->showShips($data);
         $this->showTargetAreas($data);
 
-        if (!$this->checkFixate($data, PHASE_SEAMOVE)) {
-            $this->showNewMove($data);
-        }
         $this->checkCurrentPhase($data, PHASE_SEAMOVE);
     }
 
     private function showShips(array &$data) {
-        // TODO : implement
-    }
+        $ships = [];
+        $iterator = ModelGameShip::getAllShips(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+        while ($iterator->hasNext()) {
+            /** @var ModelGameShip $ship */
+            $ship = $iterator->next();
+            if ($ship->getIdGameArea() === NO_AREA) {
+                continue;
+            }
+            $currentArea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $ship->getIdGameArea());
+            $shipViewData = [
+                'id' => $ship->getId(),
+                'name' => $ship->getName(),
+                'type' => ModelShip::getModelById($ship->getIdUnit())->getName(),
+                'currentArea' => [
+                    'id' => $currentArea->getId(),
+                    'name' => $currentArea->getName(),
+                    'number' => $currentArea->getNumber()
+                ]
+            ];
+            if ($ship->getIdGameAreaInPort() !== NO_AREA) {
+                $currentPortArea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $ship->getIdGameAreaInPort());
+                $shipViewData['currentPortArea'] = [
+                    'id' => $currentPortArea->getId(),
+                    'name' => $currentPortArea->getName(),
+                    'number' => $currentPortArea->getNumber()
+                ];
+            }
+            $ships[] = $shipViewData;
 
-    private function showNewMove(array &$data) {
-        // TODO : implement
+            // TODO : get move for ship and add target (port)area to view data
+        }
+        $data['ships'] = $ships;
     }
 
     private function showTargetAreas(array &$data) {

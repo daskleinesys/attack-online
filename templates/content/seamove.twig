@@ -20,39 +20,51 @@
         </tr>
 
         {# SHOW SHIPS #}
-        <tr>
-            <td>
-                TSS I<br>
-                <small>(Schlachtschiff)</small>
-            </td>
-            <td>
-                Arabian Sea - 115
-            </td>
-            <td>
-                Somaliland - 35
-            </td>
-            <td>
-                <label>
-                    <select name="destination-area" size="1">
-                        {% for gameArea in destinationAreas %}
-                            {# TODO : check selected #}
-                            <option value="gameArea.id">{{ gameArea.name }} - {{ gameArea.number }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-            </td>
-            <td>
-                <label>
-                    <select name="destination-port-area" size="1">
-                        <option value="-1">kein Hafen</option>
-                        {% for gameArea in destinationPortAreas %}
-                            {# TODO : check selected #}
-                            <option value="gameArea.id">{{ gameArea.name }} - {{ gameArea.number }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-            </td>
-        </tr>
+        {% for ship in ships %}
+            <tr>
+                <td>
+                    {{ ship.name }}<br>
+                    <small>({{ ship.type }})</small>
+                </td>
+                <td>
+                    {{ ship.currentArea.name }} - {{ ship.currentArea.number }}
+                </td>
+                </td>
+                <td>
+                    {% if ship.currentPortArea %}
+                        {{ ship.currentPortArea.name }} - {{ ship.currentPortArea.number }}
+                    {% endif %}
+                </td>
+                <td>
+                    <label>
+                        <select name="destination-area-{{ ship.id }}" size="1">
+                            {% for gameArea in destinationAreas %}
+                                <option value="gameArea.id"
+                                        {{ (ship.currentArea.id == gameArea.id) ? 'selected' : ''}}>
+                                    {{ gameArea.name }} - {{ gameArea.number }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <select name="destination-port-area-{{ ship.id }}" size="1">
+                            <option value="-1"
+                                    {{ (false) ? 'selected' : ''}}>
+                                kein Hafen
+                            </option>
+                            {% for gameArea in destinationPortAreas %}
+                                <option value="gameArea.id"
+                                        {{ (ship.currentPortArea.id == gameArea.id) ? 'selected' : ''}}>
+                                    {{ gameArea.name }} - {{ gameArea.number }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </td>
+            </tr>
+        {% endfor %}
 
         <tr>
             <th colspan="4">
@@ -61,8 +73,6 @@
                 <input type="submit" name="set_seamove" value="Bestätigen"/>
             </th>
         </tr>
-
-        {# TODO : implement #}
     </table>
 </form>
 

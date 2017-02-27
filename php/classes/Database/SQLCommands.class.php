@@ -431,6 +431,18 @@ class SQLCommands {
             WHERE id_game = :id_game AND name = :name
             LIMIT 1
         ");
+        self::setQuery('get_all_game_ships', "
+            SELECT game_units.*
+            FROM $table_game_units AS game_units
+                LEFT JOIN $table_units AS units ON (units.id = game_units.id_unit)
+            WHERE id_game = :id_game AND units.id_type = " . TYPE_SEA
+        );
+        self::setQuery('get_all_game_ships_for_user', "
+            SELECT game_units.*
+            FROM $table_game_units AS game_units
+                LEFT JOIN $table_units AS units ON (units.id = game_units.id_unit)
+            WHERE id_user = :id_user AND id_game = :id_game AND units.id_type = " . TYPE_SEA
+        );
         self::setQuery('get_all_game_ships_not_in_port_by_area_user', "
             SELECT game_units.*
             FROM $table_game_units AS game_units
