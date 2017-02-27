@@ -1,12 +1,9 @@
 <?php
 namespace Attack\Model\Game\Moves;
 
-use Attack\Model\Game\ModelGameArea;
-use Attack\Model\Game\ModelGameLandUnit;
 use Attack\Model\Game\Moves\Interfaces\ModelMove;
 use Attack\Exceptions\ModelException;
 use Attack\Exceptions\NullPointerException;
-use Attack\Model\Units\ModelLandUnit;
 use Attack\Database\SQLConnector;
 use Attack\Tools\Iterator\ModelIterator;
 
@@ -18,6 +15,19 @@ class ModelSeaMove extends ModelMove {
      * @var array
      */
     private static $moves = [];
+
+    /**
+     * array(
+     *     int id_game => array(
+     *         int round => array(
+     *             int id_game_ship => ModelSeaMove
+     *         )
+     *     )
+     * )
+     *
+     * @var array
+     */
+    private static $movesByShip = [];
 
     /**
      * references ModelGameArea
@@ -72,8 +82,25 @@ class ModelSeaMove extends ModelMove {
         if (isset(self::$moves[$id_game][$id_move])) {
             return self::$moves[$id_game][$id_move];
         }
+        throw new NullPointerException('TODO : implement');
         // TODO : implement
-        return null;
+    }
+
+    /**
+     * returns the corresponding model
+     *
+     * @param $id_game int
+     * @param $round int
+     * @param $id_game_ship int
+     * @throws NullPointerException
+     * @return ModelSeaMove
+     */
+    public static function getByShipId($id_game, $round, $id_game_ship) {
+        if (isset(self::$movesByShip[$id_game][$round][$id_game_ship])) {
+            return self::$movesByShip[$id_game][$round][$id_game_ship];
+        }
+        throw new NullPointerException('TODO : implement');
+        // TODO : implement
     }
 
     /**
@@ -99,7 +126,7 @@ class ModelSeaMove extends ModelMove {
         $result = SQLConnector::Singleton()->epp($query, $dict);
         $moves = array();
         foreach ($result as $move) {
-            $moves[] = self::getMoveByid((int)$id_game, (int)$move['id']);
+            $moves[] = self::getByid((int)$id_game, (int)$move['id']);
         }
 
         return new ModelIterator($moves);
@@ -113,13 +140,71 @@ class ModelSeaMove extends ModelMove {
      * @param $round int
      * @param $steps array
      * @param $id_game_ship int
-     * @throws NullPointerException
-     * @throws ModelException
      * @return ModelSeaMove
+     * @throws \Exception
      */
     public static function create($id_user, $id_game, $round, $steps, $id_game_ship) {
+        SQLConnector::Singleton()->beginTransaction();
+
+        try {
+            // CREATE MOVE
+            $query = 'insert_move';
+            $dict = array();
+            $dict[':id_game'] = $id_game;
+            $dict[':id_user'] = $id_user;
+            $dict[':id_phase'] = PHASE_SEAMOVE;
+            $dict[':round'] = $round;
+            SQLConnector::Singleton()->epp($query, $dict);
+            $id_move = (int)SQLConnector::getInstance()->getLastInsertId();
+
+            // INSERT MOVE STEPS
+            $query = 'insert_area_for_move';
+            $dict = array();
+            $dict[':id_move'] = $id_move;
+            $dict[':step'] = 1;
+            $dict[':id_game_area'] = $steps[1][0];
+            SQLConnector::Singleton()->epp($query, $dict);
+            if ($steps[1][1] !== NO_AREA) {
+                $dict[':id_game_area'] = $steps[1][1];
+                SQLConnector::Singleton()->epp($query, $dict);
+            }
+            $dict[':step'] = 2;
+            $dict[':id_game_area'] = $steps[2][0];
+            SQLConnector::Singleton()->epp($query, $dict);
+            if ($steps[2][1] !== NO_AREA) {
+                $dict[':id_game_area'] = $steps[2][1];
+                SQLConnector::Singleton()->epp($query, $dict);
+            }
+
+            // INSERT UNITS
+            $query = 'insert_ship_for_move';
+            $dict = array();
+            $dict[':id_game_unit'] = $id_game_ship;
+            $dict[':id_move'] = $id_move;
+            SQLConnector::Singleton()->epp($query, $dict);
+
+            // COMMIT ALL QUERIES
+            SQLConnector::Singleton()->commit();
+        } catch (\Exception $ex) {
+            SQLConnector::Singleton()->rollBack();
+            throw $ex;
+        }
+
+        $move = new ModelSeaMove($id_user, $id_game, PHASE_SEAMOVE, $id_move, $round, false, $steps, $id_game_ship);
+        self::$movesByShip[$id_game][$round][$id_game_ship] = $move;
+        self::$moves[$id_game][$id_move] = $move;
+        return $move;
+    }
+
+    /**
+     * deletes move from database
+     *
+     * @param ModelSeaMove $move
+     * @return bool
+     */
+    public static function delete(ModelSeaMove $move) {
         // TODO : implement
-        return null;
+        return true;
     }
 
     /**

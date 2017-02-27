@@ -1,6 +1,7 @@
 <?php
 namespace Attack\View\Content\Operations;
 
+use Attack\Controller\Game\Moves\SeaMoveController;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
@@ -91,9 +92,6 @@ class ContentSeaMove extends ContentOperation {
         if (empty($_POST)) {
             return;
         }
-
-        return;
-        // TODO : implement
         $controller = new SeaMoveController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
 
         // fixating sea move
@@ -102,47 +100,35 @@ class ContentSeaMove extends ContentOperation {
             return;
         }
 
-        // deleting sea move
-        if (isset($_POST['delete'])) {
-            try {
-                $controller->deleteMove((int)$_POST['delete']);
-                $data['status'] = array(
-                    'message' => 'Seezug gelöscht.'
-                );
-            } catch (NullPointerException $ex) {
-                $data['errors'] = array(
-                    'message' => $ex->getMessage()
-                );
-            } catch (ControllerException $ex) {
-                $data['errors'] = array(
-                    'message' => $ex->getMessage()
-                );
-            } finally {
-                return;
-            }
+        // creating/updating sea moves
+        if (!isset($_POST['set_seamove'])) {
+            return;
         }
-
-        // creating new sea move
-        if (isset($_POST['newmove'])) {
+        $iterator = ModelGameShip::getAllShips(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+        while ($iterator->hasNext()) {
+            /** @var ModelGameShip $ship */
+            $ship = $iterator->next();
+            if ($ship->getIdGameArea() === NO_AREA) {
+                continue;
+            }
+            $desinationAreaKey = 'destination-area-' . $ship->getId();
+            $desinationPortAreaKey = 'destination-port-area-' . $ship->getId();
+            if (!isset($_POST[$desinationAreaKey]) || !isset($_POST[$desinationPortAreaKey])) {
+                continue;
+            }
             try {
-                if (!isset($_POST['start']) || !isset($_POST['destination'])) {
-                    $data['errors'] = array(
-                        'message' => 'Missing parameter!'
-                    );
-                    return;
-                }
-                // TODO : create sea move
-                $data['status'] = array(
-                    'message' => 'Seezug erstellt.'
-                );
+                $controller->setMoveForShip($ship, (int)$_POST[$desinationAreaKey], (int)$_POST[$desinationPortAreaKey]);
+                $data['status'] = [
+                    'message' => 'Seezug angepasst.'
+                ];
             } catch (NullPointerException $ex) {
-                $data['errors'] = array(
+                $data['errors'] = [
                     'message' => $ex->getMessage()
-                );
+                ];
             } catch (ControllerException $ex) {
-                $data['errors'] = array(
+                $data['errors'] = [
                     'message' => $ex->getMessage()
-                );
+                ];
             }
         }
     }

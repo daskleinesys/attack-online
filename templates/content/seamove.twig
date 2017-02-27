@@ -39,7 +39,7 @@
                     <label>
                         <select name="destination-area-{{ ship.id }}" size="1">
                             {% for gameArea in destinationAreas %}
-                                <option value="gameArea.id"
+                                <option value="{{ gameArea.id }}"
                                         {{ (ship.currentArea.id == gameArea.id) ? 'selected' : ''}}>
                                     {{ gameArea.name }} - {{ gameArea.number }}
                                 </option>
@@ -55,7 +55,7 @@
                                 kein Hafen
                             </option>
                             {% for gameArea in destinationPortAreas %}
-                                <option value="gameArea.id"
+                                <option value="{{ gameArea.id }}"
                                         {{ (ship.currentPortArea.id == gameArea.id) ? 'selected' : ''}}>
                                     {{ gameArea.name }} - {{ gameArea.number }}
                                 </option>
