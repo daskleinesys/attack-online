@@ -4,6 +4,7 @@ namespace Attack\View\Content\Operations;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
+use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Units\ModelShip;
 use Attack\Model\User\ModelUser;
 use Attack\View\Content\Operations\Interfaces\ContentOperation;
@@ -20,6 +21,7 @@ class ContentSeaMove extends ContentOperation {
 
         $this->handleInput($data);
         $this->showShips($data);
+        $this->showTargetAreas($data);
 
         if (!$this->checkFixate($data, PHASE_SEAMOVE)) {
             $this->showNewMove($data);
@@ -33,6 +35,31 @@ class ContentSeaMove extends ContentOperation {
 
     private function showNewMove(array &$data) {
         // TODO : implement
+    }
+
+    private function showTargetAreas(array &$data) {
+        $destination_areas = [];
+        $destination_port_areas = [];
+        $iterator = ModelGameArea::iterator(null, ModelGame::getCurrentGame()->getId());
+        while ($iterator->hasNext()) {
+            /** @var ModelGameArea $gameArea */
+            $gameArea = $iterator->next();
+            if ($gameArea->getIdType() === TYPE_LAND) {
+                $destination_port_areas[] = [
+                    'id' => $gameArea->getId(),
+                    'name' => $gameArea->getName(),
+                    'number' => $gameArea->getNumber()
+                ];
+            } else {
+                $destination_areas[] = [
+                    'id' => $gameArea->getId(),
+                    'name' => $gameArea->getName(),
+                    'number' => $gameArea->getNumber()
+                ];
+            }
+        }
+        $data['destinationAreas'] = $destination_areas;
+        $data['destinationPortAreas'] = $destination_port_areas;
     }
 
     private function handleInput(array &$data) {

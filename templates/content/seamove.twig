@@ -20,6 +20,48 @@
         </tr>
 
         {# SHOW SHIPS #}
+        <tr>
+            <td>
+                TSS I<br>
+                <small>(Schlachtschiff)</small>
+            </td>
+            <td>
+                Arabian Sea - 115
+            </td>
+            <td>
+                Somaliland - 35
+            </td>
+            <td>
+                <label>
+                    <select name="destination-area" size="1">
+                        {% for gameArea in destinationAreas %}
+                            {# TODO : check selected #}
+                            <option value="gameArea.id">{{ gameArea.name }} - {{ gameArea.number }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <select name="destination-port-area" size="1">
+                        <option value="-1">kein Hafen</option>
+                        {% for gameArea in destinationPortAreas %}
+                            {# TODO : check selected #}
+                            <option value="gameArea.id">{{ gameArea.name }} - {{ gameArea.number }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </td>
+        </tr>
+
+        <tr>
+            <th colspan="4">
+            </th>
+            <th>
+                <input type="submit" name="set_seamove" value="Bestätigen"/>
+            </th>
+        </tr>
+
         {# TODO : implement #}
     </table>
 </form>
