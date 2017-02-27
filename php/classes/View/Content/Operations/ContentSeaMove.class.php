@@ -22,10 +22,11 @@ class ContentSeaMove extends ContentOperation {
         $data['template'] = $this->getTemplate();
         $this->addCurrentGameInfo($data);
 
-        $this->handleInput($data);
+        if (!$this->checkFixate($data, PHASE_SEAMOVE)) {
+            $this->handleInput($data);
+        }
         $this->showShips($data);
         $this->showTargetAreas($data);
-
         $this->checkCurrentPhase($data, PHASE_SEAMOVE);
     }
 
@@ -125,6 +126,7 @@ class ContentSeaMove extends ContentOperation {
         // fixating sea move
         if (isset($_POST['fixate_sea_move'])) {
             $controller->finishMove();
+            $this->checkFixate($data, PHASE_SEAMOVE);
             return;
         }
 

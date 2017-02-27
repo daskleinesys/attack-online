@@ -42,6 +42,10 @@ class SeaMoveController extends PhaseController {
      * @throws ControllerException
      */
     public function setMoveForShip(ModelGameShip $ship, $id_target_area, $id_target_port_area) {
+        // check if already fixated
+        if ($this->checkIfDone()) {
+            throw new ControllerException('seamove already fixated');
+        }
         if ($ship->getIdUser() !== $this->id_user) {
             throw new ControllerException('invalid action - user doesnt own this ship: ' . $ship->getName());
         }

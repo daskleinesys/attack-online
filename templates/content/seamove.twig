@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     <label>
-                        <select name="destination-area-{{ ship.id }}" size="1">
+                        <select name="destination-area-{{ ship.id }}" size="1" {{ (turnFixated) ? 'disabled' : '' }}>
                             {% for gameArea in destinationAreas %}
                                 <option value="{{ gameArea.id }}"
                                         {{ (ship.targetArea.id == gameArea.id) ? 'selected' : ''}}>
@@ -49,7 +49,7 @@
                 </td>
                 <td>
                     <label>
-                        <select name="destination-port-area-{{ ship.id }}" size="1">
+                        <select name="destination-port-area-{{ ship.id }}" size="1" {{ (turnFixated) ? 'disabled' : '' }}>
                             <option value="-1"
                                     {{ (false) ? 'selected' : ''}}>
                                 kein Hafen
@@ -66,13 +66,16 @@
             </tr>
         {% endfor %}
 
+
+        {% if not turnFixated %}
         <tr>
             <th colspan="4">
             </th>
             <th>
-                <input type="submit" name="set_seamove" value="Bestätigen"/>
+                <input type="submit" name="set_seamove" value="Bestätigen" />
             </th>
         </tr>
+        {% endif %}
     </table>
 </form>
 
