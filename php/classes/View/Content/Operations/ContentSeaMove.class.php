@@ -7,6 +7,7 @@ use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelGameShip;
+use Attack\Model\Game\Moves\ModelSeaMove;
 use Attack\Model\Units\ModelShip;
 use Attack\Model\User\ModelUser;
 use Attack\View\Content\Operations\Interfaces\ContentOperation;
@@ -56,9 +57,36 @@ class ContentSeaMove extends ContentOperation {
                     'number' => $currentPortArea->getNumber()
                 ];
             }
-            $ships[] = $shipViewData;
 
-            // TODO : get move for ship and add target (port)area to view data
+            try {
+                $round = ModelGame::getCurrentGame()->getRound();
+                $phase = ModelGame::getCurrentGame()->getIdPhase();
+                if ($phase > PHASE_SEAMOVE) {
+                    ++$round;
+                }
+                $move = ModelSeaMove::getByShipId(ModelGame::getCurrentGame()->getId(), $round, $ship->getId());
+                $moveSteps = $move->getSteps();
+                $targetArea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $moveSteps[2][0]);
+                $shipViewData['targetArea'] = [
+                    'id' => $targetArea->getId(),
+                    'name' => $targetArea->getName(),
+                    'number' => $targetArea->getNumber()
+                ];
+                if ($moveSteps[2][1] !== NO_AREA) {
+                    $targetPortArea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $moveSteps[2][1]);
+                    $shipViewData['targetPortArea'] = [
+                        'id' => $targetPortArea->getId(),
+                        'name' => $targetPortArea->getName(),
+                        'number' => $targetPortArea->getNumber()
+                    ];
+                }
+            } catch (NullPointerException $ex) {
+                $shipViewData['targetArea'] = $shipViewData['currentArea'];
+                if (isset($shipViewData['currentPortArea'])) {
+                    $shipViewData['targetPortArea'] = $shipViewData['currentPortArea'];
+                }
+            }
+            $ships[] = $shipViewData;
         }
         $data['ships'] = $ships;
     }
