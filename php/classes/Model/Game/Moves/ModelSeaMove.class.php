@@ -32,8 +32,8 @@ class ModelSeaMove extends ModelMove {
     /**
      * references ModelGameArea
      * array(
-     *     1 => array(int id_start_area[, id_start_port_area]),
-     *     2 => array(int id_target_area[, id_target_port_area])
+     *     1 => array(int id_start_area, id_start_port_area),
+     *     2 => array(int id_target_area, id_target_port_area)
      * )
      *
      * @var array
@@ -109,11 +109,11 @@ class ModelSeaMove extends ModelMove {
                 $steps[$step][1] = $id_game_area;
             }
         }
-        if (!isset($steps[1][0])) {
-            $steps[1][0] = NO_AREA;
+        if (!isset($steps[1][1])) {
+            $steps[1][1] = NO_AREA;
         }
-        if (!isset($steps[2][0])) {
-            $steps[2][0] = NO_AREA;
+        if (!isset($steps[2][1])) {
+            $steps[2][1] = NO_AREA;
         }
 
         $move = new ModelSeaMove($id_user, $id_game, PHASE_SEAMOVE, $id_move, $round, $deleted, $steps, $id_game_ship);
@@ -329,7 +329,7 @@ class ModelSeaMove extends ModelMove {
     /**
      * @return int
      */
-    public function getGameShip() {
+    public function getIdGameShip() {
         return $this->id_game_ship;
     }
 

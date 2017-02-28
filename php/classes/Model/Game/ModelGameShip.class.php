@@ -413,12 +413,13 @@ class ModelGameShip extends ModelGameUnit {
      * @param int $id_game_area_in_port
      * @throws ModelException
      */
-    public function setIdGameAreaInPort($id_game_area_in_port = null) {
+    public function setIdGameAreaInPort($id_game_area_in_port) {
+        if ($id_game_area_in_port === NO_AREA) {
+            $id_game_area_in_port = null;
+        }
         if ($id_game_area_in_port !== null) {
-            $id_game_area_in_port = intval($id_game_area_in_port);
-            $portGameArea = ModelGameArea::getGameArea($this->id_game, $id_game_area_in_port);
-            $seaGameArea = ModelGameArea::getGameArea($this->id_game, $this->id_game_area);
-            if (!in_array($portGameArea->getIdArea(), $seaGameArea->getAdjacentAreas())) {
+            $gameArea = ModelGameArea::getGameArea($this->id_game, $this->id_game_area);
+            if (!in_array($id_game_area_in_port, $gameArea->getAdjacentGameAreas())) {
                 throw new ModelException('Invalid port -> not adjacent to current area.');
             }
         }

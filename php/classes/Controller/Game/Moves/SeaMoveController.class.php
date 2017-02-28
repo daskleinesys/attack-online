@@ -112,10 +112,13 @@ class SeaMoveController extends PhaseController {
      *
      * @param ModelSeaMove $move
      * @return bool
+     * @throws ControllerException
      */
     public function validateMove(ModelSeaMove $move) {
-        // TODO : implement
-        return true;
+        $steps = $move->getSteps();
+        $id_game_ship = $move->getIdGameShip();
+        $ship = ModelGameShip::getShipById($this->id_game, $id_game_ship);
+        return $this->validateShipMovement($ship, $steps[2][0], $steps[2][1]);
     }
 
     private function validateShipMovement(ModelGameShip $ship, $id_target_area, $id_target_port_area) {
