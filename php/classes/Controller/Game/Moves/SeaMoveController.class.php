@@ -131,11 +131,12 @@ class SeaMoveController extends PhaseController {
         }
 
         // 2. if area changed: if adjacent -> valid; if not -> invalid
-        if (
-            $id_start_area !== $id_target_area &&
-            !in_array($id_target_area, ModelGameArea::getGameArea($this->id_game, $id_start_area)->getAdjacentGameAreas())
-        ) {
-            throw new ControllerException("sea areas $id_start_area and $id_target_area not adjacents for sea move - " . $ship->getName());
+        if ($id_start_area !== $id_target_area) {
+            if (!in_array($id_target_area, ModelGameArea::getGameArea($this->id_game, $id_start_area)->getAdjacentGameAreas())) {
+                throw new ControllerException("sea areas $id_start_area and $id_target_area not adjacents for sea move - " . $ship->getName());
+            } else {
+                return true;
+            }
         }
 
         // 3. if target-port-area is NO_AREA -> valid
@@ -148,12 +149,17 @@ class SeaMoveController extends PhaseController {
             throw new ControllerException('target area doesn\'t belong to current user - ' . $ship->getName());
         }
 
-        // 5. if start-port-area is NO_AREA -> valid
+        // 5. if target-port-area not adjacent to target-area -> invalid
+        if (!in_array($id_target_port_area, ModelGameArea::getGameArea($this->id_game, $id_target_area)->getAdjacentGameAreas())) {
+            throw new ControllerException('port areas not adjacents for sea move - ' . $ship->getName());
+        }
+
+        // 6. if start-port-area is NO_AREA -> valid
         if ($id_start_port_area === NO_AREA) {
             return true;
         }
 
-        // 6. if port-area not adjacent -> invalid
+        // 7. if port-area not adjacent -> invalid
         if (!in_array($id_target_port_area, ModelGameArea::getGameArea($this->id_game, $id_start_port_area)->getAdjacentGameAreas())) {
             throw new ControllerException('port areas not adjacents for sea move - ' . $ship->getName());
         }
