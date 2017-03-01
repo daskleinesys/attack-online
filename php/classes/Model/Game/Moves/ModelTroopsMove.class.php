@@ -51,7 +51,6 @@ class ModelTroopsMove extends ModelMove {
         $query = 'get_land_move';
         $dict = array();
         $dict[':id_move'] = intval($id_move);
-        $dict[':id_phase'] = PHASE_TROOPSMOVE;
         $result = SQLConnector::getInstance()->epp($query, $dict);
         if (empty($result)) {
             throw new NullPointerException('Move not found');
