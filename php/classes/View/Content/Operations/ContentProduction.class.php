@@ -79,7 +79,7 @@ class ContentProduction extends ContentOperation {
                 $units[(int)$_POST['id_unit']] = (int)$_POST['count'];
                 $controller->createProductionMove((int)$_POST['id_game_area'], $units);
                 $data['status'] = array(
-                    'message' => 'Landzug erstellt.'
+                    'message' => 'Produktion erstellt.'
                 );
             } catch (NullPointerException $ex) {
                 $data['errors'] = array(
