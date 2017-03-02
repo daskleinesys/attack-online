@@ -414,10 +414,7 @@ class ModelGameShip extends ModelGameUnit {
      * @throws ModelException
      */
     public function setIdGameAreaInPort($id_game_area_in_port) {
-        if ($id_game_area_in_port === NO_AREA) {
-            $id_game_area_in_port = null;
-        }
-        if ($id_game_area_in_port !== null) {
+        if ($id_game_area_in_port !== NO_AREA) {
             $gameArea = ModelGameArea::getGameArea($this->id_game, $this->id_game_area);
             if (!in_array($id_game_area_in_port, $gameArea->getAdjacentGameAreas())) {
                 throw new ModelException('Invalid port -> not adjacent to current area.');
@@ -425,7 +422,10 @@ class ModelGameShip extends ModelGameUnit {
         }
 
         $query = 'set_game_ship_port';
-        $dict = array(':id_game_unit' => $this->id, ':id_game_area_in_port' => $id_game_area_in_port);
+        $dict = [
+            ':id_game_unit' => $this->id,
+            ':id_game_area_in_port' => ($id_game_area_in_port === NO_AREA) ? null : $id_game_area_in_port
+        ];
         SQLConnector::getInstance()->epp($query, $dict);
         $this->id_game_area_in_port = $id_game_area_in_port;
     }

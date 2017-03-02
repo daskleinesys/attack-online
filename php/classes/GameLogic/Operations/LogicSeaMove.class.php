@@ -3,6 +3,7 @@ namespace Attack\GameLogic\Operations;
 
 use Attack\Controller\Game\Moves\SeaMoveController;
 use Attack\Exceptions\ControllerException;
+use Attack\GameLogic\Battles\SeaBattle;
 use Attack\GameLogic\Operations\Interfaces\PhaseLogic;
 use Attack\Exceptions\LogicException;
 use Attack\Model\Game\Dice\DieSix;
@@ -15,7 +16,13 @@ class LogicSeaMove extends PhaseLogic {
 
     private $die;
 
-    private $shipMoves = [];
+    private $shipMoves = []; // int $id_game_ship
+
+    /**
+     * [int id_game_area => [ModelGameShip, ...]]
+     * @var array
+     */
+    private $battlefields = []; // int $id_game_area
 
     /**
      * returns object to run game logic -> should only be called by factory
@@ -45,12 +52,14 @@ class LogicSeaMove extends PhaseLogic {
             $this->validateExecuteAllMoves();
 
             // 2. check for battles
+            $this->checkBattles();
 
             // 3. resolve battles
-
-            if (true) {
-                throw new \Exception('TODO : implement logic sea move!');
+            foreach ($this->battlefields as $id_game_area => $ships) {
+                $battle = new SeaBattle($ships);
+                $battle->resolve();
             }
+            throw new \Exception('TODO : fully implement sea move');
 
             $this->finishProcessing();
         } catch (\Exception $ex) {
@@ -90,6 +99,36 @@ class LogicSeaMove extends PhaseLogic {
             $ship->setIdGameArea($steps[2][0]);
             $ship->setIdGameAreaInPort($steps[2][1]);
             $this->shipMoves[] = $id_game_ship;
+        }
+    }
+
+    private function checkBattles() {
+        $check_areas = [];
+        $ships = ModelGameShip::getAllShips(null, $this->id_game);
+        while ($ships->hasNext()) {
+            /** @var ModelGameShip $ship */
+            $ship = $ships->next();
+            // ignore ships in port
+            if ($ship->getIdGameAreaInPort() !== NO_AREA) {
+                continue;
+            }
+            $id_game_area = $ship->getIdGameArea();
+            $id_user = $ship->getIdUser();
+            if (!isset($this->battlefields[$id_game_area])) {
+                $this->battlefields[$id_game_area] = [];
+            }
+            if (!isset($check_areas[$id_game_area])) {
+                $check_areas[$id_game_area] = [];
+            }
+            if (!in_array($id_user, $check_areas[$id_game_area])) {
+                $check_areas[$id_game_area][] = $id_user;
+            }
+            $this->battlefields[$id_game_area][] = $ship;
+        }
+        foreach ($check_areas as $id_game_area => $users) {
+            if (count($users) < 2) {
+                unset($this->battlefields[$id_game_area]);
+            }
         }
     }
 
