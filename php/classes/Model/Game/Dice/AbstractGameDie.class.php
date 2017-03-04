@@ -18,15 +18,20 @@ abstract class AbstractGameDie {
 
             try {
                 $rolls = curl_exec($ch);
-                curl_close($ch);
+                if (!$rolls) {
+                    \Logger::getLogger('AbstractGameDie')->info('unable to load new rolls: ' . curl_error($ch));
+                    throw new \Exception('unable to load new rolls: ' . curl_error($ch));
+                }
                 self::$rolls = explode("\n", $rolls);
                 array_pop(self::$rolls);
             } catch (\Exception $e) {
                 // probably no i-net connection, create die-rolls via php random
                 self::$rolls = array();
                 for ($x = 0; $x < 200; ++$x) {
-                    self::$rolls[] = rand(1, 6);
+                    self::$rolls[] = mt_rand(1, 6);
                 }
+            } finally {
+                curl_close($ch);
             }
         }
         return array_pop(self::$rolls);

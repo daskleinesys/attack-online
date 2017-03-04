@@ -59,7 +59,6 @@ class LogicSeaMove extends PhaseLogic {
                 $battle = new SeaBattle($ships);
                 $battle->resolve();
             }
-            throw new \Exception('TODO : fully implement sea move');
 
             $this->finishProcessing();
         } catch (\Exception $ex) {

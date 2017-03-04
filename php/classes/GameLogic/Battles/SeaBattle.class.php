@@ -8,12 +8,6 @@ use Attack\Model\Units\ModelShip;
 class SeaBattle {
 
     /**
-     * [ModelGameShip, ...]
-     * @var array
-     */
-    private $game_ships;
-
-    /**
      * [int id_user => [int id_ship => [ModelGameShip, ...]]]
      * @var array
      */
@@ -33,10 +27,9 @@ class SeaBattle {
      */
     private $ship_types = [];
 
+    private $user_gets_experience = [];
 
     public function __construct(array $game_ships) {
-        $this->game_ships = $game_ships;
-
         $ships = ModelShip::iterator();
         while ($ships->hasNext()) {
             $id_ship = $ships->next()->getId();
@@ -57,6 +50,9 @@ class SeaBattle {
     }
 
     public function resolve() {
+        if (!$this->shipsLeft()) {
+            return;
+        }
         while ($this->shipsLeft()) {
             // 1. calculate hits per ship type per user
             foreach ($this->ships_per_user_and_type as $id_user => $user_ships_per_type) {
@@ -70,10 +66,20 @@ class SeaBattle {
             foreach ($this->current_hits_per_user_and_type as $id_user => $user_hits_per_type) {
                 $this->applyHits($id_user, $user_hits_per_type);
             }
-            throw new \Exception('TODO : implement sea battles!');
         }
         // add experience to units that survived the battle
-        throw new \Exception('TODO : add exp');
+        foreach ($this->ships_per_user_and_type as $id_user => $ships) {
+            if (!in_array($id_user, $this->user_gets_experience)) {
+                continue;
+            }
+            foreach ($ships as $id_unit => $ships_per_type) {
+                /** @var ModelGameShip $ship */
+                foreach ($ships_per_type as $ship) {
+                    $exp = $ship->getExperience() + 1;
+                    $ship->setExperience($exp);
+                }
+            }
+        }
     }
 
     private function calculateHits($id_user, $ships_per_type) {
@@ -201,14 +207,81 @@ class SeaBattle {
     }
 
     private function applyHits($id_user, $user_hits_per_type) {
-        echo '<pre>';
-        echo 'hits for user ' . $id_user;
-        var_dump($user_hits_per_type);
-        /*
-         * 1. ignore damage where no applicable enemy ships available
-         * 2. if more than one enemy available allocate hits equally (ties divided randomly)
-         * 3. after allocation to enemies always hit wounded ships before ships with full hp
-         */
+        foreach ($user_hits_per_type as $id_ship => $hits) {
+            $enemyShips = $this->getAllEnemyShipsPerType($id_user, $id_ship);
+            if (empty($enemyShips)) {
+                continue;
+            }
+            $oneShots = floor($hits / 100);
+            $dmg_per_round = floor(($hits % 100) / count($enemyShips));
+            while ($hits > 0 && !empty($enemyShips)) {
+                $dmg_to_allocate = $dmg_per_round;
+                $currEnemyShips = array_shift($enemyShips);
+                while (($dmg_to_allocate > 0 || $oneShots > 0) && !empty($currEnemyShips)) {
+                    $ship = array_shift($currEnemyShips);
+                    /** @var ModelGameShip $ship */
+                    $ship_hitpoints = $ship->getHitpoints();
+                    if ($oneShots > 0) {
+                        $this->removeShipFromBattle($id_user, $ship);
+                        --$oneShots;
+                        $hits -= 100;
+                        break; // do not apply further damage if one-shot applied
+                    } else if ($ship_hitpoints === $dmg_to_allocate) {
+                        $this->removeShipFromBattle($id_user, $ship);
+                        $dmg_to_allocate = 0;
+                    } else if ($ship_hitpoints > $dmg_to_allocate) {
+                        $ship->setHitpoints($ship_hitpoints - $dmg_to_allocate);
+                        $dmg_to_allocate = 0;
+                        array_unshift($currEnemyShips, $ship);
+                    } else {
+                        $this->removeShipFromBattle($id_user, $ship);
+                        $dmg_to_allocate -= $ship_hitpoints;
+                    }
+                }
+                if (!empty($currEnemyShips)) {
+                    $enemyShips[] = $currEnemyShips;
+                }
+                $hits -= ($dmg_per_round - $dmg_to_allocate);
+            }
+        }
+    }
+
+    private function removeShipFromBattle($id_user, ModelGameShip $ship) {
+        $this->user_gets_experience[] = $id_user;
+        $ship->setHitpoints(0);
+        $id_user = $ship->getIdUser();
+        $id_unit = $ship->getIdUnit();
+        foreach ($this->ships_per_user_and_type[$id_user][$id_unit] as $key => $value) {
+            if ($ship === $value) {
+                unset($this->ships_per_user_and_type[$id_user][$id_unit][$key]);
+            }
+        }
+        // check if user has at least one ship remaining in battle
+        foreach ($this->ships_per_user_and_type[$id_user] as $id_unit => $array) {
+            if (!empty($array)) {
+                return;
+            }
+        }
+        unset($this->ships_per_user_and_type[$id_user]);
+    }
+
+    private function getAllEnemyShipsPerType($id_user, $id_ship) {
+        $ships = [];
+        // 1. run through $this->ships_per_user_and_type
+        foreach ($this->ships_per_user_and_type as $id_enemy_user => $user_ships) {
+            if ($id_enemy_user === $id_user) {
+                continue;
+            }
+            if (empty($user_ships[$id_ship])) {
+                continue;
+            }
+            shuffle($user_ships[$id_ship]);
+            $ships[] = $user_ships[$id_ship];
+        }
+
+        // 2. shuffle output
+        shuffle($ships);
+        return $ships;
     }
 
     private function shipsLeft() {
