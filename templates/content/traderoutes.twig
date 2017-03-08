@@ -1,0 +1,58 @@
+{% include 'content/partials/currentgame.twig' %}
+
+<h1>Handelsrouten</h1>
+
+
+<form method="post" action="{{ absRefPrefix }}traderoutes/">
+    <table>
+        <colgroup>
+            <col span="2"/>
+            <col span="4"/>
+            <col/>
+        </colgroup>
+
+        <tr>
+            <th>Schiffsname</th>
+            <th>aktuelles Seefeld</th>
+            <th>aktueller Hafen</th>
+            <th>Zielfeld</th>
+            <th>Zielhafen</th>
+        </tr>
+    </table>
+</form>
+
+{% if notCurrentPhase %}
+    <p class="error">
+        <small>
+            Achtung, dies ist nicht die aktuelle Phase.
+            <br/>
+            Es könnte sein, dass ihr eure Züge noch vor dem Ende dieser Runde ändern wollt, um euch auf unvorhergesehene Züge der Mitspieler
+            einzustellen.
+        </small>
+    </p>
+{% endif %}
+
+<hr/>
+
+{% if turnFixated %}
+    <p>
+        Achtung, du hast den Zug bereits fixiert.
+    </p>
+{% else %}
+    <form method="post" action="{{ absRefPrefix }}traderoutes/">
+        <h2>Zug beenden</h2>
+        <p>Achtung, wenn du den folgenden Knopf dr&uuml;ckst werden deine Handelsrouten fixiert und du kannst sie nicht mehr &auml;ndern. Erst
+            wenn alle Spieler diesen Zug beendet haben erfolgt die Berechnung und das Spiel geht in die n&auml;chste Phase.</p>
+        <input type="submit" name="fixate_traderoutes" value="Fertig"/>
+    </form>
+{% endif %}
+
+{% if errors %}
+    <br>
+    <p class="error">{{ errors.message }}</p>
+{% endif %}
+
+{% if status %}
+    <br>
+    <p class="status">{{ status.message }}</p>
+{% endif %}

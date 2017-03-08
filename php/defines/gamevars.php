@@ -27,7 +27,7 @@ define('DIVE_STATUS_SILENT', 'silent');
 // phases
 define('PHASE_LANDMOVE', 1);
 define('PHASE_SEAMOVE', 2);
-define('PHASE_TRADEROUTE', 3);
+define('PHASE_TRADEROUTES', 3);
 define('PHASE_TROOPSMOVE', 4);
 define('PHASE_PRODUCTION', 5);
 define('PHASE_GAME_START', 21);

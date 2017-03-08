@@ -1030,7 +1030,7 @@ INSERT INTO `option_types` (`id`, `units`, `countries`) VALUES
 INSERT INTO `phases` (`id`, `name`, `key`) VALUES
 (1, 'Move Troops', 'landmove'),
 (2, 'Move Fleets', 'seamove'),
-(3, 'Traderoutes', 'traderoute'),
+(3, 'Trade Routes', 'traderoutes'),
 (4, 'Arrange Troops', 'troopsmove'),
 (5, 'Reinforcements', 'production'),
 (21, 'Game Start', 'startgame'),
