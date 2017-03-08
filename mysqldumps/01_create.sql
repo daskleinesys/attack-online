@@ -347,6 +347,33 @@ CREATE TABLE `game_units` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `game_traderoutes`
+--
+
+DROP TABLE IF EXISTS `game_traderoutes`;
+CREATE TABLE `game_traderoutes` (
+  `id` int(11) NOT NULL,
+  `id_game` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `current_value` int(11) NOT NULL,
+  `max_value` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `game_traderoute_has_areas`
+--
+
+DROP TABLE IF EXISTS `game_traderoute_has_areas`;
+CREATE TABLE `game_traderoute_has_areas` (
+  `id` int(11) NOT NULL,
+  `id_traderoute` int(11) NOT NULL,
+  `id_game_area` int(11) NOT NULL,
+  `step` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
 -- Indexes for dumped tables
 --
 
@@ -517,6 +544,22 @@ ALTER TABLE `game_units`
   ADD KEY `id_unit` (`id_unit`);
 
 --
+-- Indexes for table `game_traderoutes`
+--
+ALTER TABLE `game_traderoutes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_game` (`id_game`),
+  ADD KEY `id_user` (`id_user`);
+
+--
+-- Indexes for table `game_traderoute_has_areas`
+--
+ALTER TABLE `game_traderoute_has_areas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_game_traderoute` (`id_game_traderoute`),
+  ADD KEY `id_game_area` (`id_game_area`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -627,6 +670,17 @@ ALTER TABLE `game_units`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `game_traderoutes`
+--
+ALTER TABLE `game_traderoutes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `game_traderoute_has_areas`
+--
+ALTER TABLE `game_traderoute_has_areas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -721,6 +775,18 @@ ALTER TABLE `game_units`
   ADD CONSTRAINT `game_units_game_area` FOREIGN KEY (`id_game_area`) REFERENCES `game_areas` (`id`),
   ADD CONSTRAINT `game_units_game_area_in_port` FOREIGN KEY (`id_game_area_in_port`) REFERENCES `game_areas` (`id`),
   ADD CONSTRAINT `game_units_unit` FOREIGN KEY (`id_unit`) REFERENCES `units` (`id`);
+--
+-- Constraints for table `game_traderoutes`
+--
+ALTER TABLE `game_traderoutes`
+  ADD CONSTRAINT `game_traderoutes_game` FOREIGN KEY (`id_game`) REFERENCES `games` (`id`),
+  ADD CONSTRAINT `game_traderoutes_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`);
+--
+-- Constraints for table `game_traderoute_has_areas`
+--
+ALTER TABLE `game_traderoute_has_areas`
+  ADD CONSTRAINT `game_traderoute_has_areas_game_traderoute` FOREIGN KEY (`id_game_traderoute`) REFERENCES `game_traderoutes` (`id`),
+  ADD CONSTRAINT `game_traderoute_has_areas_game_area` FOREIGN KEY (`id_game_area`) REFERENCES `game_areas` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

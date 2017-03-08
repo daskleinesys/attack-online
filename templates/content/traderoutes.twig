@@ -4,19 +4,96 @@
 
 
 <form method="post" action="{{ absRefPrefix }}traderoutes/">
+    <h2>aktuelle Handelsrouten</h2>
     <table>
-        <colgroup>
-            <col span="2"/>
-            <col span="4"/>
-            <col/>
-        </colgroup>
-
         <tr>
-            <th>Schiffsname</th>
-            <th>aktuelles Seefeld</th>
-            <th>aktueller Hafen</th>
-            <th>Zielfeld</th>
-            <th>Zielhafen</th>
+            <th>Felder</th>
+            <th>aktueller Wert<br><small>(PP)</small></th>
+            <th>maximaler Wert<br><small>(PP)</small></th>
+            <th>löschen</th>
+        </tr>
+        <tr>
+            <td>
+                <strong>14 - Colombia</strong><br>
+                87 - Caribbean Sea<br>
+                101 - North Atlantic Antilles<br>
+                99 - North Atlantic Canary<br>
+                <strong>25 - France-Spain</strong>
+            </td>
+            <td>3<br><small>(6)</small></td>
+            <td>6<br><small>(12)</small></td>
+            <td>
+                <button type="submit" name="delete_traderoute" value="id_traderoute">löschen</button>
+            </td>
+        </tr>
+    </table>
+
+    <h2>gelöschte Handelsrouten</h2>
+    <table>
+        <tr>
+            <th>Felder</th>
+            <th>aktueller Wert<br><small>(PP)</small></th>
+            <th>maximaler Wert<br><small>(PP)</small></th>
+            <th>löschen</th>
+        </tr>
+        <tr>
+            <td>
+                <strong>14 - Colombia</strong><br>
+                87 - Caribbean Sea<br>
+                101 - North Atlantic Antilles<br>
+                99 - North Atlantic Canary<br>
+                <strong>25 - France-Spain</strong>
+            </td>
+            <td>3<br><small>(6)</small></td>
+            <td>6<br><small>(12)</small></td>
+            <td>
+                <button type="submit" name="restore_traderoute" value="id_traderoute">rückgängig</button>
+            </td>
+        </tr>
+    </table>
+
+    <h2>neue Handelsrouten</h2>
+    <table>
+        <tr>
+            <th>Felder</th>
+            <th>maximaler Wert<br><small>(PP)</small></th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>
+                <strong>14 - Colombia</strong><br>
+                87 - Caribbean Sea<br>
+                101 - North Atlantic Antilles<br>
+                99 - North Atlantic Canary<br>
+                <strong>25 - France-Spain</strong>
+            </td>
+            <td>6<br><small>(12)</small></td>
+            <td>
+                <button type="submit" name="new_traderoute_delete" value="id_move">löschen</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="hidden" name="new_traderoute_fields[0]" value="id_game_area" />
+                <input type="hidden" name="new_traderoute_fields[1]" value="id_game_area" />
+                <strong>14 - Colombia</strong><br>
+                87 - Caribbean Sea<br>
+                <label>
+                    <select name="game_areas">
+                        <option selected disabled>land wählen</option>
+                        <option>101 - North Atlantic Antilles</option>
+                        <option>99 - North Atlantic Canary</option>
+                    </select>
+                </label>
+            </td>
+            <td></td>
+            <td>
+                <button type="submit" name="new_traderoute_abort" value="id_move">löschen</button>
+                <br>
+                <button type="submit" name="new_traderoute_add_field" value="1">nächstes feld</button>
+                <br>
+                <button type="submit" name="new_traderoute_finish" value="1">fertig</button>
+            </td>
         </tr>
     </table>
 </form>
