@@ -66,6 +66,8 @@ class SQLCommands {
         $table_game_moves = 'game_moves';
         $table_game_move_has_areas = 'game_move_has_areas';
         $table_game_move_has_units = 'game_move_has_units';
+        $table_game_traderoutes = 'game_traderoutes';
+        $table_game_traderoute_has_areas = 'game_traderoute_has_areas';
         $table_game_units = 'game_units';
         $table_option_types = 'option_types';
         $table_phases = 'phases';
@@ -510,6 +512,58 @@ class SQLCommands {
 
         // delete
         self::setQuery('delete_game_ship', "DELETE FROM $table_game_units WHERE id = :id_game_unit");
+
+
+        /********************
+         * game traderoutes *
+         ********************/
+
+        // query
+        self::setQuery('get_traderoute_by_id', "
+            SELECT traderoutes.*, areas.id_game_area, areas.step
+            FROM $table_game_traderoutes AS traderoutes
+                LEFT JOIN $table_game_traderoute_has_areas AS areas ON (areas.id_game_traderoute = traderoutes.id)
+            WHERE traderoutes.id = :id
+        ");
+        self::setQuery('get_traderoutes_by_game', "
+            SELECT id
+            FROM $table_game_traderoutes AS traderoutes
+            WHERE id_game = :id_game
+        ");
+        self::setQuery('get_traderoutes_by_game_and_user', "
+            SELECT id
+            FROM $table_game_traderoutes AS traderoutes
+            WHERE id_game = :id_game AND id_user = :id_user
+        ");
+
+        // create
+        self::setQuery('insert_traderoute', "
+            INSERT INTO $table_game_traderoutes (
+                id_game, id_user, current_value, max_value
+            ) VALUES (
+                :id_game, :id_user, :current_value, :max_value
+            )
+        ");
+        self::setQuery('insert_area_for_traderoute', "
+            INSERT INTO $table_game_traderoute_has_areas (
+                id_game_traderoute, id_game_area, step
+            ) VALUES (
+                :id_game_traderoute, :id_game_area, :step
+            )
+        ");
+
+        // delete
+        self::setQuery('delete_traderoute', "
+            DELETE FROM $table_game_traderoutes
+            WHERE id = :id
+        ");
+        self::setQuery('delete_traderoute_areas', "
+            DELETE FROM $table_game_traderoute_has_areas
+            WHERE id_game_traderoute = :id_game_traderoute
+        ");
+
+        // update
+        self::setQuery('set_traderoute_value', "UPDATE $table_game_traderoutes SET current_value = :current_value WHERE id = :id");
     }
 
 }
