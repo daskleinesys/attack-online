@@ -3,6 +3,7 @@ namespace Attack\Tools;
 
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\ModelTradeRoute;
 use Attack\Model\User\ModelIsInGameInfo;
 
 class UserViewHelper {
@@ -43,6 +44,23 @@ class UserViewHelper {
         // money from traderoutes
         $output['traderoutes'] = 0;
         $output['trproduction'] = 0;
+        $iter = ModelTradeRoute::iterator($id_user, $id_game);
+        while ($iter->hasNext()) {
+            $output['traderoutes']++;
+            /** @var ModelTradeRoute $traderoute */
+            $traderoute = $iter->next();
+            $output['trproduction'] += $traderoute->getCurrentValue() * 2;
+            // increment lowest combo-count (traderoute counts as joker
+            $lowest_combo_count = $combos[RESOURCE_OIL];
+            $lowest_res = RESOURCE_OIL;
+            foreach ($combos as $res_key => $res_count) {
+                if ($res_count < $lowest_combo_count) {
+                    $lowest_combo_count = $res_count;
+                    $lowest_res = $res_key;
+                }
+            }
+            $combos[$lowest_res]++;
+        }
 
         // money from combos
         $combo_count = $combos[RESOURCE_OIL];

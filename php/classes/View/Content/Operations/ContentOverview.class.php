@@ -1,10 +1,10 @@
 <?php
 namespace Attack\View\Content\Operations;
 
-use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelIsInGameInfo;
 use Attack\Model\User\ModelUser;
+use Attack\Tools\UserViewHelper;
 
 class ContentOverview extends Interfaces\ContentOperation {
 
@@ -30,47 +30,15 @@ class ContentOverview extends Interfaces\ContentOperation {
 
     public function getUserInfo(ModelIsInGameInfo $userIngame) {
         $user = ModelUser::getUser($userIngame->getIdUser());
-
-        // money on bank
-        $money = $userIngame->getMoney();
-
-        // money from resources
-        $resproduction = 0;
-        $combos = array();
-        $combos[RESOURCE_OIL] = 0;
-        $combos[RESOURCE_TRANSPORT] = 0;
-        $combos[RESOURCE_INDUSTRY] = 0;
-        $combos[RESOURCE_MINERALS] = 0;
-        $combos[RESOURCE_POPULATION] = 0;
-        $iter = ModelGameArea::iterator($user->getId(), ModelGame::getCurrentGame()->getId());
-        while ($iter->hasNext()) {
-            $area = $iter->next();
-            $resproduction += $area->getProductivity();
-            $combos[$area->getIdResource()]++;
-        }
-
-        // money from traderoutes
-        $traderoutes = 0;
-
-        // money from combos
-        $combo_count = $combos[RESOURCE_OIL];
-        foreach ($combos as $res) {
-            if ($res < $combo_count) {
-                $combo_count = $res;
-            }
-        }
-        $combo_money = $combo_count * 4;
-
-        // sum
-        $sum = $money + $resproduction + $traderoutes + $combo_money;
+        $productionData = UserViewHelper::getCurrentProductionForUserInGame($user->getId(), ModelGame::getCurrentGame()->getId());
 
         $userData = array();
         $userData['login'] = $user->getLogin();
-        $userData['money'] = $money;
-        $userData['resproduction'] = $resproduction;
-        $userData['trproduction'] = $traderoutes;
-        $userData['comboproduction'] = $combo_money;
-        $userData['sum'] = $sum;
+        $userData['money'] = $productionData['money'];
+        $userData['resproduction'] = $productionData['resproduction'];
+        $userData['trproduction'] = $productionData['trproduction'];
+        $userData['comboproduction'] = $productionData['comboproduction'];
+        $userData['sum'] = $productionData['sum'];
         return $userData;
     }
 
