@@ -30,16 +30,26 @@ class CheckSessions {
         // check if a user is logged in
         if (ModelUser::getCurrentUser()->getId() <= 0) {
             unset($_SESSION['id_game']);
+            setcookie('id_game', '', time() - 3600, ABS_REF_PREFIX);
             return;
         }
 
         // check if user selected another game
         if (isset($_POST['select_game'])) {
             $_SESSION['id_game'] =  (int) $_POST['select_game'];
+            // if user login is stored in a cookie also store the game
+            if (isset($_COOKIE['user_token'])) {
+                setcookie('id_game', (int) $_POST['select_game'], time() + (60 * 60 * 24 * 30), ABS_REF_PREFIX);
+            }
         }
 
+        // check cookie
         if (!isset($_SESSION['id_game'])) {
-            return;
+            if (isset($_COOKIE['id_game'])) {
+                $_SESSION['id_game'] = $_COOKIE['id_game'];
+            } else {
+                return;
+            }
         }
 
         // check if game exists and is running/started
@@ -47,10 +57,12 @@ class CheckSessions {
             $game = ModelGame::getGame($_SESSION['id_game']);
         } catch(NullPointerException $ex) {
             unset($_SESSION['id_game']);
+            setcookie('id_game', '', time() - 3600, ABS_REF_PREFIX);
             return;
         }
         if ($game->getStatus() !== GAME_STATUS_STARTED && $game->getStatus() !== GAME_STATUS_RUNNING) {
             unset($_SESSION['id_game']);
+            setcookie('id_game', '', time() - 3600, ABS_REF_PREFIX);
             return;
         }
 
@@ -59,6 +71,7 @@ class CheckSessions {
             ModelIsInGameInfo::getIsInGameInfo(ModelUser::getCurrentUser()->getId(), $_SESSION['id_game']);
         } catch(NullPointerException $ex) {
             unset($_SESSION['id_game']);
+            setcookie('id_game', '', time() - 3600, ABS_REF_PREFIX);
             return;
         }
 
