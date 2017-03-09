@@ -75,11 +75,11 @@ class ModelTradeRoute {
     }
 
     /**
-     * @param int $id_game
      * @param int|null $id_user
+     * @param int $id_game
      * @return ModelIterator
      */
-    public static function iterator($id_game, $id_user = null) {
+    public static function iterator($id_user = null, $id_game) {
         $query = 'get_traderoutes_by_game';
         $dict = [
             ':id_game' => $id_game

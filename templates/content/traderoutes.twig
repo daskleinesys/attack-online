@@ -8,55 +8,59 @@
     <table>
         <tr>
             <th>Felder</th>
-            <th>aktueller Wert<br><small>(PP)</small></th>
-            <th>maximaler Wert<br><small>(PP)</small></th>
-            <th>löschen</th>
+            <th>
+                aktueller Wert<br>
+                <small>(PP)</small>
+            </th>
+            <th>
+                maximaler Wert<br>
+                <small>(PP)</small>
+            </th>
+            <th></th>
         </tr>
-        <tr>
-            <td>
-                <strong>14 - Colombia</strong><br>
-                87 - Caribbean Sea<br>
-                101 - North Atlantic Antilles<br>
-                99 - North Atlantic Canary<br>
-                <strong>25 - France-Spain</strong>
-            </td>
-            <td>3<br><small>(6)</small></td>
-            <td>6<br><small>(12)</small></td>
-            <td>
-                <button type="submit" name="delete_traderoute" value="id_traderoute">löschen</button>
-            </td>
-        </tr>
+        {% for traderoute in traderoutes %}
+            <tr>
+                <td>
+                    {% for area in traderoute.areas %}
+                        {% if loop.first or loop.last %}
+                            <strong>
+                        {% endif %}
+                        {{ area.number }} - {{ area.name }}
+                        {% if loop.first or loop.last %}
+                            </strong>
+                        {% endif %}
+                        {% if not loop.last %}
+                        <br>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {{ traderoute.current_value }}
+                    <br>
+                    <small>({{ traderoute.current_value * 2 }})</small>
+                </td>
+                <td>
+                    {{ traderoute.max_value }}
+                    <br>
+                    <small>({{ traderoute.max_value * 2 }})</small>
+                </td>
+                <td>
+                    <button type="submit" name="delete_traderoute" value="{{ traderoute.id }}">löschen</button>
+                </td>
+            </tr>
+        {% endfor %}
     </table>
 
     <h2>gelöschte Handelsrouten</h2>
     <table>
         <tr>
             <th>Felder</th>
-            <th>aktueller Wert<br><small>(PP)</small></th>
-            <th>maximaler Wert<br><small>(PP)</small></th>
-            <th>löschen</th>
-        </tr>
-        <tr>
-            <td>
-                <strong>14 - Colombia</strong><br>
-                87 - Caribbean Sea<br>
-                101 - North Atlantic Antilles<br>
-                99 - North Atlantic Canary<br>
-                <strong>25 - France-Spain</strong>
-            </td>
-            <td>3<br><small>(6)</small></td>
-            <td>6<br><small>(12)</small></td>
-            <td>
-                <button type="submit" name="restore_traderoute" value="id_traderoute">rückgängig</button>
-            </td>
-        </tr>
-    </table>
-
-    <h2>neue Handelsrouten</h2>
-    <table>
-        <tr>
-            <th>Felder</th>
-            <th>maximaler Wert<br><small>(PP)</small></th>
+            <th>aktueller Wert<br>
+                <small>(PP)</small>
+            </th>
+            <th>maximaler Wert<br>
+                <small>(PP)</small>
+            </th>
             <th></th>
         </tr>
         <tr>
@@ -67,15 +71,46 @@
                 99 - North Atlantic Canary<br>
                 <strong>25 - France-Spain</strong>
             </td>
-            <td>6<br><small>(12)</small></td>
+            <td>3<br>
+                <small>(6)</small>
+            </td>
+            <td>6<br>
+                <small>(12)</small>
+            </td>
+            <td>
+                <button type="submit" name="restore_traderoute" value="id_traderoute">rückgängig</button>
+            </td>
+        </tr>
+    </table>
+
+    <h2>neue Handelsrouten</h2>
+    <table>
+        <tr>
+            <th>Felder</th>
+            <th>maximaler Wert<br>
+                <small>(PP)</small>
+            </th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>
+                <strong>14 - Colombia</strong><br>
+                87 - Caribbean Sea<br>
+                101 - North Atlantic Antilles<br>
+                99 - North Atlantic Canary<br>
+                <strong>25 - France-Spain</strong>
+            </td>
+            <td>6<br>
+                <small>(12)</small>
+            </td>
             <td>
                 <button type="submit" name="new_traderoute_delete" value="id_move">löschen</button>
             </td>
         </tr>
         <tr>
             <td>
-                <input type="hidden" name="new_traderoute_fields[0]" value="id_game_area" />
-                <input type="hidden" name="new_traderoute_fields[1]" value="id_game_area" />
+                <input type="hidden" name="new_traderoute_fields[0]" value="id_game_area"/>
+                <input type="hidden" name="new_traderoute_fields[1]" value="id_game_area"/>
                 <strong>14 - Colombia</strong><br>
                 87 - Caribbean Sea<br>
                 <label>
