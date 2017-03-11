@@ -97,15 +97,25 @@
 
                     {% if country.traderoute %}
                         <tr>
-                            <th>Handelsroute</th>
+                            <th colspan="2">Handelsroute</th>
                         </tr>
                         <tr>
-                            <td>{{ country.traderoute.area1.id }}</td>
-                            <td>{{ country.traderoute.area1.name }}</td>
+                            <td colspan="2">
+                                {{ country.traderoute.start_area.number }} - {{ country.traderoute.start_area.name }}
+                            </td>
                         </tr>
                         <tr>
-                            <td>{{ country.traderoute.area2.id }}</td>
-                            <td>{{ country.traderoute.area2.name }}</td>
+                            <td colspan="2">
+                                {{ country.traderoute.target_area.number }} - {{ country.traderoute.target_area.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Wert (PP)
+                            </td>
+                            <td>
+                                {{ country.traderoute.current_value }} ({{ country.traderoute.current_value * 2 }})
+                            </td>
                         </tr>
                     {% endif %}
 
@@ -125,12 +135,12 @@
                     <img src="{{absRefPrefix}}dist/images/tank3.gif" class="tank" alt="" />
                 </div>
                 {% endif %}
-                {% if country.traderoute %}
-                <div class="traderoute" style="top:{{country.yres}}px; left:{{country.xres}}px;" id="traderoute_{{country.number}}">
-                    <img src="{{absRefPrefix}}dist/images/traderoute.gif" class="traderoute" alt="" />
-                </div>
-                {% endif %}
             #}
+            {% if country.traderoute %}
+                <div class="traderoute" style="top:{{ country.yres }}px; left:{{ country.xres }}px;">
+                    <img src="{{ absRefPrefix }}dist/images/traderoute.gif" class="traderoute" alt=""/>
+                </div>
+            {% endif %}
             {% if country.units %}
                 <div class="units" style="top:{{ country.yres }}px; left:{{ country.xres }}px;">
                     <div class="landunits">
@@ -174,26 +184,32 @@
                 </li>
                 <li>
                     <label>
-                        <input type="radio" name="display" onchange="$('body').removeClass('show-landunits show-ships').addClass('show-resources')"
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-landunits show-ships show-traderoutes').addClass('show-resources')"
                                checked="checked"/>
                         Ressourcen
                     </label>
                 </li>
                 <li>
                     <label>
-                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-ships').addClass('show-landunits')"/>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-ships show-traderoutes').addClass('show-landunits')"/>
                         Landeinheiten
                     </label>
                 </li>
                 <li>
                     <label>
-                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits').addClass('show-ships')"/>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits show-traderoutes').addClass('show-ships')"/>
                         Schiffe
                     </label>
                 </li>
                 <li>
                     <label>
-                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits show-ships')"/>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits show-ships').addClass('show-traderoutes')"/>
+                        Handelsrouten
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="display" onchange="$('body').removeClass('show-resources show-landunits show-ships show-traderoutes')"/>
                         Nur Länder
                     </label>
                 </li>

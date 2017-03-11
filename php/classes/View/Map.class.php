@@ -6,6 +6,7 @@ use Attack\Exceptions\MapException;
 use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelGameLandUnit;
 use Attack\Model\Game\ModelGameShip;
+use Attack\Model\Game\ModelTradeRoute;
 use Attack\Model\Units\ModelLandUnit;
 use Attack\Model\Units\ModelShip;
 use Attack\Database\SQLConnector;
@@ -100,8 +101,35 @@ class Map {
             }
             $country['shipCount'] = $shipCount;
 
-            $countryData[] = $country;
+            $countryData[$country['id_game_area']] = $country;
         }
+
+        // check traderoutes
+        if ($game->getStatus() === GAME_STATUS_RUNNING) {
+            $iterator = ModelTradeRoute::iterator(null, $id_game);
+            while ($iterator->hasNext()) {
+                /** @var ModelTradeRoute $traderoute */
+                $traderoute = $iterator->next();
+                $steps = $traderoute->getSteps();
+                $startArea = ModelGameArea::getGameArea($id_game, $steps[0]);
+                $targetArea = ModelGameArea::getGameArea($id_game, end($steps));
+                foreach ($traderoute->getSteps() as $id_game_area) {
+                    $countryData[$id_game_area]['traderoute'] = [
+                        'start_area' => [
+                            'number' => $startArea->getNumber(),
+                            'name' => $startArea->getName()
+                        ],
+                        'target_area' => [
+                            'number' => $targetArea->getNumber(),
+                            'name' => $targetArea->getName()
+                        ],
+                        'current_value' => $traderoute->getCurrentValue()
+                    ];
+                }
+            }
+        }
+
+
         $data['countryData'] = $countryData;
 
         return $data;

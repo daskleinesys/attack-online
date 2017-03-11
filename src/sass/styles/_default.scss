@@ -848,6 +848,11 @@ body.show-ships {
         display: block;
     }
 }
+body.show-traderoutes {
+    div.imagemap div.traderoute {
+        display: block;
+    }
+}
 .map--toggle-status-display {
     padding: 10px 20px;
 
