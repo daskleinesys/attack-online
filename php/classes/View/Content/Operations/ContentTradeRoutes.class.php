@@ -23,6 +23,7 @@ class ContentTradeRoutes extends ContentOperation {
         }
 
         $this->showTradeRoutes($data);
+        $this->showCreateMoves($data);
 
         $this->checkCurrentPhase($data, PHASE_TRADEROUTES);
     }
@@ -62,7 +63,33 @@ class ContentTradeRoutes extends ContentOperation {
             }
             $tradeRoutesViewData[] = $tradeRouteViewData;
         }
-        $data['traderoutes'] = $tradeRoutesViewData;
+        $data['active_traderoutes'] = $tradeRoutesViewData;
+    }
+
+    private function showCreateMoves(array &$data) {
+        $newTradeRoutesViewData = [];
+        // TODO : implement traderoutemove
+        return;
+        $iterator = ModelTradeRoute::iterator(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+        while ($iterator->hasNext()) {
+            /** @var ModelTradeRoute $tradeRoute */
+            $tradeRoute = $iterator->next();
+            $tradeRouteViewData = [
+                'id' => $tradeRoute->getId(),
+                'current_value' => $tradeRoute->getCurrentValue(),
+                'max_value' => $tradeRoute->getMaxValue(),
+                'areas' => []
+            ];
+            foreach ($tradeRoute->getSteps() as $step => $id_game_area) {
+                $gameArea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $id_game_area);
+                $tradeRouteViewData['areas'][] = [
+                    'number' => $gameArea->getNumber(),
+                    'name' => $gameArea->getName()
+                ];
+            }
+            $newTradeRoutesViewData[] = $tradeRouteViewData;
+        }
+        $data['new_traderoute_moves'] = $newTradeRoutesViewData;
     }
 
 }
