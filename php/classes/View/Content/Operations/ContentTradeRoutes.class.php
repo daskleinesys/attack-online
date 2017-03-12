@@ -3,7 +3,6 @@ namespace Attack\View\Content\Operations;
 
 use Attack\Controller\Game\Moves\TradeRoutesController;
 use Attack\Exceptions\ControllerException;
-use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelTradeRoute;
@@ -100,6 +99,9 @@ class ContentTradeRoutes extends ContentOperation {
                 'number' => $gameArea->getNumber(),
                 'name' => $gameArea->getName()
             ];
+            if (count($viewData) > 1 && $gameArea->getIdType() === TYPE_LAND) {
+                $data['new_traderoute_finished'] = true;
+            }
         }
         if (!empty($viewData)) {
             $data['new_traderoute_game_areas'] = $viewData;
@@ -127,6 +129,13 @@ class ContentTradeRoutes extends ContentOperation {
             $areas = ModelGameArea::getGameArea($this->id_game, $id_game_area)->getAdjacentGameAreas();
             foreach ($areas as $id_adjacent_game_area) {
                 $gameArea = ModelGameArea::getGameArea($this->id_game, $id_adjacent_game_area);
+                if (
+                    count($data['new_traderoute_game_areas']) === 1 && $gameArea->getIdType() === TYPE_LAND
+                    ||
+                    $gameArea->getIdType() === TYPE_LAND && $gameArea->getIdUser() !== $this->id_user
+                ) {
+                    continue;
+                }
                 $viewData[] = [
                     'id' => $gameArea->getId(),
                     'number' => $gameArea->getNumber(),
@@ -138,6 +147,9 @@ class ContentTradeRoutes extends ContentOperation {
             while ($iterator->hasNext()) {
                 /** @var ModelGameArea $gameArea */
                 $gameArea = $iterator->next();
+                if ($gameArea->getIdType() !== TYPE_LAND) {
+                    continue;
+                }
                 $viewData[] = [
                     'id' => $gameArea->getId(),
                     'number' => $gameArea->getNumber(),

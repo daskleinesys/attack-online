@@ -129,33 +129,37 @@
             <td>
                 {% for area in new_traderoute_game_areas %}
                     <input type="hidden" name="new_traderoute_game_areas[{{ loop.index }}]" value="{{ area.id }}"/>
-                    {% if loop.first %}
+                    {% if loop.first or (new_traderoute_finished and loop.last) %}
                         <strong>
                     {% endif %}
                     {{ area.number }} - {{ area.name }}
-                    {% if loop.first %}
+                    {% if loop.first or (new_traderoute_finished and loop.last) %}
                         </strong>
                     {% endif %}
                     <br>
                 {% endfor %}
-                <label>
-                    <select name="new_traderoute_next_area_options">
-                        <option selected disabled>land wählen</option>
-                        {% for area in new_traderoute_next_area_options %}
-                            <option value="{{ area.id }}">{{ area.number }} - {{ area.name }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
+                {% if not new_traderoute_finished %}
+                    <label>
+                        <select name="new_traderoute_next_area_options">
+                            <option selected disabled>land wählen</option>
+                            {% for area in new_traderoute_next_area_options %}
+                                <option value="{{ area.id }}">{{ area.number }} - {{ area.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                {% endif %}
             </td>
             <td></td>
             <td>
                 {% if new_traderoute_game_areas %}
-                    <button type="submit" name="new_traderoute_abort" value="1">löschen</button>
+                    <button type="submit" name="new_traderoute_abort" value="1">abbrechen</button>
                     <br>
                 {% endif %}
-                <button type="submit" name="new_traderoute_add_area" value="1">nächstes feld</button>
-                <br>
-                <button type="submit" name="new_traderoute_finish" value="1">fertig</button>
+                {% if new_traderoute_finished %}
+                    <button type="submit" name="new_traderoute_finish" value="1">erstellen</button>
+                {% else %}
+                    <button type="submit" name="new_traderoute_add_area" value="1">nächstes feld</button>
+                {% endif %}
             </td>
         </tr>
     </table>
