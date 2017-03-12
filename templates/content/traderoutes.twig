@@ -127,23 +127,33 @@
         {% endfor %}
         <tr>
             <td>
-                <input type="hidden" name="new_traderoute_fields[0]" value="id_game_area"/>
-                <input type="hidden" name="new_traderoute_fields[1]" value="id_game_area"/>
-                <strong>14 - Colombia</strong><br>
-                87 - Caribbean Sea<br>
+                {% for area in new_traderoute_game_areas %}
+                    <input type="hidden" name="new_traderoute_game_areas[{{ loop.index }}]" value="{{ area.id }}"/>
+                    {% if loop.first %}
+                        <strong>
+                    {% endif %}
+                    {{ area.number }} - {{ area.name }}
+                    {% if loop.first %}
+                        </strong>
+                    {% endif %}
+                    <br>
+                {% endfor %}
                 <label>
-                    <select name="game_areas">
+                    <select name="new_traderoute_next_area_options">
                         <option selected disabled>land wählen</option>
-                        <option>101 - North Atlantic Antilles</option>
-                        <option>99 - North Atlantic Canary</option>
+                        {% for area in new_traderoute_next_area_options %}
+                            <option value="{{ area.id }}">{{ area.number }} - {{ area.name }}</option>
+                        {% endfor %}
                     </select>
                 </label>
             </td>
             <td></td>
             <td>
-                <button type="submit" name="new_traderoute_abort" value="id_move">löschen</button>
-                <br>
-                <button type="submit" name="new_traderoute_add_field" value="1">nächstes feld</button>
+                {% if new_traderoute_game_areas %}
+                    <button type="submit" name="new_traderoute_abort" value="1">löschen</button>
+                    <br>
+                {% endif %}
+                <button type="submit" name="new_traderoute_add_area" value="1">nächstes feld</button>
                 <br>
                 <button type="submit" name="new_traderoute_finish" value="1">fertig</button>
             </td>

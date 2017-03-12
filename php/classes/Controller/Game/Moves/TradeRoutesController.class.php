@@ -25,12 +25,9 @@ class TradeRoutesController extends PhaseController {
         $this->fixatePhase(true);
     }
 
-    public function addCreateTradeRouteMove() {
+    public function create($id_user, $id_game, $round, $steps) {
         // TODO : implement
-    }
-
-    public function addDeleteTradeRouteMove() {
-        // TODO : implement
+        throw new ControllerException('TODO : implement');
     }
 
     /**
