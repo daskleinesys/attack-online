@@ -5,10 +5,16 @@ use Attack\Controller\Game\Moves\TradeRoutesController;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelTradeRoute;
+use Attack\Model\Game\Moves\ModelTradeRouteMove;
 use Attack\Model\User\ModelUser;
 use Attack\View\Content\Operations\Interfaces\ContentOperation;
 
 class ContentTradeRoutes extends ContentOperation {
+
+    /**
+     * @var TradeRoutesController
+     */
+    private $controller;
 
     public function getTemplate() {
         return 'traderoutes';
@@ -17,6 +23,7 @@ class ContentTradeRoutes extends ContentOperation {
     public function run(array &$data) {
         $data['template'] = $this->getTemplate();
         $this->addCurrentGameInfo($data);
+        $this->controller = new TradeRoutesController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
 
         if (!$this->checkFixate($data, PHASE_TRADEROUTES)) {
             $this->handleInput($data);
@@ -32,11 +39,10 @@ class ContentTradeRoutes extends ContentOperation {
         if (empty($_POST)) {
             return;
         }
-        $controller = new TradeRoutesController(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
 
         // fixating sea move
         if (isset($_POST['fixate_traderoutes'])) {
-            $controller->finishMove();
+            $this->controller->finishMove();
             $this->checkFixate($data, PHASE_TRADEROUTES);
             return;
         }
@@ -51,7 +57,9 @@ class ContentTradeRoutes extends ContentOperation {
             $tradeRouteViewData = [
                 'id' => $tradeRoute->getId(),
                 'current_value' => $tradeRoute->getCurrentValue(),
+                'current_pp' => $tradeRoute->getCurrentValue() * TRADEROUTE_PP_MULTIPLIER,
                 'max_value' => $tradeRoute->getMaxValue(),
+                'max_pp' => $tradeRoute->getMaxValue() * TRADEROUTE_PP_MULTIPLIER,
                 'areas' => []
             ];
             foreach ($tradeRoute->getSteps() as $step => $id_game_area) {
@@ -67,27 +75,35 @@ class ContentTradeRoutes extends ContentOperation {
     }
 
     private function showCreateMoves(array &$data) {
+        $game = ModelGame::getCurrentGame();
+        $round = $game->getRound();
+        $phase = $game->getIdPhase();
+        if ($phase > PHASE_TRADEROUTES) {
+            ++$round;
+        }
+
         $newTradeRoutesViewData = [];
-        // TODO : implement traderoutemove
-        return;
-        $iterator = ModelTradeRoute::iterator(ModelUser::getCurrentUser()->getId(), ModelGame::getCurrentGame()->getId());
+        $iterator = ModelTradeRouteMove::iterator(ModelUser::getCurrentUser()->getId(), $game->getId(), $round);
         while ($iterator->hasNext()) {
-            /** @var ModelTradeRoute $tradeRoute */
-            $tradeRoute = $iterator->next();
-            $tradeRouteViewData = [
-                'id' => $tradeRoute->getId(),
-                'current_value' => $tradeRoute->getCurrentValue(),
-                'max_value' => $tradeRoute->getMaxValue(),
+            /** @var ModelTradeRouteMove $move */
+            $move = $iterator->next();
+            $steps = $move->getSteps();
+            $traderoute_max_value = $this->controller->checkShortestRoute($steps[0], end($steps)) * TRADEROUTE_MAX_VALUE_MULTIPLIER;
+            $traderoute_max_pp = $traderoute_max_value * TRADEROUTE_PP_MULTIPLIER;
+            $moveViewData = [
+                'id' => $move->getId(),
+                'traderoute_max_value' => $traderoute_max_value,
+                'traderoute_max_pp' => $traderoute_max_pp,
                 'areas' => []
             ];
-            foreach ($tradeRoute->getSteps() as $step => $id_game_area) {
-                $gameArea = ModelGameArea::getGameArea(ModelGame::getCurrentGame()->getId(), $id_game_area);
-                $tradeRouteViewData['areas'][] = [
+            foreach ($steps as $step => $id_game_area) {
+                $gameArea = ModelGameArea::getGameArea($game->getId(), $id_game_area);
+                $moveViewData['areas'][] = [
                     'number' => $gameArea->getNumber(),
                     'name' => $gameArea->getName()
                 ];
             }
-            $newTradeRoutesViewData[] = $tradeRouteViewData;
+            $newTradeRoutesViewData[] = $moveViewData;
         }
         $data['new_traderoute_moves'] = $newTradeRoutesViewData;
     }

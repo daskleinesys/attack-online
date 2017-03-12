@@ -30,4 +30,9 @@ class TradeRoutesController extends PhaseController {
         // TODO : implement
     }
 
+    public function checkShortestRoute($id_game_area_start, $id_game_area_destination) {
+        // TODO : implement
+        return 3;
+    }
+
 }

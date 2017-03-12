@@ -49,7 +49,7 @@ class UserViewHelper {
             $output['traderoutes']++;
             /** @var ModelTradeRoute $traderoute */
             $traderoute = $iter->next();
-            $output['trproduction'] += $traderoute->getCurrentValue() * 2;
+            $output['trproduction'] += $traderoute->getCurrentValue() * TRADEROUTE_PP_MULTIPLIER;
             // increment lowest combo-count (traderoute counts as joker
             $lowest_combo_count = $combos[RESOURCE_OIL];
             $lowest_res = RESOURCE_OIL;

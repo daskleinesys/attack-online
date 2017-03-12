@@ -123,7 +123,8 @@ class Map {
                             'number' => $targetArea->getNumber(),
                             'name' => $targetArea->getName()
                         ],
-                        'current_value' => $traderoute->getCurrentValue()
+                        'current_value' => $traderoute->getCurrentValue(),
+                        'current_pp' => $traderoute->getCurrentValue() * TRADEROUTE_PP_MULTIPLIER
                     ];
                 }
             }

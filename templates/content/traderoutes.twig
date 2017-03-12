@@ -39,12 +39,12 @@
                     <td>
                         {{ traderoute.current_value }}
                         <br>
-                        <small>({{ traderoute.current_value * 2 }})</small>
+                        <small>({{ traderoute.current_pp }})</small>
                     </td>
                     <td>
                         {{ traderoute.max_value }}
                         <br>
-                        <small>({{ traderoute.max_value * 2 }})</small>
+                        <small>({{ traderoute.max_pp }})</small>
                     </td>
                     <td>
                         <button type="submit" name="delete_traderoute" value="{{ traderoute.id }}">löschen</button>
@@ -118,7 +118,7 @@
                 <td>
                     {{ move.traderoute_max_value }}
                     <br>
-                    <small>({{ move.traderoute_max_value * 2 }})</small>
+                    <small>({{ move.traderoute_max_pp }})</small>
                 </td>
                 <td>
                     <button type="submit" name="delete_traderoute_move" value="{{ move.id }}">löschen</button>
