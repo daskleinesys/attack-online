@@ -234,6 +234,13 @@ class ModelGameArea {
     }
 
     /**
+     * @return int
+     */
+    public function getIdGame() {
+        return $this->id_game;
+    }
+
+    /**
      * @return ModelArea
      */
     public function getArea() {
@@ -321,7 +328,7 @@ class ModelGameArea {
         $dict = array(':id_game_area' => $this->id);
         $result = SQLConnector::getInstance()->epp($query, $dict);
         foreach ($result as $line) {
-            $this->adjacentGameAreas[] = $line['id_adjacent_game_area'];
+            $this->adjacentGameAreas[] = (int)$line['id_adjacent_game_area'];
         }
 
         return $this->adjacentGameAreas;

@@ -88,7 +88,9 @@ class ContentTradeRoutes extends ContentOperation {
             /** @var ModelTradeRouteMove $move */
             $move = $iterator->next();
             $steps = $move->getSteps();
-            $traderoute_max_value = $this->controller->checkShortestRoute($steps[0], end($steps)) * TRADEROUTE_MAX_VALUE_MULTIPLIER;
+            $startArea = ModelGameArea::getGameArea($game->getId(), $steps[0]);
+            $destinationArea = ModelGameArea::getGameArea($game->getId(), end($steps));
+            $traderoute_max_value = $this->controller->checkShortestRoute($startArea, $destinationArea) * TRADEROUTE_MAX_VALUE_MULTIPLIER;
             $traderoute_max_pp = $traderoute_max_value * TRADEROUTE_PP_MULTIPLIER;
             $moveViewData = [
                 'id' => $move->getId(),
