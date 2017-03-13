@@ -114,7 +114,7 @@ class ContentTradeRoutes extends ContentOperation {
         }
         $steps = [];
         foreach ($_POST['new_traderoute_game_areas'] as $id_game_area) {
-            $steps = (int)$id_game_area;
+            $steps[] = (int)$id_game_area;
         }
         $this->controller->create($this->id_user, $this->id_game, $this->round, $steps);
         $data['status'] = [

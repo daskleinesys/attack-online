@@ -5,6 +5,7 @@ use Attack\Controller\Interfaces\PhaseController;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\Moves\ModelTradeRouteMove;
 
 class TradeRoutesController extends PhaseController {
 
@@ -26,8 +27,20 @@ class TradeRoutesController extends PhaseController {
     }
 
     public function create($id_user, $id_game, $round, $steps) {
-        // TODO : implement
-        throw new ControllerException('TODO : implement');
+        // 1. check if deletion
+        // 1.a if deletion and no other deletion for this traderoute exists, create move + return
+
+        // 2. validate
+        // 2.a start + destination area are land and belong to user
+        // 2.b neither area in steps is part of another move (except start+destination in deletion moves)
+        // 2.c start + destination are not part of existing traderoutes (except these are going to be deleted)
+        // 2.d all sea areas contain at least one non-submarine ship from the user
+        // 2.e the route is valid
+        // 2.f the shortest route is at least 3
+
+        // 3. create move model
+        ModelTradeRouteMove::create($id_user, $id_game, $round, $steps);
+        throw new ControllerException('TODO : implement validation');
     }
 
     /**
