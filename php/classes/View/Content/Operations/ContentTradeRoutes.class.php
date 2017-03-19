@@ -2,6 +2,7 @@
 namespace Attack\View\Content\Operations;
 
 use Attack\Controller\Game\Moves\TradeRoutesController;
+use Attack\Controller\Game\Moves\TradeRouteValidator;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
@@ -57,6 +58,11 @@ class ContentTradeRoutes extends ContentOperation {
     }
 
     private function handleInput(array &$data) {
+        // delete traderoute
+        if (isset($_POST['delete_traderoute'])) {
+            throw new \Exception('TODO : implement traderoute deletion');
+        }
+
         // delete traderoute move
         if (isset($_POST['delete_traderoute_move'])) {
             try {
@@ -214,7 +220,7 @@ class ContentTradeRoutes extends ContentOperation {
             $steps = $move->getSteps();
             $startArea = ModelGameArea::getGameArea($this->id_game, $steps[0]);
             $destinationArea = ModelGameArea::getGameArea($this->id_game, end($steps));
-            $traderoute_max_value = $this->controller->checkShortestRoute($startArea, $destinationArea) * TRADEROUTE_MAX_VALUE_MULTIPLIER;
+            $traderoute_max_value = TradeRouteValidator::checkShortestRoute($startArea, $destinationArea) * TRADEROUTE_MAX_VALUE_MULTIPLIER;
             $traderoute_max_pp = $traderoute_max_value * TRADEROUTE_PP_MULTIPLIER;
             $moveViewData = [
                 'id' => $move->getId(),
