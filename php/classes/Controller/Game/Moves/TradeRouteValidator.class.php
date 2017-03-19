@@ -4,6 +4,7 @@ namespace Attack\Controller\Game\Moves;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGameArea;
+use Attack\Model\Game\ModelGameShip;
 use Attack\Model\Game\ModelTradeRoute;
 use Attack\Model\Game\Moves\ModelTradeRouteMove;
 
@@ -30,15 +31,19 @@ class TradeRouteValidator {
         $this->round = $round;
     }
 
-    public function loadAllTradeRoutes() {
+    /**
+     * validate move according to current traderoute and other moves
+     *
+     * @param array $steps
+     * @param bool $execute_other_moves_first
+     * @throws ControllerException
+     */
+    public function validateMove(array $steps, $execute_other_moves_first = false) {
+        $this->loadAllTradeRoutes();
+        if ($execute_other_moves_first) {
+            $this->simulateAllMoves();
+        }
 
-    }
-
-    public function simulateAllMoves() {
-
-    }
-
-    public function validateMove(array $steps) {
         // 1. check if deletion
         if (count($steps) === 2) {
             // 1.a check if traderoute with same start+destination exists
@@ -60,19 +65,60 @@ class TradeRouteValidator {
                     throw new ControllerException('invalid move, traderoute already deleted');
                 }
             }
-            return true;
+            return;
         }
 
         // 2. validate
-        // 2.a start + destination area are land and belong to user
-        // 2.b neither area in steps is part of another move or trade-route (except traderoute is going to be deleted)
-        // 2.c start + destination are not part of existing traderoutes (except these are going to be deleted)
-        // 2.d all sea areas contain at least one non-submarine ship from the user
-        // 2.e the route is valid
-        // 2.f the shortest route is at least 3
-        throw new ControllerException('TODO : implement validation');
+        // 2.a start area is land, belongs to user and isn’t part of another traderoute
+        $startArea = ModelGameArea::getGameArea($this->id_game, array_shift($steps));
+        if ($startArea->getIdType() !== TYPE_LAND) {
+            throw new ControllerException('invalid move, start area is no land area');
+        }
+        if ($startArea->getIdUser() !== $this->id_user) {
+            throw new ControllerException('invalid move, start area doesn\'t belong to user');
+        }
+        if (in_array($startArea->getId(), $this->tradeRouteAreas)) {
+            throw new ControllerException('invalid move, game-area ' . $startArea->getId() . ' already belongs to another traderoute');
+        }
+        $currentArea = null;
+        $previousArea = $startArea;
+        while ($id_game_area = array_shift($steps)) {
+            // 2.b every step adjacent to previous
+            $currentArea = ModelGameArea::getGameArea($this->id_game, $id_game_area);
+            if (!in_array($currentArea->getId(), $previousArea->getAdjacentGameAreas())) {
+                throw new ControllerException('invalid move, game-area ' . $currentArea->getId() . ' not adjacent to game-area ' . $previousArea->getId());
+            }
+            if (empty($steps)) {
+                break;
+            }
+            // 2.c every step is sea, not part of another traderoute and has a ship of the user
+            if ($currentArea->getIdType() !== TYPE_SEA) {
+                throw new ControllerException('invalid move, game-area ' . $currentArea->getId() . ' is no sea area');
+            }
+            if (in_array($currentArea->getId(), $this->tradeRouteAreas)) {
+                throw new ControllerException('invalid move, game-area ' . $previousArea->getId() . ' already belongs to another traderoute');
+            }
+            if (!$this->gameAreaHasShip($currentArea)) {
+                throw new ControllerException('invalid move, game-area ' . $previousArea->getId() . ' has no valid ships');
+            }
+            $previousArea = $currentArea;
+        }
+        // 2.d destination area is land, belongs to user and isn’t part of another traderoute
+        if ($currentArea->getIdType() !== TYPE_LAND) {
+            throw new ControllerException('invalid move, destination area is no land area');
+        }
+        if ($currentArea->getIdUser() !== $this->id_user) {
+            throw new ControllerException('invalid move, destination area doesn\'t belong to user');
+        }
+        if (in_array($currentArea->getId(), $this->tradeRouteAreas)) {
+            throw new ControllerException('invalid move, game-area ' . $previousArea->getId() . ' already belongs to another traderoute');
+        }
+        // 2.e the shortest route is at least 3
+        if (self::checkShortestRoute($startArea, $currentArea) < TRADEROUTE_MIN_START_VALUE) {
+            throw new ControllerException('invalid move, traderoute too short');
+        }
+        return;
     }
-
 
 
     /**
@@ -125,6 +171,54 @@ class TradeRouteValidator {
             }
         }
         throw new ControllerException('no route found between game areas ' . $startArea->getId() . ' and ' . $destinationArea->getId());
+    }
+
+    private function loadAllTradeRoutes() {
+        $tradeRoutes = ModelTradeRoute::iterator($this->id_user, $this->id_game);
+        while (($tradeRoutes->hasNext())) {
+            /** @var ModelTradeRoute $tradeRoute */
+            $tradeRoute = $tradeRoutes->next();
+            foreach ($tradeRoute->getSteps() as $id_game_area) {
+                $this->tradeRouteAreas[] = $id_game_area;
+            }
+            $this->existingTradeRoutes[] = $tradeRoute;
+        }
+    }
+
+    private function simulateAllMoves() {
+        $moves = ModelTradeRouteMove::iterator($this->id_user, $this->id_game, $this->round);
+        while ($moves->hasNext()) {
+            /** @var ModelTradeRouteMove $move */
+            $move = $moves->next();
+            $steps = $move->getSteps();
+            if (count($steps) === 2) {
+                array_filter($this->tradeRouteAreas, function ($id_game_area) use ($steps) {
+                    if (in_array($id_game_area, $steps)) {
+                        return false;
+                    }
+                    return true;
+                });
+                $this->deleteTradeRouteMoves[] = $move;
+            } else {
+                foreach ($steps as $id_game_area) {
+                    $this->tradeRouteAreas[] = $id_game_area;
+                }
+                $this->newTradeRouteMoves[] = $move;
+            }
+        }
+    }
+
+    private function gameAreaHasShip(ModelGameArea $gameArea) {
+        $ships = ModelGameShip::getShipsInAreaNotInPortByUser($this->id_user, $this->id_game, $gameArea->getId());
+        while ($ships->hasNext()) {
+            /** @var ModelGameShip $ship */
+            $ship = $ships->next();
+            if ($ship->getIdUnit() === TYPE_SUBMARINE) {
+                continue;
+            }
+            return true;
+        }
+        return false;
     }
 
 }

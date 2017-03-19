@@ -76,3 +76,4 @@ define('MAX_MONEY_SPENDABLE', 10);
 
 define('TRADEROUTE_MAX_VALUE_MULTIPLIER', 2); // shortest sea route between to areas * TRADEROUTE_MAX_VALUE_MULTIPLIER
 define('TRADEROUTE_PP_MULTIPLIER', 2); // current_traderoute_value * TRADEROUTE_PP_MULTIPLIER == pp-output
+define('TRADEROUTE_MIN_START_VALUE', 3);

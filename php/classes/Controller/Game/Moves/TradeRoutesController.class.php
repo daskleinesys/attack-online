@@ -21,6 +21,7 @@ class TradeRoutesController extends PhaseController {
      * fixates the move if no error occured
      *
      * @return void
+     * @throws ControllerException
      */
     public function finishMove() {
         $this->fixatePhase(true);
@@ -28,9 +29,7 @@ class TradeRoutesController extends PhaseController {
 
     public function create($id_user, $id_game, $round, array $steps) {
         $validator = new TradeRouteValidator($id_user, $id_game, $round);
-        $validator->loadAllTradeRoutes();
-        $validator->simulateAllMoves();
-        $validator->validateMove($steps);
+        $validator->validateMove($steps, true);
         ModelTradeRouteMove::create($id_user, $id_game, $round, $steps);
     }
 
