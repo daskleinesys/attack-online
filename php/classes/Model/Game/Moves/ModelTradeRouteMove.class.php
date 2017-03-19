@@ -143,6 +143,37 @@ class ModelTradeRouteMove extends ModelMove {
     }
 
     /**
+     * delete move from database
+     *
+     * @param ModelTradeRouteMove $move
+     * @throws DatabaseException
+     */
+    public static function delete(ModelTradeRouteMove $move) {
+        SQLConnector::Singleton()->beginTransaction();
+
+        try {
+            // DELETE STEPS
+            $query = 'delete_move_areas_for_move';
+            $dict = [
+                ':id_move' => $move->getId()
+            ];
+            SQLConnector::Singleton()->epp($query, $dict);
+
+            // DELETE MOVE
+            $query = 'delete_move';
+            SQLConnector::Singleton()->epp($query, $dict);
+
+            // COMMIT ALL QUERIES
+            SQLConnector::Singleton()->commit();
+        } catch (DatabaseException $ex) {
+            SQLConnector::Singleton()->rollBack();
+            throw $ex;
+        }
+
+        unset(self::$moves[$move->getId()]);
+    }
+
+    /**
      * @return array(int step_nr => int id_game_area)
      */
     public function getSteps() {

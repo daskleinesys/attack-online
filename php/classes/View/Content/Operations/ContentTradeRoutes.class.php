@@ -3,6 +3,7 @@ namespace Attack\View\Content\Operations;
 
 use Attack\Controller\Game\Moves\TradeRoutesController;
 use Attack\Exceptions\ControllerException;
+use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\Game\ModelGameArea;
 use Attack\Model\Game\ModelTradeRoute;
@@ -56,6 +57,24 @@ class ContentTradeRoutes extends ContentOperation {
     }
 
     private function handleInput(array &$data) {
+        // delete traderoute move
+        if (isset($_POST['delete_traderoute_move'])) {
+            try {
+                $this->controller->deleteMove((int)$_POST['delete_traderoute_move']);
+                $data['status'] = array(
+                    'message' => 'Zug gelöscht.'
+                );
+            } catch (NullPointerException $ex) {
+                $data['errors'] = array(
+                    'message' => $ex->getMessage()
+                );
+            } catch (ControllerException $ex) {
+                $data['errors'] = array(
+                    'message' => $ex->getMessage()
+                );
+            }
+        }
+
         // abort new traderoute
         if (isset($_POST['new_traderoute_abort'])) {
             unset($_POST['new_traderoute_game_areas']);
