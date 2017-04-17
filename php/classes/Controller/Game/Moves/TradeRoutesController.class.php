@@ -5,6 +5,7 @@ use Attack\Controller\Interfaces\PhaseController;
 use Attack\Exceptions\ControllerException;
 use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
+use Attack\Model\Game\ModelTradeRoute;
 use Attack\Model\Game\Moves\ModelTradeRouteMove;
 
 class TradeRoutesController extends PhaseController {
@@ -27,9 +28,76 @@ class TradeRoutesController extends PhaseController {
         $this->fixatePhase(true);
     }
 
+    /**
+     * validate move according to current traderoute and other moves
+     * if valid -> create new traderoute move
+     *
+     * @param int $id_user
+     * @param int $id_game
+     * @param int $round
+     * @param array $steps
+     * @throws ControllerException
+     */
     public function create($id_user, $id_game, $round, array $steps) {
         $validator = new TradeRouteValidator($id_user, $id_game, $round);
         $validator->validateMove($steps, true);
+        ModelTradeRouteMove::create($id_user, $id_game, $round, $steps);
+    }
+
+    /**
+     * validate and create deletion move
+     *
+     * @param int $id_user
+     * @param int $id_game
+     * @param int $round
+     * @param int $id_traderoute
+     * @throws ControllerException
+     */
+    public function deleteTradeRoute($id_user, $id_game, $round, $id_traderoute) {
+        // check if traderoute exists
+        try {
+            $traderoute = ModelTradeRoute::getById($id_traderoute);
+        } catch (NullPointerException $ex) {
+            throw new ControllerException('traderoute doesn\'t exist');
+        }
+
+        // check if it is owned by user and in correct game
+        if ($traderoute->getIdUser() !== $id_user) {
+            throw new ControllerException('traderoute doesn\'t belong to current user');
+        }
+        if ($traderoute->getIdGame() !== $id_game) {
+            throw new ControllerException('traderoute doesn\'t belong to current game');
+        }
+
+        // check if already fixated
+        if ($this->checkIfDone()) {
+            throw new ControllerException('current phase already finished');
+        }
+
+        // check if processing
+        $game = ModelGame::getGame($id_game);
+        if ($game->checkProcessing()) {
+            throw new ControllerException('game-logic is currently processing');
+        }
+
+        // check if deletion for move already exists
+        $iterator = ModelTradeRouteMove::iterator($id_user, $id_game, $round);
+        while ($iterator->hasNext()) {
+            /** @var ModelTradeRouteMove $move */
+            $move = $iterator->next();
+            if (count($move->getSteps()) !== 2) {
+                continue;
+            }
+            if ($move->getSteps()[0] === $traderoute->getSteps()[0]) {
+                throw new ControllerException('deletion for move already exists');
+            }
+        }
+
+        // create deletion
+        $traderouteSteps = $traderoute->getSteps();
+        $steps = [];
+        $steps[] = current($traderouteSteps);
+        $steps[] = end($traderouteSteps);
         ModelTradeRouteMove::create($id_user, $id_game, $round, $steps);
     }
 

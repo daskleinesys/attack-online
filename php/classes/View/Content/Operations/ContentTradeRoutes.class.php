@@ -60,7 +60,11 @@ class ContentTradeRoutes extends ContentOperation {
     private function handleInput(array &$data) {
         // delete traderoute
         if (isset($_POST['delete_traderoute'])) {
-            throw new \Exception('TODO : implement traderoute deletion');
+            $id_traderoute = (int)$_POST['delete_traderoute'];
+            $this->controller->deleteTradeRoute($this->id_user, $this->id_game, $this->round, $id_traderoute);
+            $data['status'] = [
+                'message' => 'traderoute deletion added'
+            ];
         }
 
         // delete traderoute move
