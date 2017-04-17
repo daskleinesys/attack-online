@@ -18,7 +18,9 @@
                     maximaler Wert<br>
                     <small>(PP)</small>
                 </th>
-                <th></th>
+                {% if not turnFixated %}
+                    <th></th>
+                {% endif %}
             </tr>
             {% for traderoute in active_traderoutes %}
                 <tr>
@@ -46,9 +48,11 @@
                         <br>
                         <small>({{ traderoute.max_pp }})</small>
                     </td>
-                    <td>
-                        <button type="submit" name="delete_traderoute" value="{{ traderoute.id }}">löschen</button>
-                    </td>
+                    {% if not turnFixated %}
+                        <td>
+                            <button type="submit" name="delete_traderoute" value="{{ traderoute.id }}">löschen</button>
+                        </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
@@ -59,7 +63,9 @@
         <table>
             <tr>
                 <th>Felder</th>
-                <th></th>
+                {% if not turnFixated %}
+                    <th></th>
+                {% endif %}
             </tr>
             {% for move in delete_traderoute_moves %}
                 <tr>
@@ -77,87 +83,98 @@
                             {% endif %}
                         {% endfor %}
                     </td>
-                    <td>
-                        <button type="submit" name="delete_traderoute_move" value="{{ move.id }}">rückgängig</button>
-                    </td>
+                    {% if not turnFixated %}
+                        <td>
+                            <button type="submit" name="delete_traderoute_move" value="{{ move.id }}">rückgängig</button>
+                        </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
     {% endif %}
 
-    <h2>neue Handelsrouten</h2>
-    <table>
-        <tr>
-            <th>Felder</th>
-            <th>maximaler Wert<br>
-                <small>(PP)</small>
-            </th>
-            <th></th>
-        </tr>
-        {% for move in new_traderoute_moves %}
+    {% if new_traderoute_moves or not turnFixated %}
+        <h2>neue Handelsrouten</h2>
+        <table>
             <tr>
-                <td>
-                    {% for area in move.areas %}
-                        {% if loop.first or loop.last %}
-                            <strong>
+                <th>Felder</th>
+                <th>maximaler Wert<br>
+                    <small>(PP)</small>
+                </th>
+                {% if not turnFixated %}
+                    <th></th>
+                {% endif %}
+            </tr>
+            {% for move in new_traderoute_moves %}
+                <tr>
+                    <td>
+                        {% for area in move.areas %}
+                            {% if loop.first or loop.last %}
+                                <strong>
+                            {% endif %}
+                            {{ area.number }} - {{ area.name }}
+                            {% if loop.first or loop.last %}
+                                </strong>
+                            {% endif %}
+                            {% if not loop.last %}
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {{ move.traderoute_max_value }}
+                        <br>
+                        <small>({{ move.traderoute_max_pp }})</small>
+                    </td>
+                    {% if not turnFixated %}
+                        <td>
+                            <button type="submit" name="delete_traderoute_move" value="{{ move.id }}">löschen</button>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+
+            {% if not turnFixated %}
+                <tr>
+                    <td>
+                        {% for area in new_traderoute_game_areas %}
+                            <input type="hidden" name="new_traderoute_game_areas[{{ loop.index }}]" value="{{ area.id }}"/>
+                            {% if loop.first or (new_traderoute_finished and loop.last) %}
+                                <strong>
+                            {% endif %}
+                            {{ area.number }} - {{ area.name }}
+                            {% if loop.first or (new_traderoute_finished and loop.last) %}
+                                </strong>
+                            {% endif %}
+                            <br>
+                        {% endfor %}
+                        {% if not new_traderoute_finished %}
+                            <label>
+                                <select name="new_traderoute_next_area_options">
+                                    <option selected disabled>land wählen</option>
+                                    {% for area in new_traderoute_next_area_options %}
+                                        <option value="{{ area.id }}">{{ area.number }} - {{ area.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
                         {% endif %}
-                        {{ area.number }} - {{ area.name }}
-                        {% if loop.first or loop.last %}
-                            </strong>
-                        {% endif %}
-                        {% if not loop.last %}
+                    </td>
+                    <td></td>
+                    <td>
+                        {% if new_traderoute_game_areas %}
+                            <button type="submit" name="new_traderoute_abort" value="1">abbrechen</button>
                             <br>
                         {% endif %}
-                    {% endfor %}
-                </td>
-                <td>
-                    {{ move.traderoute_max_value }}
-                    <br>
-                    <small>({{ move.traderoute_max_pp }})</small>
-                </td>
-                <td>
-                    <button type="submit" name="delete_traderoute_move" value="{{ move.id }}">löschen</button>
-                </td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td>
-                {% for area in new_traderoute_game_areas %}
-                    <input type="hidden" name="new_traderoute_game_areas[{{ loop.index }}]" value="{{ area.id }}"/>
-                    {% if loop.first or (new_traderoute_finished and loop.last) %}
-                        <strong>
-                    {% endif %}
-                    {{ area.number }} - {{ area.name }}
-                    {% if loop.first or (new_traderoute_finished and loop.last) %}
-                        </strong>
-                    {% endif %}
-                    <br>
-                {% endfor %}
-                {% if not new_traderoute_finished %}
-                    <label>
-                        <select name="new_traderoute_next_area_options">
-                            <option selected disabled>land wählen</option>
-                            {% for area in new_traderoute_next_area_options %}
-                                <option value="{{ area.id }}">{{ area.number }} - {{ area.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
-                {% endif %}
-            </td>
-            <td></td>
-            <td>
-                {% if new_traderoute_game_areas %}
-                    <button type="submit" name="new_traderoute_abort" value="1">abbrechen</button>
-                    <br>
-                {% endif %}
-                {% if new_traderoute_finished %}
-                    <button type="submit" name="new_traderoute_finish" value="1">erstellen</button>
-                {% else %}
-                    <button type="submit" name="new_traderoute_add_area" value="1">nächstes feld</button>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
+                        {% if new_traderoute_finished %}
+                            <button type="submit" name="new_traderoute_finish" value="1">erstellen</button>
+                        {% else %}
+                            <button type="submit" name="new_traderoute_add_area" value="1">nächstes feld</button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    {% endif %}
 </form>
 
 {% if notCurrentPhase %}
