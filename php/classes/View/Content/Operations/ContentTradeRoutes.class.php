@@ -1,4 +1,5 @@
 <?php
+
 namespace Attack\View\Content\Operations;
 
 use Attack\Controller\Game\Moves\TradeRoutesController;
@@ -52,7 +53,7 @@ class ContentTradeRoutes extends ContentOperation {
 
         $this->addNewTradeRouteNextAreaOption($data);
         $this->showTradeRoutes($data);
-        $this->showCreateMoves($data);
+        $this->showMoves($data);
 
         $this->checkCurrentPhase($data, PHASE_TRADEROUTES);
     }
@@ -215,8 +216,9 @@ class ContentTradeRoutes extends ContentOperation {
         $data['active_traderoutes'] = $tradeRoutesViewData;
     }
 
-    private function showCreateMoves(array &$data) {
+    private function showMoves(array &$data) {
         $newTradeRoutesViewData = [];
+        $deletedTradeRoutesViewData = [];
         $iterator = ModelTradeRouteMove::iterator($this->id_user, $this->id_game, $this->round);
         while ($iterator->hasNext()) {
             /** @var ModelTradeRouteMove $move */
@@ -239,9 +241,21 @@ class ContentTradeRoutes extends ContentOperation {
                     'name' => $gameArea->getName()
                 ];
             }
-            $newTradeRoutesViewData[] = $moveViewData;
+            if (count($steps) === 2) {
+                $deletedTradeRoutesViewData[] = $moveViewData;
+                $data['active_traderoutes'] = array_filter($data['active_traderoutes'], function ($traderouteViewData) use ($steps) {
+                    $traderoute = ModelTradeRoute::getById($traderouteViewData['id']);
+                    if ($traderoute->getSteps()[0] === $steps[0]) {
+                        return false;
+                    }
+                    return true;
+                });
+            } else {
+                $newTradeRoutesViewData[] = $moveViewData;
+            }
         }
         $data['new_traderoute_moves'] = $newTradeRoutesViewData;
+        $data['delete_traderoute_moves'] = $deletedTradeRoutesViewData;
     }
 
 }

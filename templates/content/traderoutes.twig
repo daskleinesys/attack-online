@@ -59,28 +59,23 @@
         <table>
             <tr>
                 <th>Felder</th>
-                <th>aktueller Wert<br>
-                    <small>(PP)</small>
-                </th>
-                <th>maximaler Wert<br>
-                    <small>(PP)</small>
-                </th>
                 <th></th>
             </tr>
             {% for move in delete_traderoute_moves %}
                 <tr>
                     <td>
-                        <strong>14 - Colombia</strong><br>
-                        87 - Caribbean Sea<br>
-                        101 - North Atlantic Antilles<br>
-                        99 - North Atlantic Canary<br>
-                        <strong>25 - France-Spain</strong>
-                    </td>
-                    <td>3<br>
-                        <small>(6)</small>
-                    </td>
-                    <td>6<br>
-                        <small>(12)</small>
+                        {% for area in move.areas %}
+                            {% if loop.first or loop.last %}
+                                <strong>
+                            {% endif %}
+                            {{ area.number }} - {{ area.name }}
+                            {% if loop.first or loop.last %}
+                                </strong>
+                            {% endif %}
+                            {% if not loop.last %}
+                                <br>
+                            {% endif %}
+                        {% endfor %}
                     </td>
                     <td>
                         <button type="submit" name="delete_traderoute_move" value="{{ move.id }}">rückgängig</button>
