@@ -15,6 +15,8 @@ class ModelTradeRouteMove extends ModelMove {
 
     /**
      * creates the model
+     * if (count(steps) === 2) --> this move deletes a traderoute
+     * otherwise this move creates a new traderoute
      *
      * @param $id_user int
      * @param $id_game int
