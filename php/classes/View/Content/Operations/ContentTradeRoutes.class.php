@@ -187,6 +187,12 @@ class ContentTradeRoutes extends ContentOperation {
                 ];
             }
         }
+        usort($viewData, function ($a, $b) {
+            if ($a['number'] == $b['number']) {
+                return 0;
+            }
+            return ($a['number'] < $b['number']) ? -1 : 1;
+        });
         $data['new_traderoute_next_area_options'] = $viewData;
     }
 
