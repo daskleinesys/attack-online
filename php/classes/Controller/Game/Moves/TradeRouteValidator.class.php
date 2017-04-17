@@ -192,12 +192,20 @@ class TradeRouteValidator {
             $move = $moves->next();
             $steps = $move->getSteps();
             if (count($steps) === 2) {
-                array_filter($this->tradeRouteAreas, function ($id_game_area) use ($steps) {
-                    if (in_array($id_game_area, $steps)) {
-                        return false;
+                $traderoutes = ModelTradeRoute::iterator($this->id_user, $this->id_game);
+                while ($traderoutes->hasNext()) {
+                    /** @var ModelTradeRoute $traderoute */
+                    $traderoute = $traderoutes->next();
+                    if ($traderoute->getSteps()[0] === $steps[0]) {
+                        $this->tradeRouteAreas = array_filter($this->tradeRouteAreas, function ($id_game_area) use ($traderoute) {
+                            if (in_array($id_game_area, $traderoute->getSteps())) {
+                                return false;
+                            }
+                            return true;
+                        });
+                        break;
                     }
-                    return true;
-                });
+                }
                 $this->deleteTradeRouteMoves[] = $move;
             } else {
                 foreach ($steps as $id_game_area) {
