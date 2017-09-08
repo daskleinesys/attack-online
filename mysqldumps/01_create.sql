@@ -368,7 +368,7 @@ CREATE TABLE `game_traderoutes` (
 DROP TABLE IF EXISTS `game_traderoute_has_areas`;
 CREATE TABLE `game_traderoute_has_areas` (
   `id` int(11) NOT NULL,
-  `id_traderoute` int(11) NOT NULL,
+  `id_game_traderoute` int(11) NOT NULL,
   `id_game_area` int(11) NOT NULL,
   `step` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
