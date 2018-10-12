@@ -1,4 +1,5 @@
 <?php
+
 namespace Attack\Database;
 
 use Attack\Exceptions\DatabaseException;
@@ -23,7 +24,7 @@ class SQLConnector {
     /**
      * @var array(\PDOStatement)
      */
-    private $preparedStatements = array();
+    private $preparedStatements = [];
 
     /**
      * return singleton_instance, create it first if it hasn't been yet
@@ -31,7 +32,7 @@ class SQLConnector {
      *
      * @return SQLConnector
      */
-    public static function Singleton() {
+    public static function Singleton(): self {
         if (self::$singleton == null) {
             self::$singleton = new self(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD);
         }
@@ -44,12 +45,12 @@ class SQLConnector {
      *
      * @return SQLConnector
      */
-    public static function getInstance() {
+    public static function getInstance(): self {
         return self::Singleton();
     }
 
     // constructor private -> used to establish database connection (using PDO class)
-    private function __construct($dbHost, $dbName, $dbuser, $dbpasswd) {
+    private function __construct(string $dbHost, string $dbName, string $dbuser, string $dbpasswd) {
         $this->dbh = new \PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8", $dbuser, $dbpasswd);
         $this->logger = \Logger::getLogger('SQLConnector');
     }
@@ -59,7 +60,7 @@ class SQLConnector {
      *
      * @return void
      */
-    public function disconnect() {
+    public function disconnect(): void {
         $this->dbh = null;
     }
 
@@ -68,7 +69,7 @@ class SQLConnector {
      *
      * @return void
      */
-    public function beginTransaction() {
+    public function beginTransaction(): void {
         $this->dbh->beginTransaction();
     }
 
@@ -78,7 +79,7 @@ class SQLConnector {
      * @return void
      * @throws \PDOException - if no transaction active
      */
-    public function commit() {
+    public function commit(): void {
         $this->dbh->commit();
     }
 
@@ -88,7 +89,7 @@ class SQLConnector {
      * @return void
      * @throws \PDOException - if no transaction active
      */
-    public function rollBack() {
+    public function rollBack(): void {
         $this->dbh->rollBack();
     }
 
@@ -100,16 +101,25 @@ class SQLConnector {
      * @return array - lines of the query result
      * @throws DatabaseException
      */
-    public function executePredefinedPreparedStatement($key, $dictionary = null) {
+    public function executePredefinedPreparedStatement(string $key, ?array $dictionary = null): array {
         if (empty($this->preparedStatements[$key])) {
             $query = SQLCommands::getQuery($key);
-            if ($query == null) {
-                throw new DatabaseException("unkown query key: {$key}");
+            if (empty($query)) {
+                throw new DatabaseException("unknown query key: {$key}");
             }
             $this->prepareStatement($key, $query);
         }
 
-        $this->preparedStatements[$key]->execute($dictionary);
+        $requiredValues = SQLCommands::getQueryParameters($key);
+        if ($requiredValues) {
+            foreach ($requiredValues as $valueKey => $valueType) {
+                if (!isset($dictionary[$valueKey])) {
+                    throw new DatabaseException("missing '{$valueKey}' for '{$key}'");
+                }
+                $this->preparedStatements[$key]->bindValue($valueKey, $dictionary[$valueKey], $valueType);
+            }
+        }
+        $this->preparedStatements[$key]->execute();
         if (($errorCode = $this->preparedStatements[$key]->errorCode()) > 0) {
             $error = $this->preparedStatements[$key]->errorInfo();
             $msg = "PDOStatement::errorInfo():{$error[2]}PDO::errorCode():{$errorCode}";
@@ -129,7 +139,7 @@ class SQLConnector {
      * @return array - lines of the query result
      * @throws DatabaseException
      */
-    public function epp($key, $dictionary = null) {
+    public function epp(string $key, ?array $dictionary = null): array {
         return self::executePredefinedPreparedStatement($key, $dictionary);
     }
 
@@ -138,14 +148,20 @@ class SQLConnector {
      *
      * @return int
      */
-    public function getLastInsertId() {
+    public function getLastInsertId(): ?int {
         return $this->dbh->lastInsertId();
     }
 
-    private function prepareStatement($key, $query) {
+    /**
+     * @param $key
+     * @param $query
+     * @throws DatabaseException
+     */
+    private function prepareStatement(string $key, string $query) {
         if (isset($this->preparedStatements[$key])) {
             throw new DatabaseException('duplicate prepared statement declaration');
         }
         $this->preparedStatements[$key] = $this->dbh->prepare($query);
     }
+
 }

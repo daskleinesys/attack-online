@@ -1,9 +1,12 @@
 <?php
+
 namespace Attack;
 
 use Attack\Tools\HeaderViewHelper;
 use Slim\Slim;
 use Slim\Views\Twig;
+
+global $debug, $nomerge, $log4php_config;
 
 // DEBUG && NO-MERGE
 $debug = false;
@@ -15,10 +18,14 @@ session_start();
 
 // LOADING FRAMEWORKS
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools' . DIRECTORY_SEPARATOR . 'Autoloader.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'defines.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'gamevars.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR . 'configuration.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR .
+    'Tools' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR .
+    'defines.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR .
+    'gamevars.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'defines' . DIRECTORY_SEPARATOR .
+    'configuration.php';
 
 // DEBUG
 if ($debug) {
@@ -27,7 +34,6 @@ if ($debug) {
 }
 
 // INIT ERROR-HANDLING && LOGGING
-global $log4php_config;
 \Logger::configure($log4php_config);
 $logger = \Logger::getLogger('index.php');
 
