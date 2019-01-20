@@ -1,0 +1,52 @@
+version: '3'
+services:
+  web:
+    image: 'attack'
+    networks:
+      default:
+        aliases:
+          - attack-web
+    ports:
+      - '80:80'
+    environment:
+      XDEBUG_CONFIG: 'remote_host=$HOST_IP'
+      PHP_IDE_CONFIG: 'serverName=localhost'
+    volumes:
+      - ../dist:/var/www/html/dist
+      - ../php:/var/www/html/php
+      - ../templates:/var/www/html/templates
+      - ../.htaccess:/var/www/html/.htaccess
+      - ../favicon.ico:/var/www/html/favicon.ico
+      - ../index.php:/var/www/html/index.php
+  database:
+    image: 'mariadb:latest'
+    networks:
+      default:
+        aliases:
+          - attack-database
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'attack'
+      MYSQL_USER: 'attack'
+      MYSQL_PASSWORD: 'attack'
+      MYSQL_DATABASE: 'attack'
+    volumes:
+      - ../mysqldumps:/docker-entrypoint-initdb.d
+  php-my-admin:
+    image: 'phpmyadmin/phpmyadmin:latest'
+    networks:
+      default:
+        aliases:
+          - attack-php-my-admin
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: 'attack-database'
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${DOCKER_SUBNET}
