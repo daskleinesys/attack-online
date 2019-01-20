@@ -59,6 +59,8 @@ $app->get('/map/', function () use ($app, $debug) {
     $app->render('map.twig', $data);
 });
 
+// TODO : add route that uses google maps (https://mapstyle.withgoogle.com/)
+
 $app->get('/cron(/:id_game)(/)', function ($id_game = null) use ($app, $debug, $logger) {
     echo '<pre>';
     if (empty($id_game)) {
