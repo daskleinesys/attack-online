@@ -2,12 +2,12 @@
 @import 'vars';
 
 /* Bootstrap Modules */
-@import "../../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/normalize";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/normalize";
 
 /* Bootstrap Mixins */
-@import "../../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/mixins/clearfix";
-@import "../../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/mixins/grid-framework";
-@import "../../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/mixins/grid";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins/clearfix";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins/grid-framework";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins/grid";
 
 /* Bootstrap Grid */
-@import "../../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/grid";
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/grid";

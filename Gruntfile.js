@@ -14,25 +14,10 @@ module.exports = function (grunt) {
                     preserveLicenseComments: false,
                     optimize: 'uglify2',
                     paths : {
-                        requireLib : '../../bower_components/requirejs/require'
+                        requireLib : '../../node_modules/requirejs/require'
                     },
                     include : 'requireLib'
                 }
-            }
-        },
-
-        modernizr: {
-            dist: {
-                dest: 'dist/js/modernizr.js',
-                parseFiles: true,
-                customTests: [],
-                devFile: 'src/js/modernizr.js',
-                outputFile: 'dist/js/modernizr.js',
-                tests: [],
-                options: [
-                    'setClasses'
-                ],
-                uglify: true
             }
         },
 
@@ -91,10 +76,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-modernizr');
     grunt.loadNpmTasks('grunt-postcss');
 
-    grunt.registerTask('default', ['js', 'css', 'modernizr:dist']);
+    grunt.registerTask('default', ['js', 'css']);
     grunt.registerTask('js', ['requirejs:default']);
     grunt.registerTask('css', ['compass:default', 'postcss:default']);
 

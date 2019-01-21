@@ -13,6 +13,15 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 RUN docker-php-ext-install -j$(nproc) mysqli soap gd zip pdo pdo_mysql
 RUN echo 'date.timezone = "Europe/Vienna"' > /usr/local/etc/php/php.ini
 
+# install nodejs (used for installing node_modules and building JavaScript and CSS)
+RUN apt-get install -y gnupg
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN apt-get install -y nodejs
+
+# install ruby+compass (needed as long as CSS is built using compass)
+RUN apt-get install -y ruby-full
+RUN gem install compass
+
 # setup xdebug
 RUN yes | pecl install xdebug
 RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini
