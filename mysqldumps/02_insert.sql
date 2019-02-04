@@ -1248,6 +1248,13 @@ INSERT INTO `start_ships` (`id`, `id_unit`, `numberof`, `players`) VALUES
 (7, 8, 2, 6),
 (8, 5, 4, 6);
 
+--
+-- Dumping data for table `games`
+--
+
+INSERT INTO `games` (`id`, `name`, `players`, `id_creator`, `password`, `status`, `id_phase`, `round`, `processing`) VALUES
+(0, 'DUMMY', 0, -1, 'dummy', 'done', 21, 0, 0);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
