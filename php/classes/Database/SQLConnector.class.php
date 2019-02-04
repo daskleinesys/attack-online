@@ -113,7 +113,7 @@ class SQLConnector {
         $requiredValues = SQLCommands::getQueryParameters($key);
         if ($requiredValues) {
             foreach ($requiredValues as $valueKey => $valueType) {
-                if (!isset($dictionary[$valueKey])) {
+                if (!array_key_exists($valueKey, $dictionary)) {
                     throw new DatabaseException("missing '{$valueKey}' for '{$key}'");
                 }
                 $this->preparedStatements[$key]->bindValue($valueKey, $dictionary[$valueKey], $valueType);

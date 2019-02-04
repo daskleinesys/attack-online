@@ -16,12 +16,14 @@ abstract class ConstrictedController {
         return true;
     }
 
-    protected function checkMod() {
+    /**
+     * @throws GameAdministrationException
+     */
+    protected function checkMod():void {
         $current_user = ModelUser::getCurrentUser();
         if ($current_user->getStatus() !== STATUS_USER_MODERATOR && $current_user->getStatus() !== STATUS_USER_ADMIN) {
             throw new GameAdministrationException('non-mod.');
         }
-        return true;
     }
 
     protected function checkCreator($id_game) {

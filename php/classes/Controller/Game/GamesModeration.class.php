@@ -5,6 +5,8 @@ use Attack\Controller\Interfaces\ConstrictedController;
 use Attack\Exceptions\GameAdministrationException;
 use Attack\Exceptions\GameCreationException;
 use Attack\Exceptions\JoinUserException;
+use Attack\Exceptions\ModelException;
+use Attack\Exceptions\NullPointerException;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 use Attack\Model\User\ModelIsInGameInfo;
@@ -119,11 +121,13 @@ class GamesModeration extends ConstrictedController {
      * @param int $id_game
      * @return bool
      * @throws GameAdministrationException
+     * @throws NullPointerException
+     * @throws ModelException
      */
     public function startGame($id_game) {
         $id_game = intval($id_game);
-        if (!$this->checkMod() && !$this->checkCreator($id_game)) {
-            throw new GameAdministrationException('User not allowed to start game.');
+        if (!$this->checkCreator($id_game)) {
+            $this->checkMod();
         }
         $game = ModelGame::getGame($id_game);
         if ($game->getNumberOfPlayers() < 2) {
