@@ -10,7 +10,7 @@ services:
     ports:
       - '80:80'
     environment:
-      XDEBUG_CONFIG: 'remote_host=$HOST_IP'
+      XDEBUG_CONFIG: 'remote_host=host.docker.internal'
       PHP_IDE_CONFIG: 'serverName=localhost'
       DB_HOST: 'attack-database'
       DB_USER: 'attack'
@@ -58,7 +58,3 @@ services:
 networks:
   default:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${DOCKER_SUBNET}
