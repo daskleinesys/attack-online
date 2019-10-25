@@ -210,6 +210,24 @@ class ModelUser {
     }
 
     /**
+     * @param $username
+     * @return ModelUser|null
+     * @throws DatabaseException
+     * @throws NullPointerException
+     */
+    public static function setCurrentUserByName($username) {
+        $result = SQLConnector::Singleton()->epp('get_user_by_name', [':username' => $username]);
+
+        if (empty($result)) {
+            throw new NullPointerException('unknown user');
+        }
+
+        self::$current_user = ModelUser::getUser($result[0]['id']);
+
+        return self::$current_user;
+    }
+
+    /**
      * returns the currently logged-in user, or a dummy-object if no user is logged in
      *
      * @return ModelUser

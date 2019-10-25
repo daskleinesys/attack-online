@@ -55,6 +55,14 @@ services:
       - '8080:80'
     environment:
       PMA_HOST: 'attack-database'
+  composer-install:
+    image: composer
+    command: install --ignore-platform-reqs --no-scripts
+    environment:
+      COMPOSER_VENDOR_DIR: /var/www/vendor
+    volumes:
+      - ..:/var/www
+    working_dir: /var/www
 networks:
   default:
     driver: bridge

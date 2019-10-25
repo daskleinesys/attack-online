@@ -115,6 +115,13 @@ class SQLCommands {
             ]
         );
         self::setQuery(
+            'get_user_by_name',
+            "SELECT id FROM $table_user WHERE login = :username",
+            [
+                ':username' => PDO::PARAM_STR,
+            ]
+        );
+        self::setQuery(
             'check_user_password',
             "SELECT id FROM $table_user WHERE id = :id_user AND password = SHA(:password)",
             [
