@@ -602,7 +602,7 @@ class SQLCommands {
         );
         self::setQuery(
             'get_area_by_id',
-            "SELECT * FROM $table_areas WHERE id = :id_area",
+            "SELECT *, ST_AsGeoJSON(coords_map) as geometry FROM $table_areas WHERE id = :id_area",
             [
                 ':id_area' => PDO::PARAM_INT,
             ]
@@ -611,6 +611,14 @@ class SQLCommands {
             'get_adjacent_areas_for_area',
             "SELECT id_area2 AS id_adjacent_area FROM $table_area_is_adjacent WHERE id_area1 = :id_area",
             [
+                ':id_area' => PDO::PARAM_INT,
+            ]
+        );
+        self::setQuery(
+            'set_area_geometry',
+            "UPDATE $table_areas SET coords_map = ST_GeomFromGeoJSON(:geometry) WHERE id = :id_area",
+            [
+                ':geometry' => PDO::PARAM_STR,
                 ':id_area' => PDO::PARAM_INT,
             ]
         );

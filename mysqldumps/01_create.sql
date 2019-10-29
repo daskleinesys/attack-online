@@ -45,6 +45,7 @@ CREATE TABLE `areas` (
   `name` varchar(40) NOT NULL,
   `number` int(11) NOT NULL,
   `coords_small` text NOT NULL,
+  `coords_map` multipolygon NULL,
   `x` int(11) NOT NULL DEFAULT '0',
   `y` int(11) NOT NULL DEFAULT '0',
   `x2` int(11) NOT NULL DEFAULT '0',

@@ -16,6 +16,7 @@ class ModelArea implements \JsonSerializable {
     private $name; // string
     private $number; // string
     private $coords_small; // string
+    private $geometry; // array
     private $x; // int
     private $y; // int
     private $x2; // int
@@ -141,6 +142,17 @@ class ModelArea implements \JsonSerializable {
         return $this->adjacentAreas;
     }
 
+    public function getGeometry(): ?array
+    {
+        return $this->geometry;
+    }
+
+    public function setGeometry($geometry): void
+    {
+        SQLConnector::Singleton()->epp('set_area_geometry', [':geometry' => json_encode($geometry), ':id_area' => $this->id]);
+        $this->geometry = $geometry;
+    }
+
     private function fill_member_vars() {
         // check if there is a game
         $result = SQLConnector::Singleton()->epp('get_area_by_id', array(':id_area' => $this->id));
@@ -152,6 +164,7 @@ class ModelArea implements \JsonSerializable {
         $this->name = $data['name'];
         $this->number = $data['number'];
         $this->coords_small = $data['coords_small'];
+        $this->geometry = json_decode($data['geometry']);
         $this->x = (int)$data['x'];
         $this->y = (int)$data['y'];
         $this->x2 = (int)$data['x2'];
@@ -180,6 +193,7 @@ class ModelArea implements \JsonSerializable {
             'number' => $this->number,
             'id_type' => $this->id_type,
             'economy' => $this->economy,
+            'geometry' => $this->geometry,
         ];
     }
 }
