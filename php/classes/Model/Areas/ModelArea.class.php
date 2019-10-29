@@ -6,7 +6,7 @@ use Attack\Exceptions\DatabaseException;
 use Attack\Tools\Iterator\ModelIterator;
 use Attack\Exceptions\NullPointerException;
 
-class ModelArea {
+class ModelArea implements \JsonSerializable {
 
     // phase models
     private static $areas = array(); // array(int id_area => ModelArea)
@@ -165,4 +165,21 @@ class ModelArea {
         return true;
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'number' => $this->number,
+            'id_type' => $this->id_type,
+            'economy' => $this->economy,
+        ];
+    }
 }
