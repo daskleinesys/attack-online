@@ -136,7 +136,7 @@ class ModelArea implements \JsonSerializable {
         $dict = array(':id_area' => $this->id);
         $result = SQLConnector::getInstance()->epp($query, $dict);
         foreach ($result as $line) {
-            $this->adjacentAreas[] = $line['id_adjacent_area'];
+            $this->adjacentAreas[] = (int)$line['id_adjacent_area'];
         }
 
         return $this->adjacentAreas;
@@ -194,6 +194,7 @@ class ModelArea implements \JsonSerializable {
             'id_type' => $this->id_type,
             'economy' => $this->economy,
             'geometry' => $this->geometry,
+            'adjacentAreas' => $this->adjacentAreas,
         ];
     }
 }

@@ -39,7 +39,9 @@ $app->group('/api', function () use ($app) {
         $iterator = ModelArea::iterator();
         $areas = [];
         while ($iterator->hasNext()) {
-            $areas[] = $iterator->next();
+            $area = $iterator->next();
+            $area->getAdjacentAreas();
+            $areas[] = $area;
         }
         $app->response->setBody(json_encode($areas));
     });
