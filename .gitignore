@@ -17,5 +17,8 @@ mysqldumps/local*
 # local configuration
 php/defines/local_configuration.php
 
+# JWT
+public.key
+
 # logging
 logs

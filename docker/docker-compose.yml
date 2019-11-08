@@ -18,18 +18,13 @@ services:
       DB_NAME: 'attack'
     volumes:
       - ../dist:/var/www/html/dist
-      - ../node_modules:/var/www/html/node_modules
       - ../php:/var/www/html/php
-      - ../src:/var/www/html/src
       - ../templates:/var/www/html/templates
       - ../vendor:/var/www/html/vendor
       - ../.htaccess:/var/www/html/.htaccess
-      - ../composer.json:/var/www/html/composer.json
-      - ../composer.phar:/var/www/html/composer.phar
       - ../favicon.ico:/var/www/html/favicon.ico
-      - ../Gruntfile.js:/var/www/html/Gruntfile.js
       - ../index.php:/var/www/html/index.php
-      - ../package.json:/var/www/html/package.json
+      - ../public.key:/var/www/html/public.key
   database:
     image: 'mariadb:latest'
     networks:
