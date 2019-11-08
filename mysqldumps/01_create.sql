@@ -44,18 +44,19 @@ CREATE TABLE `areas` (
   `id` int(11) NOT NULL,
   `name` varchar(40) NOT NULL,
   `number` int(11) NOT NULL,
-  `coords_small` text NOT NULL,
   `coords_map` multipolygon NULL,
-  `x` int(11) NOT NULL DEFAULT '0',
-  `y` int(11) NOT NULL DEFAULT '0',
-  `x2` int(11) NOT NULL DEFAULT '0',
-  `y2` int(11) NOT NULL DEFAULT '0',
-  `xres` int(11) NOT NULL DEFAULT '0',
-  `yres` int(11) NOT NULL DEFAULT '0',
-  `height` int(11) NOT NULL DEFAULT '0',
-  `width` int(11) NOT NULL DEFAULT '0',
   `id_type` int(11) NOT NULL,
-  `economy` enum('poor','weak','normal','strong','none') NOT NULL DEFAULT 'none'
+  `economy` enum('poor','weak','normal','strong','none') NOT NULL DEFAULT 'none',
+  -- deprecated values
+  `coords_small` text NULL DEFAULT NULL,
+  `x` int(11) NULL DEFAULT NULL,
+  `y` int(11) NULL DEFAULT NULL,
+  `x2` int(11) NULL DEFAULT NULL,
+  `y2` int(11) NULL DEFAULT NULL,
+  `xres` int(11) NULL DEFAULT NULL,
+  `yres` int(11) NULL DEFAULT NULL,
+  `height` int(11) NULL DEFAULT NULL,
+  `width` int(11) NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
