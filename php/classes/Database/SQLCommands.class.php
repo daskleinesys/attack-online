@@ -431,7 +431,7 @@ class SQLCommands {
             ]
         );
         self::setQuery(
-            'get_all_games',
+            'get_games',
             "SELECT * FROM $table_games WHERE id > 0 ORDER BY id ASC"
         );
         self::setQuery(
@@ -442,7 +442,14 @@ class SQLCommands {
             ]
         );
         self::setQuery(
-            'get_games_by_status_and_user',
+            'get_games_by_user',
+            "SELECT * FROM $table_games WHERE id > 0 AND id_user = :id_user ORDER BY id ASC",
+            [
+                ':id_user' => PDO::PARAM_INT,
+            ]
+        );
+        self::setQuery(
+            'get_games_by_status_by_user',
             "SELECT * FROM $table_games WHERE id > 0 AND status = :status AND id_user = :id_user ORDER BY id ASC",
             [
                 ':status' => PDO::PARAM_STR,

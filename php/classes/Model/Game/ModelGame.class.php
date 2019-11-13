@@ -17,7 +17,7 @@ use Attack\Exceptions\DatabaseException;
 use Attack\Exceptions\GameAdministrationException;
 use Logger;
 
-class ModelGame {
+class ModelGame implements \JsonSerializable {
 
     private static $logger;
 
@@ -37,6 +37,9 @@ class ModelGame {
     private $id_phase; // int
     private $round; // int
     private $processing; // bool
+
+    private $creator; // ModelUser
+    private $phase; // ModelPhase
 
     /**
      * creates new game object, fills in relevant info if id given, otherwise use create function to create new game
@@ -74,18 +77,23 @@ class ModelGame {
     /**
      * returns an iterator for games
      *
-     * @param $status - define for game status
+     * @param string $status - define for game status
      * @param int $id_user
      * @return ModelIterator
+     * @throws DatabaseException
+     * @throws NullPointerException
      */
-    public static function iterator($status, $id_user = null) {
-        $games = array();
-        $query = 'get_games_by_status';
-        $dict = array(
-            ':status' => $status
-        );
+    public static function iterator($status = GAME_STATUS_ALL, $id_user = null)
+    {
+        $query = 'get_games';
+        $dict = [];
+        $games = [];
+        if ($status !== GAME_STATUS_ALL) {
+            $query .= '_by_status';
+            $dict[':status'] = $status;
+        }
         if ($id_user != null) {
-            $query .= 'get_games_by_status_and_user';
+            $query .= '_by_user';
             $dict[':id_user'] = intval($id_user);
         }
         $result = SQLConnector::Singleton()->epp($query, $dict);
@@ -586,4 +594,27 @@ class ModelGame {
         SQLConnector::getInstance()->epp($query, $dict);
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'playerslots' => $this->playerslots,
+            'id_creator' => $this->id_creator,
+            'pw_protected' => $this->pw_protected,
+            'status' => $this->status,
+            'id_phase' => $this->id_phase,
+            'round' => $this->round,
+            'processing' => $this->processing,
+            'creator' => $this->creator,
+            'phase' => $this->phase,
+        ];
+    }
 }

@@ -3,6 +3,7 @@
 namespace Attack;
 
 use Attack\Model\Areas\ModelArea;
+use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
 use Attack\Tools\AuthMiddleware;
 
@@ -57,6 +58,17 @@ $app->group('/api', function () use ($app) {
             $model->setGeometry($data->geometry);
         }
         $app->response->setBody(json_encode($model));
+    });
+
+    $app->get('/games', function () use ($app) {
+        set_api_headers($app);
+        $iterator = ModelGame::iterator();
+        $games = [];
+        while ($iterator->hasNext()) {
+            $game = $iterator->next();
+            $games[] = $game;
+        }
+        $app->response->setBody(json_encode($games));
     });
 
     $app->options('/:path', function () use ($app) {
