@@ -25,7 +25,12 @@ class AuthMiddleware extends Middleware
             return;
         }
         $publicKey = file_get_contents(getcwd() . '/public.key');
-        $decoded = JWT::decode($token, $publicKey, ['RS256']);
+        try {
+            $decoded = JWT::decode($token, $publicKey, ['RS256']);
+        } catch (\Exception $exception) {
+            $this->next->call();
+            return;
+        }
         if (!empty($decoded->sub)) {
             ModelUser::setCurrentUserByName($decoded->sub);
         }
