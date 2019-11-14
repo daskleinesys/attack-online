@@ -2,6 +2,8 @@
 
 namespace Attack;
 
+use Attack\Controller\Game\GamesModeration;
+use Attack\Exceptions\GameCreationException;
 use Attack\Model\Areas\ModelArea;
 use Attack\Model\Game\ModelGame;
 use Attack\Model\User\ModelUser;
@@ -20,6 +22,19 @@ function check_moderator()
 {
     $current_user = ModelUser::getCurrentUser();
     if ($current_user->getStatus() === STATUS_USER_MODERATOR || $current_user->getStatus() === STATUS_USER_ADMIN) {
+        return true;
+    }
+    return false;
+}
+
+function check_active()
+{
+    $current_user = ModelUser::getCurrentUser();
+    if (
+        $current_user->getStatus() === STATUS_USER_ACTIVE
+        || $current_user->getStatus() === STATUS_USER_MODERATOR
+        || $current_user->getStatus() === STATUS_USER_ADMIN
+    ) {
         return true;
     }
     return false;
@@ -69,6 +84,49 @@ $app->group('/api', function () use ($app) {
             $games[] = $game;
         }
         $app->response->setBody(json_encode($games));
+    });
+
+    $app->put('/games', function () use ($app) {
+        set_api_headers($app);
+        if (!check_active()) {
+            $app->response->setStatus(401);
+            return;
+        }
+
+        $data = json_decode(file_get_contents('php://input'));
+        if (empty($data->name)) {
+            $error = 'Missing game name.';
+        } else if (empty($data->playerslots)) {
+            $error = 'Missing players.';
+        }
+        if (!empty($error)) {
+            $app->response->setBody(json_encode([
+                'status' => 'error',
+                'message' => $error,
+            ]));
+            $app->response->setStatus(400);
+            return;
+        }
+
+        $gamesModeration = new GamesModeration();
+        try {
+            $game = $gamesModeration->create(
+                $data->name,
+                $data->playerslots,
+                NULL,
+                NULL,
+                TRUE,
+                1
+            );
+        } catch (GameCreationException $exception) {
+            $app->response->setBody(json_encode([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ]));
+            $app->response->setStatus(400);
+            return;
+        }
+        $app->response->setBody(json_encode($game));
     });
 
     $app->options('/:path', function () use ($app) {

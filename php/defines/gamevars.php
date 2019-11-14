@@ -63,6 +63,14 @@ define('STATUS_USER_ADMIN', 'admin');
 define('STATUS_USER_DELETED', 'deleted');
 define('STATUS_USER_ALL', 'all');
 
+// colors
+define('ID_COLOR_RED', 1);
+define('ID_COLOR_BLUE', 2);
+define('ID_COLOR_GREEN', 3);
+define('ID_COLOR_ORANGE', 4);
+define('ID_COLOR_PURPLE', 5);
+define('ID_COLOR_YELLOW', 6);
+
 /****************************************************
  * game settings that are NOT reflected in database *
  ****************************************************/
