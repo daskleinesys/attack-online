@@ -10,7 +10,7 @@ use Attack\Exceptions\JoinUserException;
 use Attack\Exceptions\GameAdministrationException;
 use Attack\Exceptions\NullPointerException;
 
-class ModelIsInGameInfo {
+class ModelIsInGameInfo implements \JsonSerializable {
 
     // list of all models
     // $models = dict(int id_user = array(int id_game = ModelIsInGameInfo)))
@@ -22,6 +22,9 @@ class ModelIsInGameInfo {
     private $id_color; // int id_color
     private $money; // int/numer
     private $id_set; // int id_set
+
+    // resolved
+    private $user; //ModelUser
 
     /**
      * returns the specific model
@@ -311,6 +314,13 @@ class ModelIsInGameInfo {
         return $this->id_set;
     }
 
+    /**
+     * @throws NullPointerException
+     */
+    public function resolve() {
+        $this->user = ModelUser::getUser($this->id_user);
+    }
+
     private function fill_member_vars() {
         $query = 'get_user_is_in_game';
         $dict = array();
@@ -327,4 +337,22 @@ class ModelIsInGameInfo {
         $this->id_set = $data['id_set'];
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id_user' => $this->id_user,
+            'id_game' => $this->id_game,
+            'id_color' => $this->id_color,
+            'money' => $this->money,
+            'id_set' => $this->id_set,
+            'user' => $this->user,
+        ];
+    }
 }

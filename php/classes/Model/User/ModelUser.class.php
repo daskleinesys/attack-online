@@ -8,7 +8,7 @@ use Attack\Exceptions\UserCreationException;
 use Attack\Database\SQLConnector;
 use Attack\Tools\Iterator\ModelIterator;
 
-class ModelUser {
+class ModelUser implements \JsonSerializable {
 
     // currently (logged in) user model
     private static $current_user = null;
@@ -69,8 +69,9 @@ class ModelUser {
      *
      * @param string $status - define for user status
      * @param int $id_game
-     * @throws DatabaseException
      * @return ModelIterator
+     * @throws NullPointerException
+     * @throws DatabaseException
      */
     public static function iterator($status = null, $id_game = null) {
         $users = array();
@@ -454,5 +455,20 @@ class ModelUser {
         $this->status = null;
         $this->verify = null;
         $this->token = null;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'login' => $this->login,
+        ];
     }
 }

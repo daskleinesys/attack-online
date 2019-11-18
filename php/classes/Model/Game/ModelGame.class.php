@@ -38,8 +38,10 @@ class ModelGame implements \JsonSerializable {
     private $round; // int
     private $processing; // bool
 
+    // resolved
     private $creator; // ModelUser
     private $phase; // ModelPhase
+    private $players; // [ModelIsInGameInfo, ...]
 
     /**
      * creates new game object, fills in relevant info if id given, otherwise use create function to create new game
@@ -555,6 +557,25 @@ class ModelGame implements \JsonSerializable {
         return $this->round;
     }
 
+    /**
+     * resolves creator, phase and player models
+     *
+     * @return void
+     * @throws NullPointerException
+     * @throws DatabaseException
+     */
+    public function resolve() {
+        $this->creator = ModelUser::getUser($this->id_creator);
+        $this->phase = ModelPhase::getPhase($this->id_phase);
+        $this->players = [];
+        $iterator = ModelIsInGameInfo::iterator(null, $this->id);
+        while ($iterator->hasNext()) {
+            $is_in_game = $iterator->next();
+            $is_in_game->resolve();
+            $this->players[] = $is_in_game;
+        }
+    }
+
     private function fill_member_vars() {
         // check if there is a game
         $result = SQLConnector::Singleton()->epp('get_game_by_id', array(':id_game' => $this->id));
@@ -615,6 +636,7 @@ class ModelGame implements \JsonSerializable {
             'processing' => $this->processing,
             'creator' => $this->creator,
             'phase' => $this->phase,
+            'players' => $this->players,
         ];
     }
 }

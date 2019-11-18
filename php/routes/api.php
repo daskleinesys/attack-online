@@ -81,6 +81,7 @@ $app->group('/api', function () use ($app) {
         $games = [];
         while ($iterator->hasNext()) {
             $game = $iterator->next();
+            $game->resolve();
             $games[] = $game;
         }
         $app->response->setBody(json_encode($games));
