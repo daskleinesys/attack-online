@@ -119,6 +119,7 @@ $app->group('/api', function () use ($app) {
                 TRUE,
                 1
             );
+            $game->resolve();
         } catch (GameCreationException $exception) {
             $app->response->setBody(json_encode([
                 'status' => 'error',
