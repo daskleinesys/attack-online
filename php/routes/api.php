@@ -65,7 +65,7 @@ $app->group('/api', function () use ($app) {
     $app->post('/areas/:id', function ($id) use ($app) {
         set_api_headers($app);
         if (!check_moderator()) {
-            return $app->response->setStatus(401);
+            return $app->response->setStatus(403);
         }
         $model = ModelArea::getArea($id);
         $data = json_decode(file_get_contents('php://input'));
@@ -90,7 +90,7 @@ $app->group('/api', function () use ($app) {
     $app->put('/games', function () use ($app) {
         set_api_headers($app);
         if (!check_active()) {
-            $app->response->setStatus(401);
+            $app->response->setStatus(403);
             return;
         }
 
@@ -129,6 +129,26 @@ $app->group('/api', function () use ($app) {
             return;
         }
         $app->response->setBody(json_encode($game));
+    });
+
+    $app->delete('/games/:id', function ($id) use ($app) {
+        set_api_headers($app);
+        $game = ModelGame::getGame($id);
+        if (empty($game)) {
+            $app->response->setStatus(404);
+            return;
+        }
+        $current_user = ModelUser::getCurrentUser();
+        if (
+            $game->getIdCreator() !== $current_user->getId()
+            && $current_user->getStatus() !== STATUS_USER_MODERATOR
+            && $current_user->getStatus() !== STATUS_USER_ADMIN
+        ) {
+            $app->response->setStatus(403);
+            return;
+        }
+        ModelGame::deleteGame($id);
+        $app->response->setStatus(200);
     });
 
     $app->options('/:path', function () use ($app) {

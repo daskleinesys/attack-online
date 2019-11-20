@@ -529,6 +529,13 @@ class ModelGame implements \JsonSerializable {
     }
 
     /**
+     * @return int
+     */
+    public function getIdCreator() {
+        return $this->id_creator;
+    }
+
+    /**
      * @return ModelUser
      */
     public function getCreator() {
