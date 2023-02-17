@@ -4,6 +4,6 @@
         "twig/twig": "~1.0",
         "slim/views": "0.1.*",
         "apache/log4php": "^2.3",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^6.0"
     }
 }
